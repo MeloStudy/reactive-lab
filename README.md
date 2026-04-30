@@ -10,7 +10,8 @@ The transition to Reactive Programming requires a significant mindset shift. We 
 4. **The Scale**: We introduce Kafka, Observability, and advanced Resilience.
 5. **The Horizon**: We compare Reactive with Virtual Threads (Project Loom) to understand when to use each in the modern Java ecosystem.
 
-## 🎯 Learning Path Overview (5 Levels of Mastery)
+## 🎯 Learning Path Overview
+For a detailed breakdown of all modules, learning objectives, and the certification path, see the [Full Syllabus](docs/syllabus.md).
 
 - **Level 1: The Reactive Mindset & Foundations** (RxJS, The Reactive Manifesto)
 - **Level 2: The JVM Reactive Core** (Project Reactor, Backpressure, Threading)

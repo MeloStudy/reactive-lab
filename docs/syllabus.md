@@ -3,7 +3,7 @@
 ## Level 1: The Reactive Mindset & Foundations (Node.js & RxJS)
 Focus: Understanding the 'Why', The Reactive Manifesto, and the Observer Pattern without JVM boilerplate.
 
-- [ ] **LAB-001: The Reactive Manifesto & Asynchronous Paradigms**
+- [x] (AUDITED) **LAB-001: The Reactive Manifesto & Asynchronous Paradigms**
   - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Callbacks vs Promises vs Observables.
 - [ ] **LAB-002: Stream Creation & Subscription Lifecycle**
   - Concepts: `of`, `from`, `interval`. Cold vs Hot Observables (Basic).

@@ -19,7 +19,7 @@ Focus: Transitioning to Java, strong typing, and mastering the Reactive Streams 
 
 - [x] (AUDITED) **LAB-006: The Reactive Streams Specification & TCK** (Completed)
   - Concepts: Publisher, Subscriber, Subscription. The TCK (Technology Compatibility Kit).
-- [ ] **LAB-007: Flux & Mono Foundations**
+- [x] (AUDITED) **LAB-007: Flux & Mono Foundations** (Completed)
   - Concepts: Lazy execution, immutable pipelines, factory methods.
 - [ ] **LAB-008: Bridging Imperative & Reactive: Sinks & Emitters**
   - Concepts: `Sinks.Many`, `Sinks.One`. Manual stream control with `Flux.create`.

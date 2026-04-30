@@ -5,7 +5,7 @@
 ## Phase 1: Java Scaffolding & Dependencies
 - [x] T001 Initialize `pom.xml` with Java 21 and Reactive Streams dependencies.
 - [x] T002 Verify project compiles via `mvn compile`.
-- [x] T003 Scaffold base package `com.reactivelab.spec`.
+- [x] T003 Scaffold base package `com.reactivelab.streams`.
 
 ## Phase 2: Implementation of the "Raw" Contract
 - [x] T004 Implement `CustomPublisher` and its inner `Subscription`.
@@ -25,3 +25,9 @@
 ## Phase 5: Final Verification
 - [x] T013 Verify all TCK tests pass (or a specific subset required for LOs).
 - [x] T014 Perform final audit for "Pedagogical Clarity".
+## Phase 6: Refinement & Rigor Upgrade
+- [x] T015 Move `CustomSubscriber` to `src/main/java` (Core LO).
+- [x] T016 Deepen `CONCEPT.md` with official specification rules and TCK architecture.
+- [x] T017 Add "Reference Documentation" and "TCK Failure Analysis" to `README.md`.
+- [x] T018 Verify that all instructions use the correct lab slug (`006-reactive-streams`).
+- [x] T019 Re-run full test suite and TCK to ensure package move didn't break anything.

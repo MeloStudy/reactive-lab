@@ -1,4 +1,4 @@
-package com.reactivelab.spec;
+package com.reactivelab.streams;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.tck.PublisherVerification;

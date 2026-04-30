@@ -1,60 +1,42 @@
 # LAB-006: The Reactive Streams Specification & TCK
 
-Welcome to the foundation of modern reactive programming on the JVM. In this lab, you will step away from high-level libraries like Project Reactor and build your own **Publisher** from scratch using the raw Reactive Streams interfaces.
+Welcome to the foundation of modern reactive programming on the JVM. In this lab, you will step away from high-level libraries like Project Reactor and build your own **Publisher** and **Subscriber** from scratch using the raw Reactive Streams interfaces.
 
 ## Learning Objectives
 
-1.  **Implement** the core `Publisher` and `Subscription` interfaces.
+1.  **Implement** the core `Publisher`, `Subscriber`, and `Subscription` interfaces.
 2.  **Master** the "Handshake" sequence: Subscription -> Request -> Next.
 3.  **Validate** compliance using the official Technology Compatibility Kit (TCK).
+4.  **Trace** implementation failures to specific specification rules.
 
-## Prerequisites
-
-- Java 21+
-- Maven 3.9+
+## Reference Documentation
+- [Official Reactive Streams Website](https://www.reactive-streams.org/)
+- [GitHub: Reactive Streams JVM Specification](https://github.com/reactive-streams/reactive-streams-jvm)
+- [Project Reactor: Reactive Streams Documentation](https://projectreactor.io/docs/core/release/reference/#reactive-streams)
 
 ---
 
 ## Step 1: Implementation of the "Raw" Contract
 
-Your first task is to implement a `CustomPublisher` that emits a range of integers. Open `com.reactivelab.spec.CustomPublisher` and examine the implementation.
+Your first task is to implement both a `Publisher` and a `Subscriber`. 
 
-### The Handshake Logic
-
-Notice how the `subscribe` method immediately calls `onSubscribe`. This is the "Handshake".
-
-```java
-@Override
-public void subscribe(Subscriber<? super Integer> subscriber) {
-    subscriber.onSubscribe(new CustomSubscription(subscriber, count));
-}
-```
-
-### The Subscription State
-
-The `CustomSubscription` class is the engine. It must track **Demand** using an `AtomicLong`. No items are emitted unless `demand > 0`.
+### The Engine: CustomSubscription
+The `CustomSubscription` class handles the state. You must ensure:
+- `request(long n)`: Increments demand safely.
+- `cancel()`: Stops all future signals.
+- **Rule 3.9**: If `n <= 0`, you must call `subscriber.onError` with an `IllegalArgumentException`.
 
 ## Step 2: Running the Handshake Validation
 
-We have provided a manual test suite to verify your understanding of the protocol.
-
-### Execution
+Execute the manual JUnit tests to verify the core flow.
 
 ```bash
 mvn test -Dtest=HandshakeTest
 ```
 
-### Analysis
-The tests verify three critical scenarios:
-1.  **Cold Start**: No data flows until `request` is called.
-2.  **Demand Flow**: Data flows in chunks matching the `request(n)` calls.
-3.  **Cancellation**: The stream stops immediately when `cancel()` is called.
+## Step 3: The TCK Challenge
 
----
-
-## Step 3: The TCK Rigor
-
-Passing your own tests is easy. Passing the official **Technology Compatibility Kit (TCK)** is much harder. The TCK checks for hundreds of rules, including thread safety and edge cases.
+The TCK (Technology Compatibility Kit) is the ultimate judge of your implementation. It will run dozens of concurrent tests to ensure you follow every detail of the specification.
 
 ### Execution
 
@@ -62,21 +44,15 @@ Passing your own tests is easy. Passing the official **Technology Compatibility 
 mvn test -Dtest=PublisherTCKTest
 ```
 
-| Command | Purpose |
-| :--- | :--- |
-| `mvn test` | Runs all tests in the project. |
-| `-Dtest=PublisherTCKTest` | Filters execution to only the TCK validation class. |
+### Analyzing TCK Failures
+When a TCK test fails, it will provide a specific rule reference. For example:
+> `streams.PublisherVerification$1 - onNext must only be sent after a Subscription exists and demand (request) has been signaled.`
 
-### Command Dissection: Maven Test Output
-
-| Element | Description |
-| :--- | :--- |
-| `Tests run: 38` | The number of compliance rules checked by the TCK. |
-| `Failures: 0` | If this is non-zero, your implementation violates a specific spec rule. |
-| `Skipped: 9` | Optional rules or tests for unimplemented features (like failed publishers). |
+This corresponds to **Rule 1.1**. To fix this, ensure your `drain()` loop checks `demand.get() > 0` before calling `onNext`.
 
 ---
 
-## Challenge: Breaking the Rules
-
-Try modifying your `CustomPublisher` to send an item *before* the subscriber requests it. Run the TCK again and observe the failure. This demonstrates why the specification is so strict: it guarantees that consumers are never overwhelmed.
+## Technical Standard Checklist
+- [x] **Java 21** configuration in `pom.xml`.
+- [x] **Maven** structure: Code in `src/main/java`, Tests in `src/test/java`.
+- [x] **TCK Integration**: Using `PublisherVerification` from `org.reactivestreams.tck`.

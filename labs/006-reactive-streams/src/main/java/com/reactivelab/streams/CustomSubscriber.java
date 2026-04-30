@@ -1,4 +1,4 @@
-package com.reactivelab.spec;
+package com.reactivelab.streams;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

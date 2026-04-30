@@ -1,56 +1,49 @@
 # CONCEPT: The Reactive Streams Specification
 
-The Reactive Streams Specification is a standard for asynchronous stream processing with non-blocking backpressure. It was created to allow different reactive libraries (Reactor, RxJava, Akka Streams) to interoperate seamlessly.
+The Reactive Streams Specification (v1.0.4) is a formal standard for asynchronous stream processing with non-blocking backpressure. It provides a common language for libraries like Project Reactor, RxJava, and Akka Streams to work together without overwhelming each other.
 
-## The 4 Core Interfaces
+## Official Resources
+- **Website**: [reactive-streams.org](https://www.reactive-streams.org/)
+- **GitHub**: [reactive-streams/reactive-streams-jvm](https://github.com/reactive-streams/reactive-streams-jvm)
+- **Spec Document**: [The Full Specification Rules](https://github.com/reactive-streams/reactive-streams-jvm/blob/v1.0.4/README.md)
 
-The entire specification is built on just four interfaces:
+## The "Dynamic Push-Pull" Duality
 
-1.  **Publisher<T>**: The provider of a potentially unbounded number of sequenced elements.
-2.  **Subscriber<T>**: The consumer of elements, which signals demand to the Publisher.
-3.  **Subscription**: The "link" between a Publisher and a Subscriber. It manages demand (`request`) and allows cancellation.
-4.  **Processor<T, R>**: A component that is both a Subscriber and a Publisher (a transformer).
+Reactive Streams isn't just "push" (like classic Observables) or just "pull" (like Iterators). It is a hybrid:
 
-## The Handshake Lifecycle
+1.  **Subscription is the Governor**: The `Subscription` object acts as a bridge.
+2.  **Subscriber Pulls Demand**: Through `request(n)`, the subscriber informs the publisher of its processing capacity.
+3.  **Publisher Pushes Data**: The publisher only pushes data *after* it has been requested, up to the limit of `n`.
 
-The most critical part of the specification is the "Handshake". No data is allowed to flow until the Subscriber explicitly requests it.
+## Deep Dive into the TCK (Technology Compatibility Kit)
 
-```mermaid
-sequenceDiagram
-    participant S as Subscriber
-    participant P as Publisher
-    participant Sub as Subscription
+The TCK is not just a "unit test suite." It is a rigorous **Compliance SPI**. It validates that your code doesn't just "work," but follows the 40+ mandatory rules of the specification.
 
-    S->>P: subscribe(Subscriber)
-    P->>S: onSubscribe(Subscription)
-    Note right of S: Subscriber now has the link
-    
-    S->>Sub: request(n)
-    Sub->>S: onNext(item 1)
-    Sub->>S: onNext(item 2)
-    Note right of S: ... up to n items
-    
-    S->>Sub: request(m)
-    Note right of S: More items flow...
-    
-    S->>Sub: cancel()
-    Note right of P: Publisher stops emission
-```
+### TCK Architecture
+- **TestNG Base**: The TCK is built on TestNG (instead of JUnit) due to its superior handling of timeouts and concurrent execution.
+- **PublisherVerification<T>**: An abstract class you must extend to test your Publisher.
+- **Rules checked**:
+    - **Rule 1.1**: Must signal `onNext` only after a Subscription and demand.
+    - **Rule 3.3**: Demand must be additive (long overflow must be handled).
+    - **Rule 3.9**: `request(n)` where `n <= 0` must trigger `onError`.
 
-## The "Demand" Model (Backpressure)
+### Why the TCK is Hard
+The TCK tests your code under heavy stress. It will simulate:
+- Rapid `request` and `cancel` calls from multiple threads.
+- Publishers that are too fast or too slow.
+- Error propagation during active emission.
 
-Backpressure in Reactive Streams is **pull-based**. 
+## The Handshake State Machine
 
-*   **Fast Producer / Slow Consumer**: Without backpressure, a fast producer would overwhelm a slow consumer, leading to `OutOfMemoryError` or dropped packets.
-*   **The Solution**: The Subscriber maintains control. It tells the Publisher: "I am ready for exactly 5 more items." The Publisher MUST NOT send more than 5 items until the next `request` call.
+A compliant implementation must handle several states:
 
-### Key Rules of the Specification
+| State | Allowed Transitions | Description |
+| :--- | :--- | :--- |
+| **New** | → Subscribed | Initial state before `subscribe()` is called. |
+| **Subscribed** | → Requesting / Cancelled | `onSubscribe` has been called; waiting for demand. |
+| **Active** | → Requesting / Cancelled / Terminated | Data is flowing based on demand. |
+| **Terminated** | None | `onComplete` or `onError` has been called. |
+| **Cancelled** | None | `cancel()` was called; no more signals allowed. |
 
-*   **Rule 1.1**: A Publisher must signal `onNext` only after a Subscription exists and demand (`request`) has been signaled.
-*   **Rule 3.3**: `Subscription.request` must be additive. If a subscriber calls `request(2)` and then `request(3)`, the total demand is 5.
-*   **Rule 3.5**: `Subscription.cancel` must be idempotent and must stop all signals to the subscriber.
-*   **Rule 3.9**: `Subscription.request(n)` where `n <= 0` must result in an `onError` signal with an `IllegalArgumentException`.
-
-## The TCK (Technology Compatibility Kit)
-
-The TCK is a test suite that verifies if an implementation correctly follows all the complex rules of the specification. It handles concurrency, boundary conditions, and edge cases that are difficult to test manually.
+### Concurrency Challenge
+The `Subscription` implementation MUST be thread-safe. If one thread calls `request(n)` while another calls `cancel()`, the implementation must ensure that `onNext` signals stop immediately and demand is not updated incorrectly. This is why we use `AtomicLong` and `AtomicBoolean` in our implementation.

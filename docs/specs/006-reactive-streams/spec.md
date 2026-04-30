@@ -14,6 +14,7 @@
   - LO-002: Master the "Handshake" lifecycle: `onSubscribe` -> `request(n)` -> `onNext`.
   - LO-003: Understand the "Demand" model (Push vs. Pull-based Backpressure).
   - LO-004: Validate a custom Publisher against the official Reactive Streams TCK.
+  - LO-005: Trace an implementation failure back to a specific rule in the Reactive Streams specification (Rule 1.1, 3.9, etc.).
 
 ## Interactive Scenarios & Validation *(mandatory)*
 

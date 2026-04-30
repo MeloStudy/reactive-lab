@@ -27,6 +27,8 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 - **Native Execution**: Guide students to run `mvn test` or `npm test` directly in the README.
 - **Backpressure Scenarios**: Labs involving data streams MUST explain how backpressure is handled.
 - **Testing Standard**: Java labs MUST use `StepVerifier` for validating reactive sequences. JS labs MUST use `jest` with marble testing or async/await validation.
+- **Git Hygiene**: A global `.gitignore` MUST be maintained at the root. Individual labs SHOULD NOT have local `.gitignore` files unless they have unique, non-standard dependencies.
+
 
 ## Technical Stack & Standards
 
@@ -43,4 +45,4 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 - **`IMPLEMENTED`**: Code and docs complete.
 - **`AUDITED`**: Pedagogical audit passed.
 
-**Version**: 0.1.0 | **Ratified**: 2026-04-30
+**Version**: 0.1.1 | **Ratified**: 2026-04-30

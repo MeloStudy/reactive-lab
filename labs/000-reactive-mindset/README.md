@@ -4,36 +4,14 @@ Welcome to your first step into Reactive Programming! Before we write complex co
 
 ## 🎯 Learning Objectives
 - Internalize the **Push** vs **Pull** model.
-- Understand the cost of **Blocking I/O**.
+- Understand the cost of **Blocking I/O** in the JVM (Thread-per-request).
 - Learn why **Errors** are just another type of signal.
 - Master the **Excel** and **Restaurant** analogies.
 
-## 🧠 Theory First
+## 🧠 Theory & Mindset
 Read the [CONCEPT.md](./CONCEPT.md) file for a deep dive into the philosophy of this paradigm and the comparison with the traditional Java "Thread-per-request" model.
 
-## 🛠️ Hands-on: Push vs. Pull
-
-In this lab, we have a simple demonstration comparing a standard variable (Pull) with a Reactive Stream (Push).
-
-### 1. Install Dependencies
-```bash
-npm install
-```
-
-### 2. Run the Comparison
-```bash
-node src/push-vs-pull.js
-```
-
-### 3. Run Validation Tests
-```bash
-npm test
-```
-
-## 🔍 Command Dissection: `npm test`
-- **npm**: The Node Package Manager.
-- **test**: A script defined in `package.json` that runs `jest`.
-- **jest**: Our testing framework that validates if your mental model matches the actual behavior of the streams.
+This lab is purely conceptual to ensure you have the right mindset before we dive into Project Reactor code in the following modules.
 
 ---
 **Next Step**: Once you've internalized the mindset, move to [LAB-001: The Reactive Manifesto](../001-reactive-manifesto/README.md).

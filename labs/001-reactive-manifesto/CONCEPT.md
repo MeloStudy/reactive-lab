@@ -1,12 +1,12 @@
 # Concept: The Reactive Manifesto & Asynchronous Foundations
 
 ## 1. The Reactive Mindset: Why "Reactive"?
-Traditional synchronous systems are **blocking**. When a thread requests data (e.g., from a database), it sits idle, consuming memory and resources while waiting for a response. In high-scale environments, this leads to thread exhaustion.
+Traditional synchronous systems are **blocking**. In a classic Java application, when a thread requests data (e.g., from a database), it sits idle, consuming ~1MB of stack memory and OS resources while waiting for a response. In high-scale environments, this leads to **Thread Exhaustion**.
 
 **Reactive Programming** flips this model. Instead of waiting (Pull), the system continues execution and is notified when data is ready (Push).
 
-### The Event Loop vs. Blocking Threads
-In the Node.js environment, the **Event Loop** is the engine. It handles I/O non-blockingly. If you block the loop, you block the world. Reactive streams allow us to orchestrate complex async logic while keeping the Event Loop spinning efficiently.
+### Thread-per-Request vs. Event-Loop
+In the reactive model, we use a small, fixed number of threads (the Event Loop) to handle I/O non-blockingly. If you block one of these threads, you degrade the performance of the entire system. Reactive streams allow us to orchestrate complex async logic while keeping these few threads active and efficient.
 
 ## 2. The Reactive Manifesto (The 4 Pillars)
 A Reactive System is defined by these architectural characteristics:
@@ -31,20 +31,20 @@ graph TD
 | **Elasticity** | Resource efficiency. Handling bursts via flow control (Backpressure). |
 | **Message Driven** | Loose coupling. Producers don't need to know who the consumers are. |
 
-## 3. The Evolution of Asynchrony
+## 3. The Evolution of Asynchrony in the JVM
 | Paradigm | Model | Multi-value? | Termination |
 | :--- | :--- | :--- | :--- |
-| **Callbacks** | Push | Yes | Manual/Hard to track |
-| **Promises** | Push | No | Resolve/Reject (Terminal) |
-| **Observables** | Push | **Yes** | onNext* -> (onComplete OR onError) |
+| **Callbacks/Listeners** | Push | Yes | Manual/Hard to track |
+| **CompletableFuture** | Push | No | Complete/Exception (Terminal) |
+| **Flux / Mono** | Push | **Yes** | onNext* -> (onComplete OR onError) |
 
 ### The Observer Pattern Lifecycle
-An Observable represents a stream of data. The relationship is governed by the **Observer Pattern**:
+A Reactive Stream represents a flow of data. The relationship is governed by the **Reactive Streams Specification**:
 
-1.  **Subscription**: The consumer (Observer) connects to the producer (Observable).
+1.  **Subscription**: The consumer (Subscriber) connects to the producer (Publisher).
 2.  **Emission (`onNext`)**: The producer pushes data to the consumer.
 3.  **Completion (`onComplete`)**: The producer signals successful end of stream.
 4.  **Error (`onError`)**: The producer signals a terminal failure.
 
-## 4. Why Observables Win
-Unlike Promises, Observables are **Lazy** (they don't start until you subscribe) and **Cancellable**. They provide a rich set of operators to transform, filter, and combine streams, allowing you to treat "Time" as just another dimension of your data.
+## 4. Why Project Reactor Wins
+Unlike Futures, Project Reactor types (`Flux` and `Mono`) are **Lazy** (they don't start until you subscribe) and **Cancellable**. They provide a rich set of operators to transform, filter, and combine streams, allowing you to treat "Time" as just another dimension of your data.

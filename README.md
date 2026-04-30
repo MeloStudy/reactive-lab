@@ -3,17 +3,17 @@
 Welcome to the **Reactive Programming Masterclass**. This repository contains a series of hands-on laboratories designed to master asynchronous stream processing, non-blocking I/O, and reactive systems design.
 
 ## 🧠 Why this curriculum? (The Pedagogical Path)
-The transition to Reactive Programming requires a significant mindset shift. We approach this in progressive levels:
-1. **The Mindset**: We start with Node.js and RxJS to visualize streams and grasp the Observer pattern without JVM boilerplate.
-2. **The Core**: We move to Java 21 and Project Reactor to master types, backpressure, and JVM threading.
-3. **The Enterprise**: We build microservices using Spring WebFlux and R2DBC.
-4. **The Scale**: We introduce Kafka, Observability, and advanced Resilience.
-5. **The Horizon**: We compare Reactive with Virtual Threads (Project Loom) to understand when to use each in the modern Java ecosystem.
+The transition to Reactive Programming requires a significant mindset shift. We approach this in progressive levels using **Java 21 and Project Reactor**:
+1. **The Mindset**: Foundational concepts and analogies to understand "Push" vs "Pull" in the JVM.
+2. **The Core**: Mastering the Reactive Streams Specification, Backpressure, and Schedulers.
+3. **The Enterprise**: Building microservices using Spring WebFlux and R2DBC.
+4. **The Scale**: We introduce Kafka, Observability, and advanced Resilience patterns.
+5. **The Horizon**: We compare Reactive with Virtual Threads (Project Loom) to understand the modern Java landscape.
 
 ## 🎯 Learning Path Overview
 For a detailed breakdown of all modules, learning objectives, and the certification path, see the [Full Syllabus](docs/syllabus.md).
 
-- **Level 1: The Reactive Mindset & Foundations** (RxJS, The Reactive Manifesto)
+- **Level 1: The Reactive Mindset & Foundations** (Project Reactor Foundations)
 - **Level 2: The JVM Reactive Core** (Project Reactor, Backpressure, Threading)
 - **Level 3: Enterprise Reactive Services** (Spring WebFlux, R2DBC, Security)
 - **Level 4: Resilient & Event-Driven Systems** (Kafka, Micrometer, Resilience4j)
@@ -25,9 +25,8 @@ For a detailed breakdown of all modules, learning objectives, and the certificat
 To successfully run these laboratories, you need the following environment:
 
 - **Java 21 (LTS)**: Required for Project Reactor, Spring WebFlux, and Virtual Threads.
-- **Node.js 20+ (LTS)**: For RxJS laboratories and testing utilities.
-- **Docker & Docker Compose**: Essential for containerized infrastructure (Kafka, Databases).
 - **Maven 3.9+**: For managing Java projects.
+- **Docker & Docker Compose**: Essential for containerized infrastructure (Kafka, Databases).
 - **Make**: (Optional but recommended) For using the centralized command shortcuts.
 
 ## 🚀 How to use this Laboratory

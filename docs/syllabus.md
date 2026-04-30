@@ -1,20 +1,20 @@
 # Reactive Programming Lab Syllabus
 
-## Level 1: The Reactive Mindset & Foundations (Node.js & RxJS)
-Focus: Understanding the 'Why', The Reactive Manifesto, and the Observer Pattern without JVM boilerplate.
+## Level 1: The Reactive Mindset & Foundations (Project Reactor)
+Focus: Understanding the 'Why', The Reactive Manifesto, and the core Flux/Mono types without enterprise complexity.
 
 - [/] (PLANNED) **LAB-000: The Reactive Mindset & Foundational Analogies**
   - Concepts: Thinking in Streams, The Excel Analogy, Declarative vs Imperative, When (not) to be Reactive.
 - [x] (AUDITED) **LAB-001: The Reactive Manifesto & Asynchronous Paradigms**
-  - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Callbacks vs Promises vs Observables.
-- [ ] **LAB-002: Stream Creation & Subscription Lifecycle**
-  - Concepts: `of`, `from`, `interval`, `timer`. Cold vs Hot Observables (Intro).
-- [ ] **LAB-003: Subjects & Multicasting: State in Streams**
-  - Concepts: `Subject`, `BehaviorSubject`, `ReplaySubject`. Multicasting with `shareReplay`.
-- [ ] **LAB-004: Essential Operators: Transformation & Filtering**
-  - Concepts: `map`, `filter`, `scan`, `reduce`, `take`, `distinctUntilChanged`.
-- [ ] **LAB-005: Combining Streams & Flattening Strategies**
-  - Concepts: `merge`, `concat`, `zip`. Higher-order Observables: `switchMap`, `mergeMap`, `concatMap`.
+  - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Blocking vs Non-Blocking in JVM.
+- [ ] **LAB-002: Flux & Mono: Creating Reactive Streams**
+  - Concepts: `just`, `fromIterable`, `interval`, `timer`. Lazy execution and immutability.
+- [ ] **LAB-003: Subscriptions & Lifecycle Control**
+  - Concepts: `subscribe()`, `Disposable`, `BaseSubscriber`. Handling the stream lifecycle.
+- [ ] **LAB-004: Essential Transformation Operators**
+  - Concepts: `map`, `filter`, `flatMap`, `concatMap`, `switchMap` foundations.
+- [ ] **LAB-005: Combining & Orchestrating Fluxes**
+  - Concepts: `merge`, `concat`, `zip`, `combineLatest`.
 
 ## Level 2: The JVM Reactive Core (Java 21 & Project Reactor)
 Focus: Transitioning to Java, strong typing, and mastering the Reactive Streams Specification (Publisher/Subscriber).

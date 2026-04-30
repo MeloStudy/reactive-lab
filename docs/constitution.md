@@ -5,8 +5,8 @@
 ### I. Asynchronous & Non-Blocking First
 The laboratory is built on the foundation of the Reactive Manifesto. Every lab MUST prioritize non-blocking I/O and asynchronous data streams. Concepts like Thread-per-Request vs. Event-Loop MUST be clearly explained to justify the reactive approach.
 
-### II. The Hybrid Path: RxJS for Concepts, Reactor for Enterprise
-To ensure a broad understanding, we use **JavaScript (RxJS)** for initial modules to master fundamental stream operators due to its visual and low-boilerplate nature. However, the core of the professional curriculum focuses on the **Java Ecosystem (Project Reactor, Spring WebFlux)** as the primary enterprise framework.
+### II. The Java-First Path: Project Reactor & Spring WebFlux
+To ensure maximum engineering rigor and professional relevance, the laboratory focuses exclusively on the **Java Ecosystem**. We use **Project Reactor** as the core reactive library and **Spring WebFlux** for enterprise integration. This eliminates context-switching and allows deep-dives into JVM internals (Threads, Memory, Schedulers) from the very first module.
 
 ### III. Reproducible & Infrastructure-Aware
 Reactive systems often depend on specific infrastructure (Message Brokers like Kafka, Reactive Databases like MongoDB/PostgreSQL). All external dependencies MUST be containerized via **Docker Compose**. Sizing and resource constraints (CPU/Memory) should be explored to see their impact on backpressure and throughput.
@@ -33,8 +33,7 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 ## Technical Stack & Standards
 
 - **Java**: JDK 21+ (Project Reactor, Spring WebFlux, Virtual Threads).
-- **Node.js**: v20+ (RxJS).
-- **Tooling**: Docker, `curl`, `httpie`, Kafka.
+- **Tooling**: Maven 3.9+, Docker, `curl`, `httpie`, Kafka.
 - **Language**: English.
 
 ## Lab Lifecycle & Statuses

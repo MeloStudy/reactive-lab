@@ -13,6 +13,7 @@
   - LO-001: Define and identify the 4 pillars of the Reactive Manifesto in a system architecture.
   - LO-002: Contrast Callbacks, Promises, and Observables as evolution of asynchronous handling.
   - LO-003: Implement a basic RxJS Observable that emits multiple values over time.
+  - LO-004: Contrast the Event Loop execution model with the traditional Blocking Thread model to justify the reactive approach.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -33,6 +34,14 @@ The learner will be presented with a "broken" asynchronous system (using basic c
 The learner will refactor a data fetcher that currently uses a Promise (returning one value) to an RxJS Observable (returning a stream of progress updates + final data).
 
 **Validation (Automated Test)**: Jest test using `rxjs/testing` TestScheduler or `toPromise` to verify multiple `onNext` signals before completion.
+
+---
+
+### Scenario 3 - Visualizing Elasticity & Backpressure (Priority: P2)
+
+The learner will execute a manual script that simulates a "Fast Producer" sending a burst of messages to a "Slow Consumer". They must identify the bottleneck and observe how the system handles the overflow (simulated visual buffer).
+
+**Validation (Manual)**: Execution of `src/scenarios/elasticity.js` and observation of logs showing the decoupling of production and consumption.
 
 ---
 

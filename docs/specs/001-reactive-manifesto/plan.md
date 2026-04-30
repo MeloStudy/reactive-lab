@@ -15,16 +15,17 @@ The learner will explore the fundamental "Why" behind reactive programming by ma
 ## Phase 2: Scenario 1 - The Reactive Manifesto in Code
 1. Define a "Legacy" service using callbacks that is brittle.
 2. Provide a "Reactive" version using RxJS that demonstrates Resilience (error isolation) and Responsiveness.
-3. Test: A Jest test that asserts the system doesn't block and handles a simulated failure gracefully.
+3. **Observability**: Create `src/scenarios/manifesto.js` for manual execution.
+4. Test: A Jest test that asserts the system doesn't block and handles a simulated failure gracefully.
 
-## Phase 3: Scenario 2 - Promises vs Observables
-1. Implement a function `fetchDataWithProgress()` that returns an Observable.
-2. The learner must subscribe to this and log both progress and result.
-3. Test: Use RxJS `TestScheduler` to verify the timing and sequence of emissions.
+## Phase 3: Scenario 2 & 3 - Paradigms and Elasticity
+1. Implement `src/scenarios/paradigms.js` to contrast Promise vs Observable manually.
+2. Implement `src/scenarios/elasticity.js` to show a fast producer/slow consumer burst.
+3. Test: Use `rxjs/testing` TestScheduler for deterministic virtual time validation in `tests/scenario-2.test.js`.
 
-## Phase 4: Full Documentation & Dissection
-1. Draft `CONCEPT.md`: Detailed breakdown of Responsiveness, Resilience, Elasticity, and Message-Driven. Comparison table of Callback vs Promise vs Observable.
-2. Draft `README.md`: Educational walkthrough leading from a "Synchronous/Blocking" mindset to a "Reactive/Streaming" one.
+## Phase 4: Full Documentation & Dissection (Deep Rigor)
+1. Draft `CONCEPT.md`: Deep dive into **Event Loop vs Blocking Threads**. Add a **Mermaid** diagram for the Observer pattern lifecycle. Explain why the "Push" model is superior for non-blocking I/O.
+2. Draft `README.md`: Educational walkthrough that emphasizes running the manual scripts first to see the behavior, followed by automated tests for validation.
 3. Apply **Command Dissection** for `npm test` and basic RxJS Observable creation methods.
 
 ## Constitution Compliance Check

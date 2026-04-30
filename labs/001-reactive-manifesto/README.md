@@ -7,67 +7,83 @@ This lab corresponds to **LAB-001** in the [Reactive Programming Lab Syllabus](.
 - **Concept**: The Reactive Manifesto & Asynchronous Evolution (Callbacks vs. Promises vs. Observables).
 
 ## Introduction
-Welcome to the first module of the Reactive Programming Lab. Before we dive into complex operators, we must understand the "Why" and the "How" of reactive systems.
+Welcome to the Reactive Programming Lab. Before we code complex logic, we must master the **mindset**. Reactive programming is about moving from "Request/Response" (Pull) to "Streams/Events" (Push).
 
-In this lab, you will explore the 4 pillars of the **Reactive Manifesto** and see how **Observables** solve problems that Callbacks and Promises cannot.
+In this lab, you will visually observe the behavior of reactive systems through manual execution scripts, then validate them using automated tests.
 
 ## Prerequisites
-- Node.js v20+
-- Basic understanding of ES6 JavaScript
+- Node.js v20+ (LTS)
+- No Docker is required for this introductory module.
 
 ---
 
-## Scenario 1: The Pillars of Reactive Systems
+## 🛠️ Step 1: Visualizing the Manifesto
 
-### The Problem: Brittle Legacy Systems
-Legacy systems often use callbacks. If an asynchronous operation fails inside a callback without a proper try-catch, it can bubble up and crash the entire process. Furthermore, callbacks make it hard to enforce the "Resilience" pillar.
+### Scenario 1 - Resilience & Responsiveness
+Legacy callback systems are brittle. An unhandled error in a callback can crash the entire execution stack. Reactive systems treat errors as signals.
 
-1.  Open `src/brittle-service.js`.
-2.  Notice how the `processData` method throws an error inside a `setTimeout`.
-3.  Run the validation test to see how the Reactive version handles this differently:
-    ```bash
-    npm test tests/scenario-1.test.js
-    ```
+**Manual Execution:**
+Run the following script to see how a "Brittle" service crashes vs. how a "Reactive" service survives:
+```bash
+node src/scenarios/manifesto.js
+```
 
-### The Solution: Reactive Resilience
-By using RxJS, we move to a **Message-Driven** approach where errors are treated as first-class signals (`onError`).
+**What to look for:**
+- Observe the red `[ERROR]` from the legacy service.
+- Observe the purple `[SIGNAL]` and final green `[SUCCESS]` from the reactive service.
 
-**Command Dissection: `catchError`**
-| Operator | Purpose | Rationale |
+---
+
+## 🛠️ Step 2: Paradigms Shift
+
+### Scenario 2 - Promises vs Observables
+A Promise handles a single future value. An Observable handles a stream.
+
+**Manual Execution:**
+Run this script to see the difference in emission count:
+```bash
+node src/scenarios/paradigms.js
+```
+
+**What to look for:**
+- The Promise emits only once.
+- The Observable emits multiple `PROGRESS` signals before the final `DATA`.
+
+---
+
+## 🛠️ Step 3: Elasticity & Flow Control
+
+### Scenario 3 - The Slow Consumer (Backpressure)
+In reactive systems, producers and consumers are decoupled. If a producer is too fast, the consumer must have a strategy to handle the load without crashing.
+
+**Manual Execution:**
+Observe how the system handles a burst of 5 messages sent every 50ms to a consumer that takes 200ms to process each:
+```bash
+node src/scenarios/elasticity.js
+```
+
+---
+
+## 🧪 Automated Validation
+Once you have observed the behaviors manually, run the TDD suite to confirm technical correctness:
+
+```bash
+# Run all tests
+npm test
+
+# Run a specific scenario
+npm test tests/scenario-3.test.js
+```
+
+---
+
+## 📖 Command Dissection
+
+| Command/Operator | Purpose | Reactive Pillar |
 | :--- | :--- | :--- |
-| `catchError` | Intercepts an error signal in the source observable. | Ensures **Resilience** by providing a fallback or a graceful shutdown signal instead of crashing. |
-
----
-
-## Scenario 2: From Single to Multiple (Promises vs Observables)
-
-### The Limitation of Promises
-A Promise is "one and done". It returns exactly one value or one error. What if you need to track the progress of a download? A Promise can't do that natively.
-
-### The Power of Observables
-An Observable is a stream. It can emit multiple values (`onNext`) before finally completing (`onComplete`).
-
-1.  Check `src/data-fetcher.js`.
-2.  Compare `fetchWithPromise()` vs `fetchWithObservable()`.
-3.  Run the tests to verify the multiple emissions:
-    ```bash
-    npm test tests/scenario-2.test.js
-    ```
-
-**Command Dissection: `Observable` Constructor**
-| Method | Description | Why? |
-| :--- | :--- | :--- |
-| `new Observable(subscriber => { ... })` | Manually creates a data stream. | Allows full control over the **Push** mechanism, enabling multiple `next` calls. |
-
----
+| `catchError` | Intercepts error signals and provides fallback. | **Resilience** |
+| `concatMap` | Processes items sequentially, ensuring order and flow control. | **Elasticity** |
+| `new Observable()` | Creates a custom stream with full Push control. | **Message Driven** |
 
 ## Technical Deep-Dive
-For a rigorous explanation of the Reactive Manifesto and the internal mechanics of the Observer Pattern, please read [CONCEPT.md](./CONCEPT.md).
-
-## Cleanup
-To clean up any local artifacts (though none were created for this pure JS lab):
-```bash
-# No docker containers were used in this introductory lab.
-# If they were, you would run:
-# docker-compose down -v --remove-orphans
-```
+Read the [CONCEPT.md](./CONCEPT.md) for a rigorous engineering deep-dive into the Event Loop and the Observer pattern.

@@ -3,7 +3,7 @@
 ## Level 1: The Reactive Mindset & Foundations (Project Reactor)
 Focus: Understanding the 'Why', The Reactive Manifesto, and the core Flux/Mono types without enterprise complexity.
 
-- [/] (PLANNED) **LAB-000: The Reactive Mindset & Foundational Analogies**
+- [x] (AUDITED) **LAB-000: The Reactive Mindset & Foundational Analogies**
   - Concepts: Thinking in Streams, The Excel Analogy, Declarative vs Imperative, When (not) to be Reactive.
 - [x] (AUDITED) **LAB-001: The Reactive Manifesto & Asynchronous Paradigms**
   - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Blocking vs Non-Blocking in JVM.

@@ -2,6 +2,28 @@
 
 Reactive Programming is not just about new libraries; it's a **fundamental shift in how we think about data and time**. To understand "Why Reactive?", we must first understand the "Pains" of the traditional model.
 
+## 0. The Atomic Unit: What is a Stream?
+
+Before we talk about threading or backpressure, we must understand the core material: **The Stream**.
+
+In traditional programming, we work with **Collections** (like `List` or `Set`). A collection is static; all items are already there, in memory.
+In Reactive Programming, we work with **Streams**. 
+
+> **Stream = Data + Time**
+
+A stream is a sequence of events ordered in time. It could be:
+-   A sequence of mouse clicks.
+-   A stream of temperature readings from a sensor.
+-   Rows coming from a database one by one.
+-   HTTP chunks arriving from a remote server.
+
+### The "Everything is a Stream" Mantra
+In a reactive system, we treat everything as a stream. 
+-   A single value? That's a stream of 1 item.
+-   An error? That's a stream that emits a failure signal.
+-   No data? That's an empty stream.
+Once you start seeing the world as streams, you stop writing "loops" and start writing "pipelines".
+
 ## 1. The Pains of Imperative Programming
 
 In traditional imperative programming (like standard Java/Spring MVC), we follow a **synchronous, blocking** model.

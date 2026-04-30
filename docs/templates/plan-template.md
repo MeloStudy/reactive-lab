@@ -9,7 +9,7 @@
 
 ## Phase 1: Monorepo Infrastructure (Base Setup Cloning)
 1. **Scaffold**: Clone the base setup from `labs/000-base-setup/`.
-2. **Workspace Registration**: Rename the sub-module identifier in `package.json` to act as an NPM workspace member (or standard Maven structure if Java).
+2. **Workspace Registration**: Add the new lab as a `<module>` in the root `pom.xml`.
 3. **Data Requirements**: Decide if this lab requires seeding via a pre-populated event stream or if it starts with an empty subscription.
 
 ## Phase 2: Scenario 1 - [First Educational Focus]

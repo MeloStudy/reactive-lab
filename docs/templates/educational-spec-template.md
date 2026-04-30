@@ -45,8 +45,8 @@
 ### Technical Requirements
 
 - **TR-001**: Lab infrastructure (e.g., brokers, databases) MUST be containerized strictly using **Docker / Docker Compose**.
-- **TR-002**: Lab README MUST provide native orchestration and execution commands (e.g., `mvn test`, `npm test`) step-by-step. Bash scripts as wrappers are PROHIBITED.
-- **TR-003**: Lab MUST include automated validation tests (Node.js/Jest for RxJS labs, or Java/JUnit for Reactor/WebFlux labs).
+- **TR-002**: Lab README MUST provide native orchestration and execution commands (e.g., `mvn test`) step-by-step. Bash scripts as wrappers are PROHIBITED.
+- **TR-003**: Lab MUST include automated validation tests (Java/JUnit for Reactor/WebFlux labs).
 - **TR-004**: Reactive signals (`onNext`, `onError`, `onComplete`) MUST be explicitly validated in tests (e.g., using `StepVerifier`).
 - **TR-005**: Lab README MUST provide a "Command Dissection" for any new operator or CLI flag introduced.
 - **TR-006**: Theoretical context (Event Loop, Reactive Streams API) MUST be provided in a `CONCEPT.md` file.

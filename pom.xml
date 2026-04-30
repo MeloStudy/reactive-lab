@@ -13,8 +13,8 @@
     <description>Parent POM for all Reactive Programming laboratories</description>
 
     <modules>
+        <module>labs/002-flux-mono-foundations</module>
         <module>labs/006-reactive-streams</module>
-        <module>labs/007-flux-mono-foundations</module>
     </modules>
 
     <properties>

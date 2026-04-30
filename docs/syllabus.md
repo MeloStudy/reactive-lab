@@ -1,74 +1,68 @@
 # Reactive Programming Lab Syllabus
 
-## Level 1: The Reactive Mindset & Foundations (Project Reactor)
-Focus: Understanding the 'Why', The Reactive Manifesto, and the core Flux/Mono types without enterprise complexity.
+## Level 1: Foundations (Project Reactor)
+Focus: Shifting the mindset and mastering the core building blocks of reactive pipelines.
 
 - [x] (AUDITED) **LAB-000: The Reactive Mindset & Foundational Analogies**
-  - Concepts: Thinking in Streams, The Excel Analogy, Declarative vs Imperative, When (not) to be Reactive.
+  - Concepts: Thinking in Streams, The Excel Analogy, The Delegation Matrix, I/O Blocking.
 - [x] (AUDITED) **LAB-001: The Reactive Manifesto & Asynchronous Paradigms**
-  - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Blocking vs Non-Blocking in JVM.
-- [ ] **LAB-002: Flux & Mono: Creating Reactive Streams**
-  - Concepts: `just`, `fromIterable`, `interval`, `timer`. Lazy execution and immutability.
+  - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Evolution: Callbacks -> Futures -> Streams.
+- [x] (AUDITED) **LAB-002: Flux & Mono Foundations**
+  - Concepts: Cardinality (0..1 vs 0..N), Lazy Execution, Pipeline Immutability, StepVerifier basics.
 - [ ] **LAB-003: Subscriptions & Lifecycle Control**
-  - Concepts: `subscribe()`, `Disposable`, `BaseSubscriber`. Handling the stream lifecycle.
+  - Concepts: `subscribe()`, `Disposable`, `BaseSubscriber`. Handling the stream lifecycle and cancellations.
 - [ ] **LAB-004: Essential Transformation Operators**
   - Concepts: `map`, `filter`, `flatMap`, `concatMap`, `switchMap` foundations.
-- [ ] **LAB-005: Combining & Orchestrating Fluxes**
-  - Concepts: `merge`, `concat`, `zip`, `combineLatest`.
+- [ ] **LAB-005: Combining & Basic Error Handling**
+  - Concepts: `merge`, `concat`, `zip`. Basic `onErrorResume` and `retry`.
 
-## Level 2: The JVM Reactive Core (Java 21 & Project Reactor)
-Focus: Transitioning to Java, strong typing, and mastering the Reactive Streams Specification (Publisher/Subscriber).
+## Level 2: The Core Spec & Advanced Control
+Focus: Deep dive into internal mechanics, flow control, and multi-threading.
 
-- [x] (AUDITED) **LAB-006: The Reactive Streams Specification & TCK** (Completed)
-  - Concepts: Publisher, Subscriber, Subscription. The TCK (Technology Compatibility Kit).
-- [x] (AUDITED) **LAB-007: Flux & Mono Foundations** (Completed)
-  - Concepts: Lazy execution, immutable pipelines, factory methods.
-- [ ] **LAB-008: Bridging Imperative & Reactive: Sinks & Emitters**
-  - Concepts: `Sinks.Many`, `Sinks.One`. Manual stream control with `Flux.create`.
-- [ ] **LAB-009: Threading Models & Schedulers**
-  - Concepts: `publishOn` vs `subscribeOn`. Parallel processing with `parallel()`.
-- [ ] **LAB-010: Backpressure Strategies & Flow Control**
+- [x] (AUDITED) **LAB-006: The Reactive Streams Specification & TCK**
+  - Concepts: Publisher, Subscriber, Subscription. Compliance with the TCK rules.
+- [ ] **LAB-007: Programmatic Stream Generation**
+  - Concepts: `Sinks.Many`, `Sinks.One`. Manual control with `Flux.create` vs `Flux.generate`.
+- [ ] **LAB-008: Threading Models & Schedulers**
+  - Concepts: `publishOn` vs `subscribeOn`. The Event Loop vs Parallel thread pools.
+- [ ] **LAB-009: Backpressure Strategies & Flow Control**
   - Concepts: `buffer`, `window`, `onBackpressureDrop`, `onBackpressureBuffer`.
-- [ ] **MINI-PROJECT 1: Reactive Local File Processor**
-  - Objective: Read, transform, and write large files asynchronously without OutOfMemory errors using Project Reactor.
+- [ ] **LAB-010: Testing & Debugging Matrix**
+  - Concepts: Advanced `StepVerifier`, `PublisherProbe`, `Hooks.onOperatorDebug`, Reactor Context.
 
 ## Level 3: Enterprise Reactive Services (Spring WebFlux)
 Focus: Building non-blocking, high-performance REST APIs and microservices.
 
 - [ ] **LAB-011: Reactive Web with Spring WebFlux**
-  - Concepts: Annotated Controllers vs Functional Endpoints (`RouterFunction`).
+  - Concepts: Annotated Controllers vs Functional Endpoints (`RouterFunction`), Server-Sent Events (SSE), Streaming JSON.
 - [ ] **LAB-012: WebClient: Orchestrating Downstream Services**
-  - Concepts: `retrieve()` vs `exchange()`. Combining multiple service calls non-blockingly.
+  - Concepts: `retrieve()` vs `exchange()`, non-blocking HTTP calls, zip/flatmap for service orchestration.
 - [ ] **LAB-013: Error Handling & Resilience in WebFlux**
-  - Concepts: Global Error Handlers, `onErrorReturn`, `onErrorResume`, `retry`, `timeout`.
+  - Concepts: Global Error Handlers, `onErrorReturn`, `onErrorResume`, `retry`, `timeout` at the web layer.
 - [ ] **LAB-014: Reactive Persistence with R2DBC**
-  - Concepts: Non-blocking DB drivers. Connection pooling and Spring Data R2DBC.
+  - Concepts: Non-blocking DB drivers, Connection Pooling in R2DBC, Spring Data R2DBC repositories.
 - [ ] **LAB-015: Reactive Context & Tracing Propagation**
-  - Concepts: `Reactor Context`. Propagating MDC and Security state in reactive pipelines.
-- [ ] **MINI-PROJECT 2: Reactive CRUD Microservice**
-  - Objective: Build a complete Spring WebFlux microservice with R2DBC and secured endpoints.
+  - Concepts: `Reactor Context`, Propagating MDC (Logging) and Security state across reactive threads.
 
 ## Level 4: Resilient & Event-Driven Systems
 Focus: Production-grade patterns, observability, and integrating with streaming platforms.
 
-- [ ] **LAB-016: The Testing Matrix: Unit & Integration**
-  - Concepts: `StepVerifier` deep-dive, `PublisherProbe`, and `WebTestClient`.
-- [ ] **LAB-017: Observability & Debugging Reactive Streams**
-  - Concepts: Micrometer Observation, Tracing (Zipkin/Jaeger), `Hooks.onOperatorDebug`.
-- [ ] **LAB-018: Advanced Resilience Patterns**
-  - Concepts: Resilience4j Circuit Breakers, Bulkheads, and Rate Limiters with Spring WebFlux.
-- [ ] **LAB-019: Reactive Messaging with Apache Kafka**
-  - Concepts: Reactor Kafka. Consuming and producing event streams non-blockingly.
+- [ ] **LAB-016: Advanced Resilience Patterns (Resilience4j)**
+  - Concepts: Circuit Breakers, Bulkheads, Rate Limiters, and Time Limiters integrated with Reactor.
+- [ ] **LAB-017: Observability & Tracing (Zipkin/Jaeger)**
+  - Concepts: Micrometer Observation, Distributed Tracing, Span propagation in non-blocking pipelines.
+- [ ] **LAB-018: Reactive Messaging with Apache Kafka**
+  - Concepts: Reactor Kafka, non-blocking Producer/Consumer, backpressure-aware message processing.
 
-## Level 5: The New Frontier & Extras
-Focus: Modern Java concurrency comparisons and alternative reactive frameworks.
+## Level 5: The New Frontier & Final Project
+Focus: Modern Java concurrency comparisons and consolidation in a real-world architecture.
 
-- [ ] **LAB-020: Modern Concurrency: Virtual Threads vs Reactive Streams**
-  - Concepts: Project Loom vs Project Reactor. Performance benchmarks and use-cases.
-- [ ] **LAB-021: Alternative Frameworks: Quarkus Mutiny (Extra)**
-  - Concepts: `Uni` & `Multi`. Quarkus reactive ecosystem.
+- [ ] **LAB-019: Modern Concurrency: Virtual Threads vs Reactive Streams**
+  - Concepts: Project Loom (Virtual Threads) vs Project Reactor. Performance benchmarks and decision matrix.
+- [ ] **LAB-020: Alternative Frameworks: Quarkus Mutiny**
+  - Concepts: The `Uni` and `Multi` pattern, Quarkus reactive ecosystem vs Spring WebFlux.
 - [ ] **CAPSTONE PROJECT: Event-Driven Reactive Architecture**
-  - Objective: Orchestrate multiple microservices using Spring WebFlux, R2DBC, and Kafka.
+  - Objective: Build a distributed system with WebFlux, R2DBC, and Kafka handling high throughput.
 
 ---
-**Version**: 0.3.0 | **Author**: Reactive Lab Engineer
+**Version**: 0.5.0 | **Author**: MeloStudy

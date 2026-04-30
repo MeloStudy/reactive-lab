@@ -4,33 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.reactivelab</groupId>
+    <parent>
+        <groupId>com.reactivelab</groupId>
+        <artifactId>reactive-lab-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
     <artifactId>006-reactive-streams</artifactId>
     <version>1.0-SNAPSHOT</version>
-
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <reactive-streams.version>1.0.4</reactive-streams.version>
-        <junit.version>5.10.0</junit.version>
-        <assertj.version>3.24.2</assertj.version>
-        <testng.version>7.7.0</testng.version>
-    </properties>
+    <packaging>jar</packaging>
 
     <dependencies>
         <!-- Reactive Streams Specification -->
         <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
-            <version>${reactive-streams.version}</version>
         </dependency>
 
         <!-- Reactive Streams TCK -->
         <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams-tck</artifactId>
-            <version>${reactive-streams.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -38,19 +33,16 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -58,7 +50,6 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

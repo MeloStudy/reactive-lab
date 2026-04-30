@@ -28,7 +28,7 @@ setup: check-lab
 
 test: check-lab
 	@echo "=> Running tests for LAB-$(LAB)..."
-	@$(PWSH) "$$labDir = Get-ChildItem -Path labs -Filter '$(LAB)-*' | Select-Object -ExpandProperty FullName; if (Test-Path \"$$labDir\package.json\") { npm test --workspace=$$labDir } elseif (Test-Path \"$$labDir\pom.xml\") { cd $$labDir; mvn test } else { echo 'No test engine (npm/maven) found.' }"
+	@$(PWSH) "$$labDir = Get-ChildItem -Path labs -Filter '$(LAB)-*' | Select-Object -ExpandProperty FullName; if (Test-Path \"$$labDir\pom.xml\") { cd $$labDir; mvn test } else { echo 'No Maven project (pom.xml) found for this lab.' }"
 
 clean: check-lab
 	@echo "=> Tearing down LAB-$(LAB)..."

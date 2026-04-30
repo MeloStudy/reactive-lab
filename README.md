@@ -35,18 +35,20 @@ Each folder in `labs/` is an independent module. Follow the instructions in the 
 
 ### Standard Commands
 
-We provide a `Makefile` at the root to simplify common tasks:
+We provide a multi-module Maven structure. You can run commands from the root for all labs or focus on a specific one:
 
 ```bash
-# Setup infrastructure for a lab
-make setup LAB=001
+# Compile and install all labs
+mvn clean install
 
-# Run validation tests
-make test LAB=001
+# Run tests for a specific lab
+mvn test -pl labs/006-reactive-streams
 
-# Cleanup environment
-make clean LAB=001
+# Run tests for all labs
+mvn test
 ```
+
+We also provide a `Makefile` at the root as a shortcut for common tasks:
 
 ## 🤖 Agent Workflows
 

@@ -17,7 +17,7 @@ Focus: Understanding the 'Why', The Reactive Manifesto, and the Observer Pattern
 ## Level 2: The JVM Reactive Core (Java 21 & Project Reactor)
 Focus: Transitioning to Java, strong typing, and mastering the Reactive Streams Specification (Publisher/Subscriber).
 
-- [ ] **LAB-006: The Reactive Streams Specification & TCK**
+- [x] (AUDITED) **LAB-006: The Reactive Streams Specification & TCK** (Completed)
   - Concepts: Publisher, Subscriber, Subscription. The TCK (Technology Compatibility Kit).
 - [ ] **LAB-007: Flux & Mono Foundations**
   - Concepts: Lazy execution, immutable pipelines, factory methods.

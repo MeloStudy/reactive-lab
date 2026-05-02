@@ -1,6 +1,6 @@
-# Tasks: LAB-007: Flux & Mono Foundations
+# Tasks: LAB-002: Flux & Mono Foundations
 
-**Input**: Design documents from `/docs/specs/007-flux-mono-foundations/`
+**Input**: Design documents from `/docs/specs/002-flux-mono-foundations/`
 **Prerequisites**: plan.md, spec.md.
 
 **Validation Goal**: Ensure the learner can distinguish between assembly and execution and correctly use the fluent API of Project Reactor.

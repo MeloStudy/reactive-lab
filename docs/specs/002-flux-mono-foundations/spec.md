@@ -1,9 +1,9 @@
-# Lab Specification: LAB-007: Flux & Mono Foundations
+# Lab Specification: LAB-002: Flux & Mono Foundations
 
-**Feature Branch**: `007-flux-mono-foundations`
+**Feature Branch**: `002-flux-mono-foundations`
 **Created**: 2026-04-30
 **Status**: Audited
-**Syllabus Section**: Level 2: The JVM Reactive Core (Java 21 & Project Reactor)
+**Syllabus Section**: Level 1: Foundations (Project Reactor)
 
 ## Syllabus Alignment *(mandatory)*
 

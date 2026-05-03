@@ -15,6 +15,7 @@
     <modules>
         <module>labs/002-reactive-streams</module>
         <module>labs/003-flux-mono-foundations</module>
+        <module>labs/004-subscriptions-lifecycle</module>
     </modules>
 
     <properties>

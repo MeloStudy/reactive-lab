@@ -11,7 +11,7 @@ Focus: Shifting the mindset and mastering the core building blocks of reactive p
   - Concepts: Publisher, Subscriber, Subscription. Compliance with the TCK rules.
 - [x] (AUDITED) **LAB-003: Flux & Mono Foundations**
   - Concepts: Cardinality (0..1 vs 0..N), Lazy Execution, Pipeline Immutability, StepVerifier basics.
-- [ ] (READY) **LAB-004: Subscriptions & Lifecycle Control**
+- [x] (AUDITED) **LAB-004: Subscriptions & Lifecycle Control**
   - Concepts: `subscribe()`, `Disposable`, `BaseSubscriber`. Handling the stream lifecycle and cancellations.
 - [ ] **LAB-005: Essential Transformation Operators**
   - Concepts: `map`, `filter`, `flatMap`, `concatMap`, `switchMap` foundations.

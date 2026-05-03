@@ -2,8 +2,6 @@ package com.reactivelab.foundations;
 
 import reactor.core.publisher.Flux;
 
-import java.util.List;
-
 /**
  * Demonstrates the Immutability of Project Reactor pipelines.
  * Each operator returns a NEW instance.
@@ -23,7 +21,7 @@ public class ImmutablePipeline {
      */
     public Flux<Integer> attemptMutation(Flux<Integer> source) {
         // This does nothing to 'source' because Flux is immutable
-        source.map(n -> n * 10); 
+        source.map(n -> n * 10);
         return source;
     }
 

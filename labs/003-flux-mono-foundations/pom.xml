@@ -12,7 +12,6 @@
     </parent>
 
     <artifactId>003-flux-mono-foundations</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>

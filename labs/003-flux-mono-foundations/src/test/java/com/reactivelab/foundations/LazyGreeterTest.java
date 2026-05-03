@@ -13,7 +13,7 @@ public class LazyGreeterTest {
     @Test
     void shouldNotExecuteSideEffectUntilSubscription() {
         AtomicInteger callCount = new AtomicInteger(0);
-        
+
         LazyGreeter greeter = new LazyGreeter(() -> {
             callCount.incrementAndGet();
             return "Hello Reactive World!";
@@ -24,18 +24,18 @@ public class LazyGreeterTest {
 
         // ASSERT: Prove the "Lazy" nature. Assembly != Execution.
         assertThat(callCount.get())
-            .as("Side effect should not happen at assembly time")
-            .isEqualTo(0);
+                .as("Side effect should not happen at assembly time")
+                .isEqualTo(0);
 
         // SUBSCRIPTION TIME: This is what triggers the upstream demand.
         StepVerifier.create(greetingMono)
-            .expectNext("Hello Reactive World!") // Expect the result of the callable
-            .verifyComplete();                 // Call verify() to actually subscribe and start the flow
+                .expectNext("Hello Reactive World!") // Expect the result of the callable
+                .verifyComplete();                 // Call verify() to actually subscribe and start the flow
 
         // ASSERT: Now that subscription happened, the counter must be 1.
         assertThat(callCount.get())
-            .as("Side effect should happen exactly once after subscription")
-            .isEqualTo(1);
+                .as("Side effect should happen exactly once after subscription")
+                .isEqualTo(1);
 
     }
 }

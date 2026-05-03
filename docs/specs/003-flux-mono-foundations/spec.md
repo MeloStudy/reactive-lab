@@ -1,6 +1,6 @@
-# Lab Specification: LAB-002: Flux & Mono Foundations
+# Lab Specification: LAB-003: Flux & Mono Foundations
 
-**Feature Branch**: `002-flux-mono-foundations`
+**Feature Branch**: `003-flux-mono-foundations`
 **Created**: 2026-04-30 | **Refined**: 2026-05-02
 **Status**: Audited (Refined v1.0.1)
 
@@ -9,7 +9,7 @@
 ## Syllabus Alignment *(mandatory)*
 
 - **Concept**: Introduction to Project Reactor's core types (Flux & Mono), lazy execution, and factory methods.
-- **Prerequisites**: LAB-006: The Reactive Streams Specification & TCK.
+- **Prerequisites**: LAB-002: The Reactive Streams Specification & TCK.
 - **Learning Objectives**:
   - LO-001: Distinguish between `Mono<T>` (0-1) and `Flux<T>` (0-N) signal semantics.
   - LO-002: Verify the "Lazy Execution" principle: Nothing happens until you subscribe.
@@ -81,5 +81,5 @@ The learner will create several streams using different factory methods to handl
 ## Assumptions
 
 - Learner understands basic Java 21 syntax.
-- Learner has completed the Reactive Streams Specification lab (LAB-006).
+- Learner has completed the Reactive Streams Specification lab (LAB-002).
 - Maven and JDK 21 are installed.

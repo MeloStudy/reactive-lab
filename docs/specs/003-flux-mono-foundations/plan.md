@@ -1,14 +1,14 @@
-# Implementation Plan: LAB-002: Flux & Mono Foundations
+# Implementation Plan: LAB-003: Flux & Mono Foundations
 
-**Branch**: `002-flux-mono-foundations` | **Date**: 2026-04-30
-**Input**: Specification from `/docs/specs/002-flux-mono-foundations/spec.md`
+**Branch**: `003-flux-mono-foundations` | **Date**: 2026-04-30
+**Input**: Specification from `/docs/specs/003-flux-mono-foundations/spec.md`
 
 ## Summary
 
-The learner will transition from the raw Reactive Streams interfaces (LAB-006) to the high-level Project Reactor abstractions: `Flux` and `Mono`. This lab focuses on the "Passive Assembly" and "Active Subscription" phases, emphasizing that a reactive pipeline is an immutable blueprint until it is activated.
+The learner will transition from the raw Reactive Streams interfaces (LAB-003) to the high-level Project Reactor abstractions: `Flux` and `Mono`. This lab focuses on the "Passive Assembly" and "Active Subscription" phases, emphasizing that a reactive pipeline is an immutable blueprint until it is activated.
 
 ## Phase 1: Java Project Scaffolding
-1. **Scaffold**: Create a Maven-based Java structure in `labs/002-flux-mono-foundations`.
+1. **Scaffold**: Create a Maven-based Java structure in `labs/003-flux-mono-foundations`.
 2. **Dependencies**: 
    - `projectreactor:reactor-core`
    - `projectreactor:reactor-test` (for StepVerifier)

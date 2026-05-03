@@ -1,4 +1,4 @@
-# Implementation Plan: LAB-006: The Reactive Streams Specification & TCK
+# Implementation Plan: LAB-002: The Reactive Streams Specification & TCK
 
 ## Phase 1: Environment & Project Setup
 1. Create a Maven `pom.xml` in the lab directory.

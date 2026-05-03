@@ -1,4 +1,4 @@
-# LAB-002: Flux & Mono Foundations
+# LAB-003: Flux & Mono Foundations
 
 Welcome to your first deep-dive into Project Reactor! In this lab, you will move beyond the raw Interfaces of Reactive Streams and learn to use the powerful abstractions: **Flux** and **Mono**.
 

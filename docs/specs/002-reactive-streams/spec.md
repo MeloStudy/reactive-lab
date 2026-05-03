@@ -1,6 +1,6 @@
-# Lab Specification: LAB-006: The Reactive Streams Specification & TCK
+# Lab Specification: LAB-002: The Reactive Streams Specification & TCK
 
-**Feature Branch**: `006-reactive-streams`
+**Feature Branch**: `002-reactive-streams`
 **Created**: 2026-04-30
 **Status**: AUDITED
 **Syllabus Section**: Level 2: The JVM Reactive Core (Java 21 & Project Reactor)

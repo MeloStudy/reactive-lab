@@ -1,4 +1,4 @@
-# Tasks: LAB-006: The Reactive Streams Specification & TCK
+# Tasks: LAB-002: The Reactive Streams Specification & TCK
 
 **Validation Goal**: Ensure the learner can implement a spec-compliant Publisher and validate it using the official TCK.
 
@@ -29,5 +29,5 @@
 - [x] T015 Move `CustomSubscriber` to `src/main/java` (Core LO).
 - [x] T016 Deepen `CONCEPT.md` with official specification rules and TCK architecture.
 - [x] T017 Add "Reference Documentation" and "TCK Failure Analysis" to `README.md`.
-- [x] T018 Verify that all instructions use the correct lab slug (`006-reactive-streams`).
+- [x] T018 Verify that all instructions use the correct lab slug (`002-reactive-streams`).
 - [x] T019 Re-run full test suite and TCK to ensure package move didn't break anything.

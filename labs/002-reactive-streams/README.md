@@ -1,4 +1,4 @@
-# LAB-006: The Reactive Streams Specification & TCK
+# LAB-002: The Reactive Streams Specification & TCK
 
 Welcome to the foundation of modern reactive programming on the JVM. In this lab, you will step away from high-level libraries like Project Reactor and build your own **Publisher** and **Subscriber** from scratch using the raw Reactive Streams interfaces.
 

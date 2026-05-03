@@ -7,24 +7,24 @@ Focus: Shifting the mindset and mastering the core building blocks of reactive p
   - Concepts: Thinking in Streams, The Excel Analogy, The Delegation Matrix, I/O Blocking.
 - [x] (AUDITED) **LAB-001: The Reactive Manifesto & Asynchronous Paradigms**
   - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Evolution: Callbacks -> Futures -> Streams.
-- [x] (AUDITED) **LAB-002: Flux & Mono Foundations**
+- [x] (AUDITED) **LAB-002: The Reactive Streams Specification & TCK**
+  - Concepts: Publisher, Subscriber, Subscription. Compliance with the TCK rules.
+- [x] (AUDITED) **LAB-003: Flux & Mono Foundations**
   - Concepts: Cardinality (0..1 vs 0..N), Lazy Execution, Pipeline Immutability, StepVerifier basics.
-- [ ] **LAB-003: Subscriptions & Lifecycle Control**
+- [ ] (READY) **LAB-004: Subscriptions & Lifecycle Control**
   - Concepts: `subscribe()`, `Disposable`, `BaseSubscriber`. Handling the stream lifecycle and cancellations.
-- [ ] **LAB-004: Essential Transformation Operators**
+- [ ] **LAB-005: Essential Transformation Operators**
   - Concepts: `map`, `filter`, `flatMap`, `concatMap`, `switchMap` foundations.
-- [ ] **LAB-005: Combining & Basic Error Handling**
+- [ ] **LAB-006: Combining & Basic Error Handling**
   - Concepts: `merge`, `concat`, `zip`. Basic `onErrorResume` and `retry`.
 
 ## Level 2: The Core Spec & Advanced Control
 Focus: Deep dive into internal mechanics, flow control, and multi-threading.
 
-- [x] (AUDITED) **LAB-006: The Reactive Streams Specification & TCK**
-  - Concepts: Publisher, Subscriber, Subscription. Compliance with the TCK rules.
-- [ ] **LAB-007: Programmatic Stream Generation**
-  - Concepts: `Sinks.Many`, `Sinks.One`. Manual control with `Flux.create` vs `Flux.generate`.
-- [ ] **LAB-008: Threading Models & Schedulers**
+- [ ] **LAB-007: Threading Models & Schedulers**
   - Concepts: `publishOn` vs `subscribeOn`. The Event Loop vs Parallel thread pools.
+- [ ] **LAB-008: Programmatic Stream Generation**
+  - Concepts: `Sinks.Many`, `Sinks.One`. Manual control with `Flux.create` vs `Flux.generate`.
 - [ ] **LAB-009: Backpressure Strategies & Flow Control**
   - Concepts: `buffer`, `window`, `onBackpressureDrop`, `onBackpressureBuffer`.
 - [ ] **LAB-010: Testing & Debugging Matrix**
@@ -65,4 +65,4 @@ Focus: Modern Java concurrency comparisons and consolidation in a real-world arc
   - Objective: Build a distributed system with WebFlux, R2DBC, and Kafka handling high throughput.
 
 ---
-**Version**: 0.5.0 | **Author**: MeloStudy
+**Version**: 0.6.0 | **Author**: MeloStudy

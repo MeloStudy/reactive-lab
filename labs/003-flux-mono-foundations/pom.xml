@@ -11,21 +11,21 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>006-reactive-streams</artifactId>
+    <artifactId>003-flux-mono-foundations</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
-        <!-- Reactive Streams Specification -->
+        <!-- Project Reactor Core -->
         <dependency>
-            <groupId>org.reactivestreams</groupId>
-            <artifactId>reactive-streams</artifactId>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
         </dependency>
 
-        <!-- Reactive Streams TCK -->
+        <!-- Project Reactor Test -->
         <dependency>
-            <groupId>org.reactivestreams</groupId>
-            <artifactId>reactive-streams-tck</artifactId>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -45,13 +45,6 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Required for TCK -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -60,13 +53,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.support</groupId>
-                        <artifactId>testng-engine</artifactId>
-                        <version>1.0.1</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

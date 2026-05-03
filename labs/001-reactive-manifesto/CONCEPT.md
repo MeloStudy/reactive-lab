@@ -24,12 +24,12 @@ graph TD
     E --> E1["Asynchronous boundary between components"]
 ```
 
-| Pillar | Engineering "Why" |
-| :--- | :--- |
-| **Responsiveness** | High availability and user trust. |
-| **Resilience** | System survivability. Errors are signals, not crashes. |
-| **Elasticity** | Resource efficiency. Handling bursts via flow control (Backpressure). |
-| **Message Driven** | Loose coupling. Producers don't need to know who the consumers are. |
+| Pillar | Engineering "Why" | Real-World Java Example |
+| :--- | :--- | :--- |
+| **Responsiveness** | High availability and user trust. | A WebFlux service returning a stream of search results instantly, rather than waiting for the entire set. |
+| **Resilience** | System survivability. Errors are signals, not crashes. | Using `onErrorResume` to return a cached value when a downstream microservice is down. |
+| **Elasticity** | Resource efficiency. Handling bursts via flow control. | A stream that drops non-essential logging events when the CPU is under heavy load (Backpressure). |
+| **Message Driven** | Loose coupling. Asynchronous boundaries. | Decoupling the ingestion of user uploads from the heavy processing (OCR/Compression) using a message queue. |
 
 ## 3. The Evolution of Asynchrony in the JVM
 | Paradigm | Model | Multi-value? | Termination |

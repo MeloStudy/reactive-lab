@@ -29,6 +29,33 @@ Read the [CONCEPT.md](./CONCEPT.md) for a deep dive into these pillars:
 ## 🧪 What's Next?
 This lab focuses on the theoretical foundation of the Manifesto. In the next modules, we will start implementing these concepts using **Project Reactor**.
 
+## 📝 Manifesto Check (Self-Assessment)
+
+Test your understanding of the Reactive Manifesto pillars and async evolution:
+
+1. **Responsiveness vs. Resilience**: If a system is fast but crashes permanently when a single database node goes down, which pillar is it violating?
+   <details>
+   <summary>💡 View Answer</summary>
+   It is violating **Resilience**. A resilient system must stay responsive even in the face of failure, typically through replication, isolation, and delegation.
+   </details>
+
+2. **The Elasticity Trigger**: What is the mechanism used in Reactive Streams to ensure that a "Fast Producer" doesn't overwhelm a "Slow Consumer"?
+   <details>
+   <summary>💡 View Answer</summary>
+   **Backpressure** (or Flow Control). It allows the subscriber to signal the publisher how much data it is ready to process, preventing buffer overflows and out-of-memory errors.
+   </details>
+
+3. **Futures vs. Streams**: Why is a `CompletableFuture<List<User>>` less "reactive" than a `Flux<User>`?
+   <details>
+   <summary>💡 View Answer</summary>
+   A `CompletableFuture` is **all-or-nothing** (it emits one signal when the whole list is ready). A `Flux` is a **stream** (it can emit users one by one as they arrive), allowing for better responsiveness and lower memory usage.
+   </details>
+
+4. **The Message Driven Boundary**: Why does the Reactive Manifesto emphasize "Message-Driven" rather than "Event-Driven"?
+   <details>
+   <summary>💡 View Answer</summary>
+   Messages have a specific **destination**, whereas events are things that happened. Message-passing allows for location transparency, better isolation, and explicit backpressure between components.
+   </details>
+
 ---
-## Technical Deep-Dive
-Read the [CONCEPT.md](./CONCEPT.md) for a rigorous engineering deep-dive into the Reactive Pillars and the transition from blocking to non-blocking architectures.
+**Next Step**: Once you've mastered the manifesto, move to [LAB-002: The Reactive Streams Specification](../002-reactive-streams/README.md).

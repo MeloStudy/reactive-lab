@@ -3,7 +3,7 @@
 **Feature Branch**: `001-reactive-manifesto`
 **Created**: 2026-04-30
 **Status**: Audited
-**Syllabus Section**: Level 1: The Reactive Mindset & Foundations (Node.js & RxJS)
+**Syllabus Section**: Level 1: The Reactive Mindset & Foundations (Project Reactor)
 
 ## Syllabus Alignment *(mandatory)*
 
@@ -12,16 +12,16 @@
 - **Learning Objectives**:
   - LO-001: Define and identify the 4 pillars of the Reactive Manifesto in a system architecture.
   - LO-002: Contrast Callbacks, Promises, and Observables as evolution of asynchronous handling.
-  - LO-003: Implement a basic RxJS Observable that emits multiple values over time.
-  - LO-004: Contrast the Event Loop execution model with the traditional Blocking Thread model to justify the reactive approach.
+  - LO-003: Understand the lifecycle of a Reactive Stream (onNext, onError, onComplete).
+  - LO-004: Contrast the Event Loop execution model with the traditional Blocking Thread model (Servlet stack).
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
 ### Scenario 1 - The Pillars of Reactive Systems (Priority: P1)
 
-The learner will be presented with a "broken" asynchronous system (using basic callbacks) that fails under load or errors. They must identify which Reactive pillar is missing and refactor a small snippet to use Message-Driven principles to improve Resilience.
+The learner will be presented with a "broken" asynchronous system (conceptual) that fails under load or errors. They must identify which Reactive pillar is missing and explain how a Message-Driven approach improves Resilience.
 
-**Validation (Automated Test)**: Jest test verifying that the refactored logic handles errors without crashing the main process (Resilience) and responds within a timeout (Responsiveness).
+**Validation**: Conceptual walkthrough identifying architectural gaps.
 
 **Acceptance Scenarios**:
 
@@ -29,19 +29,19 @@ The learner will be presented with a "broken" asynchronous system (using basic c
 
 ---
 
-### Scenario 2 - From Single to Multiple: Promises vs Observables (Priority: P1)
+### Scenario 2 - From Single to Multiple: Futures vs Streams (Priority: P1)
 
-The learner will refactor a data fetcher that currently uses a Promise (returning one value) to an RxJS Observable (returning a stream of progress updates + final data).
+The learner will differentiate between a `CompletableFuture` (returning one value) and a `Flux` (returning a stream of items over time).
 
-**Validation (Automated Test)**: Jest test using `rxjs/testing` TestScheduler or `toPromise` to verify multiple `onNext` signals before completion.
+**Validation**: Self-assessment check on cardinality and lazy execution.
 
 ---
 
 ### Scenario 3 - Visualizing Elasticity & Backpressure (Priority: P2)
 
-The learner will execute a manual script that simulates a "Fast Producer" sending a burst of messages to a "Slow Consumer". They must identify the bottleneck and observe how the system handles the overflow (simulated visual buffer).
+The learner will analyze a "Fast Producer" sending a burst of messages to a "Slow Consumer". They must identify the bottleneck and explain how Backpressure prevents system failure.
 
-**Validation (Manual)**: Execution of `src/scenarios/elasticity.js` and observation of logs showing the decoupling of production and consumption.
+**Validation**: Identification of flow control mechanisms in a reactive architecture.
 
 ---
 
@@ -55,20 +55,15 @@ The learner will execute a manual script that simulates a "Fast Producer" sendin
 
 ### Technical Requirements
 
-- **TR-001**: Lab infrastructure MUST be containerized strictly using **Docker / Docker Compose**.
-- **TR-002**: Lab README MUST provide native orchestration and execution commands (e.g., `npm test`) step-by-step.
-- **TR-003**: Lab MUST include automated validation tests (Node.js/Jest for RxJS labs).
-- **TR-004**: Reactive signals (`onNext`, `onError`, `onComplete`) MUST be explicitly validated in tests.
-- **TR-005**: Lab README MUST provide a "Command Dissection" for any new operator or CLI flag introduced.
-- **TR-006**: Theoretical context MUST be provided in a `CONCEPT.md` file.
-- **TR-007**: Lab MUST explicitly instruct "Atomic Cleanup" via native commands.
+- **TR-001**: Theoretical context MUST be provided in a `CONCEPT.md` file.
+- **TR-002**: Lab MUST include an interactive "Manifesto Check" in the README.
+- **TR-003**: All technical terms must align with Project Reactor and JVM thread models.
 
 ## Success Criteria *(measurable outcomes)*
 
-- **SC-001**: Learner successfully implements an Observable that emits progress events and a final result.
-- **SC-002**: All validation tests pass, confirming the learner understood the difference between single and multi-value streams.
+- **SC-001**: Learner correctly identifies missing pillars in a failing architecture.
+- **SC-002**: Learner successfully differentiates between a Future and a Stream.
 
 ## Assumptions
 
-- Learner understands basic JavaScript (ES6+).
-- Docker Desktop and Node.js v20+ are installed.
+- Basic understanding of Java (JDK 21).

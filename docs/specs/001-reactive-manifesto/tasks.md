@@ -1,27 +1,14 @@
-# Tasks: LAB-001: The Reactive Manifesto & Asynchronous Paradigms
+# Tasks: LAB-001 Conceptual Refinement
 
-**Input**: Design documents from `/specs/001-reactive-manifesto/`
-**Prerequisites**: plan.md (required), spec.md (required).
+## Phase 1: Conceptual Alignment
+- [x] R001 Cleanse legacy tech (RxJS/Node) from `spec.md` [spec.md](file:///d:/repos/reactive-lab/docs/specs/001-reactive-manifesto/spec.md)
+- [x] R002 Cleanse `plan.md` of implementation steps [plan.md](file:///d:/repos/reactive-lab/docs/specs/001-reactive-manifesto/plan.md)
+- [x] R003 Identify key "Manifesto" scenarios for Java comparison.
 
-**Validation Goal**: This project follows strict "TDD for Learning" (Test-Driven Learning). The automated tests (Jest) MUST ensure exactly what the README teaches.
+## Phase 2: Content Refinement
+- [x] R004 Enhance `CONCEPT.md` with Java/Spring examples for the 4 Pillars [CONCEPT.md](file:///d:/repos/reactive-lab/labs/001-reactive-manifesto/CONCEPT.md)
+- [x] R005 Update `README.md` with the "Manifesto Check" Quiz [README.md](file:///d:/repos/reactive-lab/labs/001-reactive-manifesto/README.md)
 
-## Phase 1: Setup & Manual Observability
-- [x] T001 Scaffold `src/scenarios/` directory.
-- [x] T002 Implement `src/scenarios/manifesto.js` (Manual Runner for Scenario 1).
-- [x] T003 Implement `src/scenarios/paradigms.js` (Manual Runner for Scenario 2).
-- [x] T004 Implement `src/scenarios/elasticity.js` (Manual Runner for Scenario 3).
-
-## Phase 2: Validation Framework Upgrade (TDD)
-- [x] T005 Refactor `tests/scenario-2.test.js` to use `rxjs/testing` TestScheduler.
-- [x] T006 Write Jest tests for Scenario 3 (Elasticity validation).
-- [x] T007 Ensure all tests provide clear comments on validation logic.
-
-## Phase 3: Educational Deep-Dive (High Rigor)
-- [x] T008 Rewrite `CONCEPT.md` with Event Loop details and Mermaid diagrams.
-- [x] T009 Update `README.md` to emphasize the "Manual Execution" first path.
-- [x] T010 Add **Command Dissection** for new concepts/operators introduced.
-
-## Phase 4: Final Certification
-- [x] T011 Verify all manual scripts run with `node src/scenarios/XXX.js`.
-- [x] T012 Verify all automated tests pass with `npm test`.
-- [x] T013 Perform final "Learner Journey" audit.
+## Phase 3: Final Audit
+- [x] R006 Final status update to `AUDITED` in Spec and Syllabus
+- [x] R007 Perform conceptual gap audit against Constitution Article IV

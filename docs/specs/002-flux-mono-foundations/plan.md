@@ -32,10 +32,17 @@ The learner will transition from the raw Reactive Streams interfaces (LAB-006) t
 2. **README.md**: Step-by-step guide with `mvn test` commands.
 3. **Command Dissection**: Breakdown of `StepVerifier` methods and core `Flux`/`Mono` factories.
 
+## Phase 6: Refinement (Constitution v0.1.1)
+1. **Depth**: Add "Signal Anatomy" to `CONCEPT.md`.
+2. **Modernity**: Add brief Virtual Thread context to `CONCEPT.md` and `README.md`.
+3. **Pedagogy**: Enhance test code documentation for line-by-line clarity.
+
 ## Constitution Compliance Check
-- [ ] No `.sh` wrapper scripts.
-- [ ] Code comments explicitly describe what every test line validates.
-- [ ] Maven native commands used throughout.
+- [x] No `.sh` wrapper scripts.
+- [x] Code comments explicitly describe what every test line validates.
+- [x] Maven native commands used throughout.
+- [x] Modern Context (Virtual Threads) addressed.
+
 
 ## Open Questions
 - None. (Resolved: Standard JDK 21 environment is sufficient; `log()` operator reserved for later labs).

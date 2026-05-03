@@ -66,11 +66,23 @@ Reactor provides static methods to bridge imperative code or constants into the 
 
 ---
 
-## Testing with StepVerifier
+## The Signal Anatomy
 
-Testing reactive streams is difficult because they are asynchronous and signal-based. `StepVerifier` allows you to define a "script" of expectations against a Publisher.
+Reactive programming is bidirectional. Signals do not only flow "down" the pipe; the initialization signal flows "up".
 
-- `expectNext(T)`: Asserts that the next signal is `onNext` with the expected value.
-- `expectComplete()`: Asserts that the stream terminates successfully.
-- `expectError(Class)`: Asserts that the stream terminates with an exception.
-- `verify()`: Triggers the subscription and executes the assertions.
+1. **Upstream (The Demand)**: When `.subscribe()` is called, a `Subscription` request travels from the bottom of the chain to the top. This is where backpressure starts.
+2. **Downstream (The Data)**: Items (`onNext`), Completion (`onComplete`), or Errors (`onError`) flow from the source down to the subscriber.
+
+Understanding this flow is crucial for debugging complex pipelines.
+
+---
+
+## Modern Context: Virtual Threads (Project Loom)
+
+In Java 21+, **Virtual Threads** allow you to write blocking code that is extremely scalable. You might wonder: *"Why use Project Reactor if I can just block a Virtual Thread?"*
+
+- **Project Reactor** is about **composing streams**, handling time-based events, and sophisticated error recovery.
+- **Virtual Threads** are about **scaling blocking I/O** without the memory overhead of platform threads.
+
+In this lab, we use `Mono.fromCallable()` to bridge blocking code into the reactive world. This is a common pattern for integrating legacy libraries or heavy computations into a non-blocking architecture. We will explore the performance trade-offs in **LAB-019**.
+

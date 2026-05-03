@@ -1,4 +1,4 @@
-# LAB-007: Flux & Mono Foundations
+# LAB-002: Flux & Mono Foundations
 
 Welcome to your first deep-dive into Project Reactor! In this lab, you will move beyond the raw Interfaces of Reactive Streams and learn to use the powerful abstractions: **Flux** and **Mono**.
 
@@ -20,6 +20,9 @@ Run the following command to see the lazy execution test in action:
 ```bash
 mvn test -Dtest=LazyGreeterTest
 ```
+
+> [!NOTE]
+> **Modern Context**: Even with the advent of **Virtual Threads** in Java 21, `Mono.fromCallable` remains a vital tool for orchestrating asynchronous workflows and integrating existing blocking logic into reactive pipelines.
 
 ### Command Dissection: `Mono.fromCallable()`
 ```bash
@@ -48,6 +51,13 @@ flux.map(n -> n * 10)
 - **Input**: A `Flux<Integer>`.
 - **Output**: A **NEW** `Flux<Integer>` instance.
 - **Why**: Immutability makes reactive pipelines thread-safe and predictable. Always chain your operators!
+
+### Command Dissection: `Flux.just()`
+```bash
+Flux.just("A", "B", "C")
+```
+- **Flux**: Represents a sequence of 0 to N items.
+- **just**: A factory method that captures fixed values at assembly time. It is **eager** regarding its arguments, but the emission is still lazy.
 
 ---
 
@@ -79,3 +89,7 @@ To clean the build artifacts, run:
 ```bash
 mvn clean
 ```
+
+---
+**Status**: AUDITED | **Curriculum Version**: 1.0.1
+

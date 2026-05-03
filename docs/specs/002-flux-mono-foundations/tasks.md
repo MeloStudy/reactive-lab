@@ -31,3 +31,11 @@
 - [x] T013 Verify all tests pass with `mvn test`.
 - [x] T014 Ensure compliance with the Reactive Lab Constitution.
 - [x] T015 Perform the "Learner Journey" walkthrough.
+
+## Phase 7: Refinement (Constitution v0.1.1)
+- [x] T016 Add "Signal Anatomy" to `CONCEPT.md`.
+- [x] T017 Add "Modern Java Note: Virtual Threads" to `CONCEPT.md` and `README.md`.
+- [x] T018 Enhance all test files with line-by-line pedagogical comments.
+- [x] T019 Re-run all tests and certify.
+
+

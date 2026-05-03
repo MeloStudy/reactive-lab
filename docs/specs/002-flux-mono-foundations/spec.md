@@ -1,8 +1,9 @@
 # Lab Specification: LAB-002: Flux & Mono Foundations
 
 **Feature Branch**: `002-flux-mono-foundations`
-**Created**: 2026-04-30
-**Status**: Audited
+**Created**: 2026-04-30 | **Refined**: 2026-05-02
+**Status**: Audited (Refined v1.0.1)
+
 **Syllabus Section**: Level 1: Foundations (Project Reactor)
 
 ## Syllabus Alignment *(mandatory)*
@@ -60,6 +61,7 @@ The learner will create several streams using different factory methods to handl
 - **EX-002**: **Lazy Execution**: The assembly-time vs execution-time distinction.
 - **EX-003**: **Immutability**: Why `flux.map(...)` doesn't change `flux`.
 - **EX-004**: **Assembly vs Subscription**: Understanding that the pipeline is a "blueprint".
+- **EX-005**: **Modern Context**: Understanding the role of Project Reactor in the era of Java 21+ Virtual Threads.
 
 ### Technical Requirements
 

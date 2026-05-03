@@ -19,22 +19,23 @@ public class LazyGreeterTest {
             return "Hello Reactive World!";
         });
 
-        // ASSEMBLY TIME
+        // ASSEMBLY TIME: The greetingMono is created, but the lambda hasn't run.
         Mono<String> greetingMono = greeter.getGreeting();
 
-        // ASSERT: No side effect happened yet
+        // ASSERT: Prove the "Lazy" nature. Assembly != Execution.
         assertThat(callCount.get())
             .as("Side effect should not happen at assembly time")
             .isEqualTo(0);
 
-        // SUBSCRIPTION TIME
+        // SUBSCRIPTION TIME: This is what triggers the upstream demand.
         StepVerifier.create(greetingMono)
-            .expectNext("Hello Reactive World!")
-            .verifyComplete();
+            .expectNext("Hello Reactive World!") // Expect the result of the callable
+            .verifyComplete();                 // Call verify() to actually subscribe and start the flow
 
-        // ASSERT: Side effect happened exactly once after subscription
+        // ASSERT: Now that subscription happened, the counter must be 1.
         assertThat(callCount.get())
             .as("Side effect should happen exactly once after subscription")
             .isEqualTo(1);
+
     }
 }

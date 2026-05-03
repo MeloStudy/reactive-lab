@@ -41,4 +41,22 @@ public class StreamFactoriesTest {
             .verify(); // verify() is used instead of verifyComplete() because the stream terminates with error.
     }
 
+    @Test
+    void shouldFailOnResubscribingToJavaStream() {
+        // Standard Java Streams can only be consumed ONCE. 
+        // Reactive Flux created from them inherits this limitation.
+        java.util.stream.Stream<String> javaStream = List.of("One").stream();
+        reactor.core.publisher.Flux<String> flux = factories.fromJavaStream(javaStream);
+
+        // First subscription works fine
+        StepVerifier.create(flux)
+            .expectNext("One")
+            .verifyComplete();
+
+        // Second subscription MUST fail because the underlying Java stream is closed
+        StepVerifier.create(flux)
+            .expectError(IllegalStateException.class)
+            .verify();
+    }
+
 }

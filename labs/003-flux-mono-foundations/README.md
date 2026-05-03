@@ -90,6 +90,36 @@ To clean the build artifacts, run:
 mvn clean
 ```
 
+This lab focuses on the core types of Project Reactor. In the next modules, we will explore more advanced operators and lifecycle control.
+
+## 📝 Foundations Check (Self-Assessment)
+
+Test your knowledge of the core Project Reactor foundations:
+
+1. **Choosing the Type**: If you are implementing a `findById(id)` method in a repository, which type should you return? `Flux<User>` or `Mono<User>`?
+   <details>
+   <summary>💡 View Answer</summary>
+   You should return **`Mono<User>`**. Since a primary key lookup returns at most one record, `Mono` correctly communicates the cardinality (0-1) of the result.
+   </details>
+
+2. **The Lazy Task**: You create a `Mono` using `Mono.fromCallable(() -> deleteEverything())`. You run your application, but the database remains intact. Why?
+   <details>
+   <summary>💡 View Answer</summary>
+   Because **nothing happens until you subscribe**. If you just instantiate the `Mono` but never call `.subscribe()` (or return it to a framework that subscribes for you, like Spring WebFlux), the task is never executed.
+   </details>
+
+3. **Immutability Trap**: You write `flux.map(i -> i + 1)` on a separate line, then subscribe to the original `flux`. Will you see the incremented values?
+   <details>
+   <summary>💡 View Answer</summary>
+   **No**. Operators do not modify the original Flux. They return a **new** instance. You must either chain the operators or capture the return value: `flux = flux.map(i -> i + 1);`.
+   </details>
+
+4. **The 1-Time Stream**: What happens if you create a `Flux` from a Java 8 `Stream` using `Flux.fromStream(stream)` and then subscribe to it twice?
+   <details>
+   <summary>💡 View Answer</summary>
+   The second subscription will fail with an **`IllegalStateException`**. Unlike regular Fluxes, which can be re-subscribed to (re-running the source), a Flux backed by a Java `Stream` inherits the 1-time-use limitation of the underlying stream.
+   </details>
+
 ---
-**Status**: AUDITED | **Curriculum Version**: 1.0.1
+**Next Step**: Once you've mastered the foundations, move to [LAB-004: Subscriptions & Lifecycle Control](../004-subscriptions-lifecycle/README.md).
 

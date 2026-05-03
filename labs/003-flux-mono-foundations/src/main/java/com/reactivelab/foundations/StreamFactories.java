@@ -26,4 +26,12 @@ public class StreamFactories {
     public Flux<Object> alwaysError() {
         return Flux.error(new IllegalStateException("Boom!"));
     }
+
+    /**
+     * Demonstrates bridging a standard Java 8+ Stream into a Flux.
+     * Note: Standard Java Streams are 1-time-use, unlike Flux.
+     */
+    public <T> Flux<T> fromJavaStream(java.util.stream.Stream<T> stream) {
+        return Flux.fromStream(stream);
+    }
 }

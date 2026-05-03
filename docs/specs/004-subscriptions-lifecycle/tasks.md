@@ -32,6 +32,7 @@
 - [ ] T009 Write `CONCEPT.md` focusing on the Subscription Contract.
 - [ ] T010 Write `README.md` with step-by-step instructions.
 - [ ] T011 Add "Command Dissection" for `subscribe()`, `dispose()`, and `BaseSubscriber`.
+- [ ] T012 Add **Interactive Self-Assessment** (Quiz) to README.md.
 
 ## Phase 6: Final Audit
 - [ ] T012 Verify all tests pass with `mvn test`.

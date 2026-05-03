@@ -54,5 +54,38 @@ An abstract class provided by Reactor to make implementing custom subscribers ea
 - `hookOnNext`: Called for each item.
 - `request(n)`: The most important method for controlling demand.
 
+### `Disposables.composite()`
+Creates a container that can hold multiple `Disposable` objects. 
+- `composite.add(disposable)`: Adds a new subscription to the group.
+- `composite.dispose()`: Atomically cancels ALL subscriptions currently in the container and prevents any future additions from being active.
+
+## 📝 Lifecycle Check (Self-Assessment)
+
+Test your knowledge of Reactive Lifecycles:
+
+1. **Interruption vs Termination**: If a stream is cancelled using `dispose()`, will the `onComplete` signal be triggered?
+   <details>
+   <summary>💡 View Answer</summary>
+   **No**. `dispose()` is an asynchronous interruption (cancellation). Terminal signals (`onComplete` or `onError`) are only emitted by the Publisher when the stream finishes normally or fails.
+   </details>
+
+2. **The Lazy Firehose**: You subscribe to `Flux.interval(Duration.ofSeconds(1))` and get a `Disposable` handle. If you call `handle.dispose()` 500ms later, will you see any items?
+   <details>
+   <summary>💡 View Answer</summary>
+   **No**. The first item of `Flux.interval` is emitted after the first period (1 second). Since you cancelled at 500ms, the subscription is killed before the first emission.
+   </details>
+
+3. **Composite Responsibility**: Why use `CompositeDisposable` instead of a list of `Disposable` objects?
+   <details>
+   <summary>💡 View Answer</summary>
+   `CompositeDisposable` provides **atomic** and thread-safe cancellation. Additionally, once a composite is disposed, any new `Disposable` added to it will be automatically and immediately disposed, preventing resource leaks in race conditions.
+   </details>
+
+4. **Manual Demand**: In a `BaseSubscriber`, if you call `request(1)` in `hookOnSubscribe` but forget to call it in `hookOnNext`, what happens?
+   <details>
+   <summary>💡 View Answer</summary>
+   The stream will "hang" after the first item. You will receive exactly one `onNext` signal, and then the Publisher will wait forever for more demand that never arrives.
+   </details>
+
 ---
-**Next Lab**: [LAB-005: Error Handling & Resilience](../005-error-handling)
+**Next Lab**: [LAB-005: Error Handling & Resilience](../005-error-handling/README.md)

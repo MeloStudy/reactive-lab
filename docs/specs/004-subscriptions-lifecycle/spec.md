@@ -72,8 +72,10 @@ The learner will compare manual `dispose()` with the `take(n)` operator. They mu
 
 - **TR-001**: Use Java 21 and Project Reactor.
 - **TR-002**: All scenarios MUST be validated with `StepVerifier`.
-- **TR-003**: Custom subscribers MUST extend `BaseSubscriber`.
-- **TR-004**: Lab MUST include "Command Dissection" for `subscribe()`, `dispose()`, and `BaseSubscriber`.
+- **TR-004**: Custom `BaseSubscriber` MUST demonstrate manual `request(n)` logic.
+- **TR-005**: Lab README MUST provide a "Command Dissection" for `dispose()` and `BaseSubscriber`.
+- **TR-006**: Theoretical context MUST be provided in a `CONCEPT.md` file.
+- **TR-007**: Lab README MUST include an **Interactive Self-Assessment** section with collapsible answers to validate conceptual mastery of lifecycle and cancellation.
 
 ## Success Criteria *(measurable outcomes)*
 

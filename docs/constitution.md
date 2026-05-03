@@ -25,6 +25,7 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 - **Spec Planning**: Mandatory `spec.md`, `plan.md`, and `tasks.md` before coding.
 - **Naming Convention**: `XXX-slug-name` (e.g., `001-flux-foundations`).
 - **Native Execution**: Guide students to run `mvn test` directly in the README.
+- **Interactive Self-Assessment**: Every laboratory README MUST include a "Self-Assessment" or "Knowledge Check" section using collapsible `<details>` blocks to provide immediate pedagogical feedback.
 - **Backpressure Scenarios**: Labs involving data streams MUST explain how backpressure is handled.
 - **Testing Standard**: Labs MUST use **StepVerifier** (Project Reactor) for validating reactive sequences and signal timing.
 - **Git Hygiene**: A global `.gitignore` MUST be maintained at the root. Individual labs SHOULD NOT have local `.gitignore` files unless they have unique, non-standard dependencies.
@@ -44,4 +45,4 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 - **`IMPLEMENTED`**: Code and docs complete.
 - **`AUDITED`**: Pedagogical audit passed.
 
-**Version**: 0.1.1 | **Ratified**: 2026-04-30
+**Version**: 0.1.2 | **Ratified**: 2026-05-02

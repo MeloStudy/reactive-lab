@@ -7,6 +7,10 @@ import reactor.test.publisher.PublisherProbe;
 import java.time.Duration;
 
 public class LifecycleComparisonTest {
+    
+    public LifecycleComparisonTest() {
+        // Explicit constructor for JUnit instantiation
+    }
 
     @Test
     public void testAutomaticCancellationWithTake() {

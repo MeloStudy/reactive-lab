@@ -16,7 +16,8 @@ public class SubscriptionGroup {
     /**
      * Subscribes to multiple streams and adds them to the composite.
      */
-    public void addSubscriptions(Flux<Long>... fluxes) {
+    @SafeVarargs
+    public final void addSubscriptions(Flux<Long>... fluxes) {
         for (Flux<Long> flux : fluxes) {
             Disposable d = flux.subscribe(
                 item -> System.out.println("Group Received: " + item)

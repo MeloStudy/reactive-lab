@@ -17,6 +17,8 @@ Focus: Shifting the mindset and mastering the core building blocks of reactive p
   - Concepts: `map`, `filter`, `flatMap`, `concatMap`, `switchMap` foundations.
 - [x] (AUDITED) **LAB-006: Combining & Basic Error Handling**
   - Concepts: `merge`, `concat`, `zip`. Basic `onErrorResume` and `retry`.
+- [ ] **MINI-PROJECT-1: The Reactive Data Processor**
+  - Objective: Processing a massive dataset from a file using foundational operators and error handling.
 
 ## Level 2: The Core Spec & Advanced Control
 Focus: Deep dive into internal mechanics, flow control, and multi-threading.
@@ -43,6 +45,8 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
   - Concepts: Non-blocking DB drivers, Connection Pooling in R2DBC, Spring Data R2DBC repositories.
 - [ ] **LAB-015: Reactive Context & Tracing Propagation**
   - Concepts: `Reactor Context`, Propagating MDC (Logging) and Security state across reactive threads.
+- [ ] **MINI-PROJECT-2: The Reactive Store Microservice**
+  - Objective: Building a complete microservice with WebFlux, WebClient orchestration, and Context propagation.
 
 ## Level 4: Resilient & Event-Driven Systems
 Focus: Production-grade patterns, observability, and integrating with streaming platforms.

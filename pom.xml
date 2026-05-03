@@ -20,6 +20,7 @@
         <module>labs/006-combining-errors</module>
         <module>labs/007-threading-schedulers</module>
         <module>labs/008-programmatic-streams</module>
+        <module>projects/001-github-insights</module>
     </modules>
 
     <properties>

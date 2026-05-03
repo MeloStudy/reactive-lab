@@ -1,0 +1,9 @@
+{"type":"WatchEvent","actor":{"login":"user1"},"repo":{"name":"repo/a"}}
+{"type":"WatchEvent","actor":{"login":"user2"},"repo":{"name":"repo/a"}}
+{"type":"WatchEvent","actor":{"login":"user3"},"repo":{"name":"repo/b"}}
+{"type":"PullRequestEvent","payload":{"pull_request":{"base":{"repo":{"language":"Java"}}}},"repo":{"name":"repo/a"}}
+{"type":"PullRequestEvent","payload":{"pull_request":{"base":{"repo":{"language":"Java"}}}},"repo":{"name":"repo/b"}}
+{"type":"PullRequestEvent","payload":{"pull_request":{"base":{"repo":{"language":"Python"}}}},"repo":{"name":"repo/c"}}
+{"type":"PushEvent","payload":{"size":5},"repo":{"name":"repo/a"}}
+INVALID_JSON_LINE
+{"type":"WatchEvent","actor":{"login":"user4"},"repo":{"name":"repo/a"}}

@@ -27,13 +27,13 @@ public class HandshakeTest {
         CustomSubscriber<Integer> subscriber = new CustomSubscriber<>();
 
         publisher.subscribe(subscriber);
-        
+
         subscriber.request(3);
         assertThat(subscriber.getItems()).containsExactly(1, 2, 3);
-        
+
         subscriber.request(2);
         assertThat(subscriber.getItems()).containsExactly(1, 2, 3, 4, 5);
-        
+
         subscriber.request(10); // Requesting more than remaining
         assertThat(subscriber.getItems()).hasSize(10);
         assertThat(subscriber.isCompleted()).isTrue();
@@ -46,13 +46,13 @@ public class HandshakeTest {
         CustomSubscriber<Integer> subscriber = new CustomSubscriber<>();
 
         publisher.subscribe(subscriber);
-        
+
         subscriber.request(2);
         assertThat(subscriber.getItems()).hasSize(2);
-        
+
         subscriber.cancel();
         subscriber.request(5);
-        
+
         // After cancel, no more items should be added even with new requests
         assertThat(subscriber.getItems()).hasSize(2);
     }

@@ -46,7 +46,7 @@ public class CustomSubscriber<T> implements Subscriber<T> {
     }
 
     // Helper methods for testing
-    
+
     public void request(long n) {
         if (subscription != null) {
             subscription.request(n);

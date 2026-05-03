@@ -1,6 +1,8 @@
 package com.reactivelab.streams;
 
 import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.reactivestreams.tck.PublisherVerification;
 import org.reactivestreams.tck.TestEnvironment;
 
@@ -26,11 +28,11 @@ public class PublisherTCKTest extends PublisherVerification<Integer> {
         return new Publisher<Integer>() {
             @Override
             public void subscribe(Subscriber<? super Integer> s) {
+                if (s == null) throw new NullPointerException("Rule 1.9: Subscriber cannot be null");
                 s.onSubscribe(new Subscription() {
                     @Override
                     public void request(long n) {
-                        // Immediate failure
-                        s.onError(new RuntimeException("Rule 1.9: Failed publisher"));
+                        // No-op for failed publisher
                     }
 
                     @Override
@@ -38,6 +40,8 @@ public class PublisherTCKTest extends PublisherVerification<Integer> {
                         // No-op
                     }
                 });
+                // Immediate failure after handshake
+                s.onError(new RuntimeException("Rule 1.9: Failed publisher"));
             }
         };
     }

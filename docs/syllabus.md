@@ -15,7 +15,7 @@ Focus: Shifting the mindset and mastering the core building blocks of reactive p
   - Concepts: `subscribe()`, `Disposable`, `BaseSubscriber`. Handling the stream lifecycle and cancellations.
 - [x] (AUDITED) **LAB-005: Essential Transformation Operators**
   - Concepts: `map`, `filter`, `flatMap`, `concatMap`, `switchMap` foundations.
-- [ ] **LAB-006: Combining & Basic Error Handling**
+- [x] (AUDITED) **LAB-006: Combining & Basic Error Handling**
   - Concepts: `merge`, `concat`, `zip`. Basic `onErrorResume` and `retry`.
 
 ## Level 2: The Core Spec & Advanced Control

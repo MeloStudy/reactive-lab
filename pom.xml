@@ -32,8 +32,8 @@
         <!-- Dependency Versions -->
         <project-reactor.bom.version>2023.0.5</project-reactor.bom.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
-        <junit.version>5.10.0</junit.version>
-        <assertj.version>3.24.2</assertj.version>
+        <junit.version>5.10.1</junit.version>
+        <assertj.version>3.26.3</assertj.version>
         <testng.version>7.7.0</testng.version>
     </properties>
 

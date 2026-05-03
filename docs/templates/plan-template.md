@@ -29,6 +29,7 @@
 - [ ] No `.sh` wrapper scripts abstract the orchestration.
 - [ ] Code comments explicitly describe what every test line validates.
 - [ ] Language used across all text is explicitly English.
+- [ ] **Dependency Governance**: The module correctly inherits from the parent POM and defines NO redundant versions.
 
 ## Open Questions
 - [Any specific query for the reviewer before implementation?]

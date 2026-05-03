@@ -37,6 +37,16 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 - **Tooling**: Maven 3.9+, Docker, `curl`, `httpie`, Kafka.
 - **Language**: English.
 
+## VII. Dependency & Build Governance
+
+To ensure security, consistency, and maintainability across the laboratory ecosystem, the following build standards are MANDATORY:
+
+- **Inheritance Hierarchy**: Every lab module (located in `labs/`) MUST inherit from the root `pom.xml` using the `<parent>` tag.
+- **Centralized Dependency Management**: All common dependency versions MUST be defined in the root parent POM's `<properties>` and managed via `<dependencyManagement>`.
+- **Shadowing Prohibited**: Lab modules MUST NOT define explicit versions for dependencies that are already managed in the parent POM. Overriding parent versions is strictly prohibited unless specifically justified for experimental purposes.
+- **Security Baseline**: All libraries MUST be checked for known vulnerabilities (CVEs). Dependencies like `jackson-databind` or `assertj` MUST be kept at stable, patched versions in the parent POM.
+- **Mini-Project Isolation**: Standalone projects (located in `projects/`) MAY maintain independent POMs to simulate real-world isolation, but they MUST still adhere to the project's security and version standards (e.g. using patched versions of Jackson).
+
 ## Lab Lifecycle & Statuses
 
 - **`DRAFT`**: Initial spec in progress.
@@ -45,4 +55,4 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 - **`IMPLEMENTED`**: Code and docs complete.
 - **`AUDITED`**: Pedagogical audit passed.
 
-**Version**: 0.1.2 | **Ratified**: 2026-05-02
+**Version**: 0.2.0 | **Ratified**: 2026-05-03

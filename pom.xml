@@ -19,6 +19,7 @@
         <module>labs/005-essential-operators</module>
         <module>labs/006-combining-errors</module>
         <module>labs/007-threading-schedulers</module>
+        <module>labs/008-programmatic-streams</module>
     </modules>
 
     <properties>

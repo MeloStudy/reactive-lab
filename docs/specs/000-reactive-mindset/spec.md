@@ -2,7 +2,7 @@
 
 **Feature Branch**: `000-reactive-mindset`
 **Created**: 2026-04-30
-**Status**: Draft
+**Status**: AUDITED
 **Syllabus Section**: Level 1: The Reactive Mindset & Foundations
 
 ## Syllabus Alignment *(mandatory)*
@@ -21,9 +21,7 @@
 
 ### Scenario 1 - The Mental Model: From Variable to Stream (Priority: P1)
 
-This scenario will involve a simple comparison between a standard variable assignment and a reactive stream emission in RxJS.
-
-**Validation (Automated Test)**: A simple Node.js test (Jest) verifying that a stream emission triggers an effect, whereas a variable change (without observer) does not.
+This scenario will involve a simple conceptual comparison between a standard variable assignment and a reactive stream emission.
 
 **Acceptance Scenarios**:
 
@@ -31,11 +29,9 @@ This scenario will involve a simple comparison between a standard variable assig
 
 ---
 
-### Scenario 2 - Handling the "Unpleasant": Errors and Backpressure (Priority: P2)
-
 Show how an error in a stream is just another signal and how a "fast producer" can be managed conceptually (Backpressure) to maintain Elasticity.
 
-**Validation (Automated Test)**: Jest test verifying that an error signal (`onError`) is caught and handled without crashing the process, and a conceptual check on Backpressure.
+**Validation**: Conceptual walkthrough of signal propagation and demand management.
 
 ---
 
@@ -54,19 +50,15 @@ Show how an error in a stream is just another signal and how a "fast producer" c
     - **The Restaurant**: The Waiter (Event Loop) vs The Chef per Table (Thread-per-request).
     - **The Post Office**: Letters (Events) arriving in a mailbox (Buffer) vs a Phone Call (Blocking).
 
-### Technical Requirements
-
-- **TR-001**: Lab infrastructure must be containerized (though for this lab it might be minimal).
-- **TR-002**: Lab README MUST provide native orchestration (npm test).
-- **TR-003**: Lab MUST include automated validation tests (Node.js/Jest).
-- **TR-006**: Theoretical context MUST be provided in a `CONCEPT.md` file.
+- **TR-001**: Theoretical context MUST be provided in a `CONCEPT.md` file.
+- **TR-002**: Educational analogies MUST be consistent with JVM thread models.
+- **TR-003**: Lab MUST include a self-assessment/quiz section in the README.
 
 ## Success Criteria *(measurable outcomes)*
 
 - **SC-001**: Learner successfully differentiates between a blocking and a non-blocking sequence.
-- **SC-002**: All validation tests pass for the "Push vs Pull" and "Error handling" demonstrations.
+- **SC-002**: Learner identifies the three core signals of a reactive stream (Next, Error, Complete).
 
 ## Assumptions
 
-- Learner has basic knowledge of JavaScript/Node.js.
-- Docker and Node.js are installed.
+- Basic understanding of Java/Object-Oriented Programming.

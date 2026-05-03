@@ -22,7 +22,7 @@ In a reactive system, we treat everything as a stream.
 -   A single value? That's a stream of 1 item.
 -   An error? That's a stream that emits a failure signal.
 -   No data? That's an empty stream.
-Once you start seeing the world as streams, you stop writing "loops" and start writing "pipelines".
+Once you start seeing the world as streams, you stop writing "imperative loops" and start writing "declarative pipelines".
 
 ## 1. The Pains of Imperative Programming
 
@@ -72,10 +72,10 @@ In Reactive Streams, an **Error is just another signal**.
 - `onError`: I've failed, here is why.
 The stream handles the error signal just like any other data packet, allowing for graceful fallbacks and retries.
 
-## 5. Why Java Developers Care
-Even though we start with RxJS (JavaScript) for its simplicity, these concepts are the foundation for **Project Reactor** and **Spring WebFlux**.
-- **Imperative**: `User user = repository.findById(id);` (Blocks the thread).
-- **Reactive**: `Mono<User> user = repository.findById(id);` (Returns a "promise" of a user; the thread is freed immediately).
+## 5. The Path to Project Reactor
+The concepts explored in this module are the engineering foundation for **Project Reactor** and **Spring WebFlux**.
+- **Imperative (Classic)**: `User user = repository.findById(id);` (Blocks the thread).
+- **Reactive (Modern)**: `Mono<User> user = repository.findById(id);` (Returns a "promise" or a "recipe" of a user; the thread is freed immediately).
 
 ## 6. The Art of Delegation: Who actually does the work?
 

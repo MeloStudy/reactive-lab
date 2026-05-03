@@ -21,7 +21,7 @@ Focus: Shifting the mindset and mastering the core building blocks of reactive p
 ## Level 2: The Core Spec & Advanced Control
 Focus: Deep dive into internal mechanics, flow control, and multi-threading.
 
-- [ ] **LAB-007: Threading Models & Schedulers**
+- [x] (AUDITED) **LAB-007: Threading Models & Schedulers**
   - Concepts: `publishOn` vs `subscribeOn`. The Event Loop vs Parallel thread pools.
 - [ ] **LAB-008: Programmatic Stream Generation**
   - Concepts: `Sinks.Many`, `Sinks.One`. Manual control with `Flux.create` vs `Flux.generate`.

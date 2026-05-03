@@ -18,6 +18,7 @@
         <module>labs/004-subscriptions-lifecycle</module>
         <module>labs/005-essential-operators</module>
         <module>labs/006-combining-errors</module>
+        <module>labs/007-threading-schedulers</module>
     </modules>
 
     <properties>

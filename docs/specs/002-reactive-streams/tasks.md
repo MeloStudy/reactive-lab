@@ -7,24 +7,20 @@
 - [x] T002 Verify project compiles via `mvn compile`.
 - [x] T003 Scaffold base package `com.reactivelab.streams`.
 
-## Phase 2: Implementation of the "Raw" Contract
-- [x] T004 Implement `CustomPublisher` and its inner `Subscription`.
-- [x] T005 Implement `CustomSubscriber` for manual testing.
-- [x] T006 Implement Scenario 1: Handshake validation test (JUnit).
+## Phase 1: Rule Mapping & Documentation
+- [x] R001 Document `CustomPublisher.java` with explicit Rule references [CustomPublisher.java](file:///d:/repos/reactive-lab/labs/002-reactive-streams/src/main/java/com/reactivelab/streams/CustomPublisher.java)
+- [x] R002 Document `CustomSubscriber.java` with Subscriber-specific Rules [CustomSubscriber.java](file:///d:/repos/reactive-lab/labs/002-reactive-streams/src/main/java/com/reactivelab/streams/CustomSubscriber.java)
 
-## Phase 3: The TCK Rigor
-- [x] T007 Integrate the Reactive Streams TCK harness.
-- [x] T008 Implement `PublisherTCKTest` to validate `CustomPublisher`.
-- [x] T009 Fix common compliance issues identified by the TCK (Learning loop).
+## Phase 2: TCK & Test Alignment
+- [x] R003 Implement `createFailedPublisher` in `PublisherTCKTest.java` [PublisherTCKTest.java](file:///d:/repos/reactive-lab/labs/002-reactive-streams/src/test/java/com/reactivelab/streams/PublisherTCKTest.java)
+- [x] R004 Validate that the reference solution passes `mvn test`.
 
-## Phase 4: Educational Polish
-- [x] T010 Write `CONCEPT.md` with interface diagrams.
-- [x] T011 Write `README.md` with Maven execution instructions.
-- [x] T012 Add Command Dissection for TCK failure outputs.
-
-## Phase 5: Final Verification
-- [x] T013 Verify all TCK tests pass (or a specific subset required for LOs).
+## Phase 3: Documentation & Audit
+- [x] R005 Update `README.md` with TCK Failure Guide and Rule Mapping [README.md](file:///d:/repos/reactive-lab/labs/002-reactive-streams/README.md)
+- [x] R006 Final status update to `AUDITED` in Spec and Syllabus
+- [x] R007 Perform final gap audit against Constitution Article IVerify all TCK tests pass (or a specific subset required for LOs).
 - [x] T014 Perform final audit for "Pedagogical Clarity".
+
 ## Phase 6: Refinement & Rigor Upgrade
 - [x] T015 Move `CustomSubscriber` to `src/main/java` (Core LO).
 - [x] T016 Deepen `CONCEPT.md` with official specification rules and TCK architecture.

@@ -19,21 +19,29 @@ public class CustomSubscriber<T> implements Subscriber<T> {
 
     @Override
     public void onSubscribe(Subscription s) {
+        // Rule 2.5: A Subscriber MUST NOT be called with more than one Subscription
+        if (this.subscription != null) {
+            s.cancel();
+            return;
+        }
         this.subscription = s;
     }
 
     @Override
     public void onNext(T t) {
+        // Rule 2.13: onNext signals MUST be processed sequentially
         items.add(t);
     }
 
     @Override
     public void onError(Throwable t) {
+        // Rule 2.4: Subscriber.onError MUST be terminal
         this.error = t;
     }
 
     @Override
     public void onComplete() {
+        // Rule 2.4: Subscriber.onComplete MUST be terminal
         this.completed = true;
     }
 

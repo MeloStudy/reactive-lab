@@ -22,8 +22,24 @@ public class PublisherTCKTest extends PublisherVerification<Integer> {
 
     @Override
     public Publisher<Integer> createFailedPublisher() {
-        // Optional: Implement if we want to test error handling compliance
-        return null; 
+        // Rule 1.9: A failing publisher MUST signal onError
+        return new Publisher<Integer>() {
+            @Override
+            public void subscribe(Subscriber<? super Integer> s) {
+                s.onSubscribe(new Subscription() {
+                    @Override
+                    public void request(long n) {
+                        // Immediate failure
+                        s.onError(new RuntimeException("Rule 1.9: Failed publisher"));
+                    }
+
+                    @Override
+                    public void cancel() {
+                        // No-op
+                    }
+                });
+            }
+        };
     }
 
     @Override

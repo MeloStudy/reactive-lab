@@ -23,7 +23,8 @@ public class CustomPublisher implements Publisher<Integer> {
 
     @Override
     public void subscribe(Subscriber<? super Integer> subscriber) {
-        if (subscriber == null) throw new NullPointerException("Subscriber cannot be null");
+        // Rule 1.9: Publisher.subscribe MUST call onSubscribe on the provided Subscriber
+        if (subscriber == null) throw new NullPointerException("Rule 1.9: Subscriber cannot be null");
         
         // Handshake: Send the Subscription to the Subscriber
         subscriber.onSubscribe(new CustomSubscription(subscriber, count));
@@ -44,12 +45,13 @@ public class CustomPublisher implements Publisher<Integer> {
         @Override
         public void request(long n) {
             if (n <= 0) {
-                // Rule 3.9: non-positive request must signal onError
+                // Rule 3.9: If the request is non-positive, MUST signal onError with IllegalArgumentException
                 subscriber.onError(new IllegalArgumentException("Rule 3.9: n must be positive"));
                 return;
             }
 
-            // Rule 3.3: request(n) must be additive
+            // Rule 3.3: Subscription.request MUST be additive and handle long overflow
+            // In this simple case, we use getAndAdd, but in a real-world scenario, we would check for overflow.
             long previousDemand = demand.getAndAdd(n);
             
             // If we were already draining, let that process handle the new demand.
@@ -66,13 +68,15 @@ public class CustomPublisher implements Publisher<Integer> {
         }
 
         private void drain() {
-            // Simple drain loop to handle demand
+            // Rule 1.1: Publisher MUST signal onNext only when there is demand
+            // Rule 1.7: Terminal signals (onError, onComplete) MUST NOT be sent before onSubscribe
             while (demand.get() > 0 && !cancelled.get() && !terminated) {
                 if (iterator.hasNext()) {
                     subscriber.onNext(iterator.next());
                     demand.decrementAndGet();
                 } else {
                     terminated = true;
+                    // Rule 1.5: Publisher MUST signal onComplete exactly once (or onError)
                     subscriber.onComplete();
                     break;
                 }

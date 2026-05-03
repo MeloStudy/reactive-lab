@@ -44,11 +44,25 @@ The TCK (Technology Compatibility Kit) is the ultimate judge of your implementat
 mvn test -Dtest=PublisherTCKTest
 ```
 
-### Analyzing TCK Failures
-When a TCK test fails, it will provide a specific rule reference. For example:
-> `streams.PublisherVerification$1 - onNext must only be sent after a Subscription exists and demand (request) has been signaled.`
+## 🔍 TCK Failure & Spec Rule Guide
 
-This corresponds to **Rule 1.1**. To fix this, ensure your `drain()` loop checks `demand.get() > 0` before calling `onNext`.
+The TCK (Technology Compatibility Kit) runs rigorous tests. If your implementation fails, refer to this guide to understand which part of the **Reactive Streams Specification** is being violated:
+
+| Failure Message Snippet | Rule | Explanation |
+| :--- | :--- | :--- |
+| `onNext must only be sent after a Subscription...` | **1.1** | You are emitting data before `onSubscribe` or without `request(n)`. |
+| `must call onSubscribe on the provided Subscriber` | **1.9** | You must call `subscriber.onSubscribe` before any other signal. |
+| `must signal onError if the request is <= 0` | **3.9** | `request(n)` where `n <= 0` is invalid and must terminate with error. |
+| `Subscription.cancel MUST be idempotent` | **3.5** | Calling `cancel()` multiple times must not have side effects. |
+| `onNext MUST be processed sequentially` | **2.13** | You cannot call `onNext` from multiple threads for the same subscriber. |
+
+### How to use this Lab
+1.  **Analyze** the reference implementation in `CustomPublisher.java`.
+2.  **Verify** the comments linked to specific rules.
+3.  **Execute** the tests to see the TCK in action:
+    ```bash
+    mvn test
+    ```
 
 ---
 

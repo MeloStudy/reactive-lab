@@ -13,21 +13,26 @@ Welcome to Lab 004! In this module, you will move beyond passive subscriptions a
 
 ### 1. The Controlled Firehose
 Infinite streams like `Flux.interval` will run forever unless stopped. You will use the `Disposable` handle returned by `.subscribe()` to programmatically kill the stream after a delay.
+- **Java Class**: [`FirehoseManagerTest.java`](src/test/java/com/reactivelab/lifecycle/FirehoseManagerTest.java)
 - **Key Command**: `disposable.dispose()`
 
 ### 2. The Resource Manager
 When dealing with multiple reactive components, you'll learn to use a `CompositeDisposable` to clean up all resources with a single call.
+- **Java Class**: [`SubscriptionGroupTest.java`](src/test/java/com/reactivelab/lifecycle/SubscriptionGroupTest.java)
 - **Key Command**: `Disposables.composite()`
 
 ### 3. The Greedy Subscriber
 Instead of letting the publisher push data as fast as possible, you will implement a `BaseSubscriber` that manually requests items one by one. This is the foundation of flow control.
+- **Java Class**: [`SmartSubscriberTest.java`](src/test/java/com/reactivelab/lifecycle/SmartSubscriberTest.java)
 - **Key Command**: `request(n)` inside `hookOnNext`
 
 ### 4. Automatic vs. Manual Lifecycle
 Compare how manually calling `.dispose()` differs from using the `.take(n)` operator, which automatically handles the cancellation signal for you.
+- **Java Class**: [`LifecycleComparisonTest.java`](src/test/java/com/reactivelab/lifecycle/LifecycleComparisonTest.java)
 
 ### 5. The Lifecycle Watcher
 Attach side-effect hooks (`doOnSubscribe`, `doOnCancel`, etc.) to a pipeline to observe exactly how and when signals move through the stream.
+- **Java Class**: [`LifecycleTrackerTest.java`](src/test/java/com/reactivelab/lifecycle/LifecycleTrackerTest.java)
 
 ## 🚀 Execution Guide
 

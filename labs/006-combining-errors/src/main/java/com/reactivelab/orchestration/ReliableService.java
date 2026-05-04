@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 public class ReliableService {
 
     /**
-     * Retries a flaky call up to n times.
+     * Retries a flaky call-up to n times.
      */
     public Mono<String> callWithRetry(Mono<String> flakyCall, int retryCount) {
         return flakyCall.retry(retryCount);

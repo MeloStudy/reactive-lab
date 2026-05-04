@@ -13,8 +13,8 @@ public class DashboardServiceTest {
         Mono<Long> friends = Mono.just(500L);
 
         StepVerifier.create(service.buildHeader(user, friends))
-            .expectNext("User: melo | Friends: 500")
-            .verifyComplete();
+                .expectNext("User: melo | Friends: 500")
+                .verifyComplete();
     }
 
     @Test
@@ -25,6 +25,6 @@ public class DashboardServiceTest {
         Mono<Long> emptyFriends = Mono.empty();
 
         StepVerifier.create(service.buildHeader(user, emptyFriends))
-            .verifyComplete(); // Zip completes immediately if any source completes empty
+                .verifyComplete(); // Zip completes immediately if any source completes empty
     }
 }

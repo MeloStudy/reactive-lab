@@ -13,6 +13,6 @@ public class DashboardService {
      */
     public Mono<String> buildHeader(Mono<String> userMono, Mono<Long> friendsMono) {
         return Mono.zip(userMono, friendsMono)
-            .map(tuple -> "User: " + tuple.getT1() + " | Friends: " + tuple.getT2());
+                .map(tuple -> "User: " + tuple.getT1() + " | Friends: " + tuple.getT2());
     }
 }

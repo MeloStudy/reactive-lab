@@ -1,7 +1,6 @@
 package com.reactivelab.orchestration;
 
 import reactor.core.publisher.Mono;
-import java.util.function.Function;
 
 /**
  * Scenario 3: Demonstrates the Recovery Ladder (Return -> Map -> Resume).
@@ -9,16 +8,16 @@ import java.util.function.Function;
 public class ResilientClient {
 
     /**
-     * Tries a call. 
+     * Tries a call.
      * 1. Logs error (Side-effect).
      * 2. Maps technical exception to business exception (Translation).
      * 3. Returns a default value if it fails (Fallback).
      */
     public Mono<String> callWithFallback(Mono<String> remoteCall, String defaultValue) {
         return remoteCall
-            .doOnError(e -> System.err.println("Remote call failed: " + e.getMessage())) // Side-effect
-            .onErrorMap(e -> new BusinessException("Service Unavailable", e)) // Translation
-            .onErrorReturn(defaultValue); // Static Fallback
+                .doOnError(e -> System.err.println("Remote call failed: " + e.getMessage())) // Side-effect
+                .onErrorMap(e -> new BusinessException("Service Unavailable", e)) // Translation
+                .onErrorReturn(defaultValue); // Static Fallback
     }
 
     /**

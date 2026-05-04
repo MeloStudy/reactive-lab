@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.test.publisher.PublisherProbe;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReliableServiceTest {
@@ -26,8 +27,8 @@ public class ReliableServiceTest {
         PublisherProbe<String> probe = PublisherProbe.of(flakySource);
 
         StepVerifier.create(service.callWithRetry(probe.mono(), 3))
-            .expectNext("Success")
-            .verifyComplete();
+                .expectNext("Success")
+                .verifyComplete();
 
         // 1 initial attempt + 2 retries = 3 subscriptions
         probe.assertWasSubscribed();

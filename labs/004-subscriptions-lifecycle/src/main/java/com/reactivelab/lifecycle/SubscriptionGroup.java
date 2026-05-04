@@ -3,7 +3,6 @@ package com.reactivelab.lifecycle;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
 import reactor.core.publisher.Flux;
-import java.time.Duration;
 
 /**
  * Scenario 2: The Resource Manager
@@ -20,7 +19,7 @@ public class SubscriptionGroup {
     public final void addSubscriptions(Flux<Long>... fluxes) {
         for (Flux<Long> flux : fluxes) {
             Disposable d = flux.subscribe(
-                item -> System.out.println("Group Received: " + item)
+                    item -> System.out.println("Group Received: " + item)
             );
             composite.add(d);
         }

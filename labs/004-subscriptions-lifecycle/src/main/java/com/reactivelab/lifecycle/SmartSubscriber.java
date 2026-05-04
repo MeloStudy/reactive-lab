@@ -22,7 +22,7 @@ public class SmartSubscriber<T> extends BaseSubscriber<T> {
     protected void hookOnNext(T value) {
         System.out.println("Processing: " + value);
         receivedCount++;
-        
+
         // Manual demand control: request the next item only after processing the current one
         request(1);
     }

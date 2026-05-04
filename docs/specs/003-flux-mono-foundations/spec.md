@@ -1,8 +1,8 @@
 # Lab Specification: LAB-003: Flux & Mono Foundations
 
 **Feature Branch**: `003-flux-mono-foundations`
-**Created**: 2026-04-30 | **Refined**: 2026-05-02
-**Status**: Audited (Refined v1.0.1)
+**Created**: 2026-04-30 | **Refined**: 2026-05-04
+**Status**: Audited (Refined v1.1.0)
 
 **Syllabus Section**: Level 1: Foundations (Project Reactor)
 
@@ -15,6 +15,7 @@
   - LO-002: Verify the "Lazy Execution" principle: Nothing happens until you subscribe.
   - LO-003: Utilize core factory methods (`just`, `fromIterable`, `fromCallable`, `empty`, `error`).
   - LO-004: Demonstrate pipeline immutability and why operator chaining is required.
+  - LO-005: Contrast eager factory methods (`Mono.just`) with lazy ones (`Mono.defer`, `Mono.fromCallable`).
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -53,6 +54,15 @@ The learner will create several streams using different factory methods to handl
 
 ---
 
+### Scenario 4 - The Eager Trap (Priority: P1)
+
+The learner will compare `Mono.just()` with `Mono.defer()`. They must prove that `Mono.just(expensiveOp())` evaluates the operation even if never subscribed, while `Mono.defer(() -> Mono.just(expensiveOp()))` remains lazy.
+
+**Validation (Automated Test)**:
+- `EagernessLazinessTest` verifies side-effect counts for `just`, `fromCallable`, and `defer`.
+
+---
+
 ## Educational Requirements *(mandatory)*
 
 ### Concepts to Explain
@@ -62,6 +72,7 @@ The learner will create several streams using different factory methods to handl
 - **EX-003**: **Immutability**: Why `flux.map(...)` doesn't change `flux`.
 - **EX-004**: **Assembly vs Subscription**: Understanding that the pipeline is a "blueprint".
 - **EX-005**: **Modern Context**: Understanding the role of Project Reactor in the era of Java 21+ Virtual Threads.
+- **EX-006**: **Eagerness vs. Laziness**: Deep dive into why `Mono.just` evaluates arguments at assembly time and how to use `Mono.defer` to wrap eager code.
 
 ### Technical Requirements
 

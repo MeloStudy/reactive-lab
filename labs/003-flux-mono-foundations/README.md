@@ -4,7 +4,8 @@ Welcome to your first deep-dive into Project Reactor! In this lab, you will move
 
 ## Learning Objectives
 - Understand the difference between `Mono` (0-1) and `Flux` (0-N).
-- Master the principle of **Lazy Execution**.
+- Master the principle of **Lazy Execution** vs. **Eager Evaluation**.
+- Learn to use `Mono.defer()` to wrap eager code.
 - Demonstrate **Pipeline Immutability**.
 - Use **StepVerifier** to validate reactive signals.
 
@@ -84,6 +85,26 @@ StepVerifier.create(publisher)
 
 ---
 
+## Scenario 4: The Eager Trap
+
+Open `com.reactivelab.foundations.EagernessLazinessTest`. This is the most important lesson for bridging imperative and reactive code.
+
+### Execution
+Run the eagerness/laziness comparison:
+
+```bash
+mvn test -Dtest=EagernessLazinessTest
+```
+
+### Command Dissection: `Mono.defer()`
+```bash
+Mono.defer(() -> Mono.just(calculate()))
+```
+- **Supplier**: A lambda that returns a `Publisher`.
+- **Why**: It delays the evaluation of `calculate()` and the creation of the `Mono.just` until the moment of subscription. This effectively turns an eager factory into a lazy one.
+
+---
+
 ## Cleanup
 To clean the build artifacts, run:
 ```bash
@@ -118,6 +139,12 @@ Test your knowledge of the core Project Reactor foundations:
    <details>
    <summary>💡 View Answer</summary>
    The second subscription will fail with an **`IllegalStateException`**. Unlike regular Fluxes, which can be re-subscribed to (re-running the source), a Flux backed by a Java `Stream` inherits the 1-time-use limitation of the underlying stream.
+   </details>
+
+5. **The Eager Pitfall**: You have a method `Mono<String> save(Data d)`. Inside, you use `return Mono.just(repository.save(d));`. What is the problem?
+   <details>
+   <summary>💡 View Answer</summary>
+   The problem is that `repository.save(d)` will execute **at assembly time**, regardless of whether the `Mono` is ever subscribed to. This breaks the reactive principle of laziness. You should use `Mono.fromCallable(() -> repository.save(d))` or `Mono.defer(() -> Mono.just(repository.save(d)))`.
    </details>
 
 ---

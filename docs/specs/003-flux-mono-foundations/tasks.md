@@ -36,6 +36,9 @@
 - [x] T016 Add "Signal Anatomy" to `CONCEPT.md`.
 - [x] T017 Add "Modern Java Note: Virtual Threads" to `CONCEPT.md` and `README.md`.
 - [x] T018 Enhance all test files with line-by-line pedagogical comments.
-- [x] T019 Re-run all tests and certify.
-
-
+- [x] T019 Re-run all tests and certify.## Phase 8: Eagerness vs. Laziness Refinement (Constitution v0.2.4)
+- [ ] T020 Add Lombok dependency to `labs/003-flux-mono-foundations/pom.xml`.
+- [ ] T021 Implement `EagernessLazinessTest.java` to demonstrate `Mono.just` (eager) vs `Mono.defer` (lazy).
+- [ ] T022 Update `CONCEPT.md` with "Eagerness vs. Laziness: The Mono.just() Pitfall".
+- [ ] T023 Update `README.md` with Scenario 4 and `Mono.defer()` command dissection.
+- [ ] T024 Re-verify all tests and certify v1.1.0.

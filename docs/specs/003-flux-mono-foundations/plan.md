@@ -37,6 +37,11 @@ The learner will transition from the raw Reactive Streams interfaces (LAB-003) t
 2. **Modernity**: Add brief Virtual Thread context to `CONCEPT.md` and `README.md`.
 3. **Pedagogy**: Enhance test code documentation for line-by-line clarity.
 
+## Phase 7: Eagerness vs. Laziness Refinement (Constitution v0.2.4)
+1. **Instructional Path**: Introduce the `Mono.defer()` operator. Create a scenario where calling a method inside `Mono.just()` causes an immediate (eager) execution, and contrast it with the lazy behavior of `Mono.fromCallable()` and `Mono.defer()`.
+2. **Testing**: Implement `EagernessLazinessTest.java` to verify execution counts at assembly vs. subscription time.
+3. **Documentation**: Update `CONCEPT.md` and `README.md` with explicit warnings about `Mono.just` eagerness.
+
 ## Constitution Compliance Check
 - [x] No `.sh` wrapper scripts.
 - [x] Code comments explicitly describe what every test line validates.

@@ -63,6 +63,32 @@ Reactor provides static methods to bridge imperative code or constants into the 
 | `Mono.fromCallable(Callable)` | Mono | Executes a blocking task lazily and emits the result. |
 | `Mono.empty()` | Mono | Emits only the completion signal. |
 | `Mono.error(Throwable)` | Mono/Flux | Emits an error signal immediately upon subscription. |
+| `Mono.defer(Supplier<Mono>)` | Mono | Lazily creates a Mono at subscription time. |
+
+---
+
+## Eagerness vs. Laziness: The Mono.just() Pitfall
+
+A common source of bugs in reactive programming is misunderstanding **when** code executes.
+
+### Eager Evaluation (`Mono.just`)
+When you call `Mono.just(calculate())`, the `calculate()` method is executed **immediately** during the assembly phase.
+
+```java
+// Side effect happens NOW, even if no one ever subscribes
+Mono<String> mono = Mono.just(doSomethingExpensive()); 
+```
+
+### Lazy Evaluation (`Mono.fromCallable` & `Mono.defer`)
+If you need to defer execution until someone actually subscribes, use lazy factories.
+
+1. **`Mono.fromCallable`**: Ideal for wrapping a single blocking call that returns a value.
+2. **`Mono.defer`**: Ideal when you need to decide which `Publisher` to create at the last possible moment (subscription time).
+
+```java
+// Side effect happens ONLY when .subscribe() is called
+Mono<String> lazy = Mono.defer(() -> Mono.just(doSomethingExpensive()));
+```
 
 ---
 

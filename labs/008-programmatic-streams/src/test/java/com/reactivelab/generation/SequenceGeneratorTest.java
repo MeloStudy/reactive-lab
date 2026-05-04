@@ -10,11 +10,11 @@ public class SequenceGeneratorTest {
         SequenceGenerator generator = new SequenceGenerator();
 
         StepVerifier.create(generator.generateFibonacci(5))
-            .expectNext(0L)
-            .expectNext(1L)
-            .expectNext(1L)
-            .expectNext(2L)
-            .expectNext(3L)
-            .verifyComplete();
+                .expectNext(0L)
+                .expectNext(1L)
+                .expectNext(1L)
+                .expectNext(2L)
+                .expectNext(3L)
+                .verifyComplete();
     }
 }

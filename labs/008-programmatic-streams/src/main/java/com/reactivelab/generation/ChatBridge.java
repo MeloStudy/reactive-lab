@@ -10,6 +10,7 @@ public class ChatBridge {
 
     public interface ChatListener {
         void onMessage(String msg);
+
         void onError(Throwable t);
     }
 
@@ -40,7 +41,10 @@ public class ChatBridge {
 
     // Mock Service for exercise
     public static class ExternalChatService {
-        public void register(ChatListener listener) {}
-        public void unregister(ChatListener listener) {}
+        public void register(ChatListener listener) {
+        }
+
+        public void unregister(ChatListener listener) {
+        }
     }
 }

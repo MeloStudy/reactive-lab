@@ -11,15 +11,15 @@ public class NotificationBusTest {
 
         // Sub 1
         StepVerifier v1 = StepVerifier.create(bus.listen())
-            .expectNext("Hello")
-            .thenCancel()
-            .verifyLater();
+                .expectNext("Hello")
+                .thenCancel()
+                .verifyLater();
 
         // Sub 2
         StepVerifier v2 = StepVerifier.create(bus.listen())
-            .expectNext("Hello")
-            .thenCancel()
-            .verifyLater();
+                .expectNext("Hello")
+                .thenCancel()
+                .verifyLater();
 
         bus.publish("Hello");
 

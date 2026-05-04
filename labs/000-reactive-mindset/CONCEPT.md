@@ -125,7 +125,47 @@ Reactive programming is powerful but introduces complexity. Use this guide to de
 
 ---
 
-## Summary Table
+## 9. Comparative Scenarios: The Reality of the Code
+
+To truly understand the mindset shift, let's look at how common problems are solved in both worlds.
+
+### Scenario A: Orchestrating Multiple API Calls
+*Goal: Fetch a User profile, their recent Orders, and their Loyalty Points simultaneously to build a dashboard.*
+
+| **Approach** | **Mechanism** | **Code Logic (Pseudo-code)** |
+| :--- | :--- | :--- |
+| **Imperative** | Sequential Blocking | `User u = fetchUser(id);` <br> `List<Order> o = fetchOrders(u);` <br> `Points p = fetchPoints(u);` <br> `return new Dashboard(u, o, p);` |
+| **Reactive** | Parallel Composition | `Mono.zip(fetchUser(id), fetchOrders(id), fetchPoints(id))` <br> `.map(tuple -> new Dashboard(tuple.getT1(), ...))` <br> `.subscribe();` |
+
+> **The Difference**: The imperative version takes **T1 + T2 + T3** (Total time). The reactive version takes **Max(T1, T2, T3)** because all calls start at the same time without blocking the thread.
+
+---
+
+### Scenario B: Processing a Massive File (10GB)
+*Goal: Read a file, find specific keywords, and save the results to a database.*
+
+| **Approach** | **Memory Behavior** | **The Risk** |
+| :--- | :--- | :--- |
+| **Imperative** | Often loads the whole list into memory or uses a complex iterator loop. | **OutOfMemoryError**. If you load 10GB into a 2GB RAM JVM, it crashes. |
+| **Reactive** | Treats the file as a **Stream of chunks**. Only a small portion is in memory at any time. | **Stable**. Memory usage remains flat regardless of file size. |
+
+> **The Difference**: Imperative code is **"All-at-once"**. Reactive code is **"Piece-by-piece"** (on-demand).
+
+---
+
+### Scenario C: Handling a Failing Service
+*Goal: Call a Payment Service. If it fails, try a Backup Service. If that fails, return a default "Pending" status.*
+
+| **Approach** | **Error Strategy** | **Code Logic (Pseudo-code)** |
+| :--- | :--- | :--- |
+| **Imperative** | Nested Try-Catch | `try { return callPayment(); }` <br> `catch (Exception e) {` <br> `  try { return callBackup(); }` <br> `  catch (Exception e2) { return PENDING; }` <br> `}` |
+| **Reactive** | Functional Pipeline | `callPayment()` <br> `.onErrorResume(e -> callBackup())` <br> `.onErrorReturn(PENDING);` |
+
+> **The Difference**: In the reactive world, errors are just another "type" of data. You handle them with operators, keeping the code flat and readable instead of creating a "Pyramid of Doom".
+
+---
+
+## 10. Summary Table
 
 | Concept | Imperative (Traditional) | Reactive (Modern) |
 | :--- | :--- | :--- |

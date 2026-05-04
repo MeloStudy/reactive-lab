@@ -95,6 +95,36 @@ A key part of the reactive mindset is understanding that **the application threa
 
 ---
 
+## 7. The Reactive Mindset Pillars (Summary)
+
+To master reactive programming, you must internalize these four pillars:
+
+1.  **Everything is a Stream**: Data, errors, and completion are all signals in a timeline.
+2.  **Declarative Over Imperative**: You define *what* the pipeline should do (the recipe), not *how* to loop or manage state.
+3.  **Errors as First-Class Citizens**: Errors are just terminal signals (`onError`). They are expected, handled, and recovered from without crashing the thread.
+4.  **Asynchrony & Non-Blocking**: Threads never wait. They delegate I/O to the kernel and move to the next task.
+
+---
+
+## 8. The Decision Matrix: When to use Reactive?
+
+Reactive programming is powerful but introduces complexity. Use this guide to decide if it's the right choice for your project.
+
+### ✅ Green Lights (Use it!)
+*   **High Concurrency**: You need to handle thousands of simultaneous connections with minimal resources.
+*   **I/O Intensive**: Your app spends a lot of time waiting for DBs, APIs, or File Systems.
+*   **Streaming Data**: You are processing real-time feeds, live dashboards, or massive datasets.
+*   **Microservice Orchestration**: You are calling multiple downstream services and need to combine their results efficiently (e.g., `zip`, `flatMap`).
+
+### ❌ Red Lights (Avoid it!)
+*   **Low Concurrency**: If you only have a few users, the simplicity of Spring MVC (Imperative) is better.
+*   **CPU-Bound Tasks**: If your app does heavy math or encryption, the Event Loop will get blocked. Use standard multi-threading or Virtual Threads instead.
+*   **Simple CRUD**: For basic "Save to DB and return", the overhead of reactive types might not be worth it.
+*   **Legacy Blocking Drivers**: If your database driver is blocking (e.g., standard JDBC), you lose most reactive benefits unless you use a bridge like `fromCallable` on a separate thread pool.
+*   **Team Learning Curve**: The mindset shift is steep. Don't use it if the team isn't ready for the "functional" way of thinking.
+
+---
+
 ## Summary Table
 
 | Concept | Imperative (Traditional) | Reactive (Modern) |
@@ -104,3 +134,4 @@ A key part of the reactive mindset is understanding that **the application threa
 | **Logic Style** | How to do it (Procedural) | What to do (Declarative) |
 | **Errors** | Exceptions (Flow breakers) | Signals (onError) |
 | **Scalability** | Limited by Thread count | Limited by CPU/Memory |
+| **Complexity** | Lower (Sequential) | Higher (Functional/Async) |

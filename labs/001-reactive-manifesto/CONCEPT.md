@@ -46,5 +46,35 @@ A Reactive Stream represents a flow of data. The relationship is governed by the
 3.  **Completion (`onComplete`)**: The producer signals successful end of stream.
 4.  **Error (`onError`)**: The producer signals a terminal failure.
 
-## 4. Why Project Reactor Wins
+## 4. The Reactive Landscape: Market Alternatives
+
+While this lab focuses on **Project Reactor** (the engine behind Spring WebFlux), it's important to know the other players in the ecosystem:
+
+| Library / Spec | Primary Backer | Use Case | Key Features |
+| :--- | :--- | :--- | :--- |
+| **Project Reactor** | VMware (Spring) | Enterprise Java, Spring WebFlux. | Tight Spring integration, high performance, `Flux/Mono`. |
+| **RxJava (3.x)** | Netflix | Android, Desktop Apps, Backend. | The pioneer. Very similar to Reactor, but older and more mobile-focused. |
+| **SmallRye Mutiny** | Red Hat (Quarkus) | Cloud-native, Quarkus applications. | Different API (`Uni/Multi`), event-loop centric, very guided. |
+| **MicroProfile Reactive** | Eclipse Foundation | Jakarta EE / MicroProfile apps. | Standardized specification for reactive messaging and streams. |
+| **Akka Streams** | Lightbend | Scala/Java, Distributed systems. | Based on the Actor Model. Heavyweight but extremely powerful for clustering. |
+
+## 5. The Runtime Environment: Tomcat vs. Netty
+
+The shift to reactive programming also changes the underlying server technology.
+
+### Tomcat (Servlet-Based)
+*   **Model**: Thread-per-request.
+*   **Mechanism**: A thread is pulled from a pool, handles the request (potentially blocking), and returns to the pool.
+*   **Limitation**: If you have 1,000 blocking requests, you need 1,000 threads. This consumes significant RAM and causes CPU context-switching overhead.
+
+### Netty (Event-Loop Based)
+*   **Model**: Non-blocking Event Loop.
+*   **Mechanism**: A tiny number of threads (usually 1 per CPU core) handle thousands of connections. They never wait for I/O; they just register callbacks and move on.
+*   **Strength**: Extremely high throughput and low memory footprint. This is the default runtime for **Spring WebFlux**.
+
+> **Crucial Rule**: In Netty, **NEVER BLOCK**. If you block an event-loop thread, you are blocking hundreds of other requests sharing that same thread.
+
+---
+
+## 6. Why Project Reactor Wins
 Unlike Futures, Project Reactor types (`Flux` and `Mono`) are **Lazy** (they don't start until you subscribe) and **Cancellable**. They provide a rich set of operators to transform, filter, and combine streams, allowing you to treat "Time" as just another dimension of your data.

@@ -6,7 +6,7 @@ Focus: Shifting the mindset and mastering the core building blocks of reactive p
 - [x] (AUDITED) **LAB-000: The Reactive Mindset & Foundational Analogies**
   - Concepts: Thinking in Streams, The Excel Analogy, The Delegation Matrix, I/O Blocking.
 - [x] (AUDITED) **LAB-001: The Reactive Manifesto & Asynchronous Paradigms**
-  - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Evolution: Callbacks -> Futures -> Streams.
+  - Concepts: Responsiveness, Resilience, Elasticity, Message Driven. Evolution: Callbacks -> Futures -> Streams. Alternatives (RxJava, Mutiny). Architecture: Tomcat vs Netty.
 - [x] (AUDITED) **LAB-002: The Reactive Streams Specification & TCK**
   - Concepts: Publisher, Subscriber, Subscription. Compliance with the TCK rules.
 - [x] (AUDITED) **LAB-003: Flux & Mono Foundations**

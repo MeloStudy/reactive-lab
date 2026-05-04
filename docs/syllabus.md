@@ -27,7 +27,7 @@ Focus: Deep dive into internal mechanics, flow control, and multi-threading.
   - Concepts: `publishOn` vs `subscribeOn`. The Event Loop vs Parallel thread pools.
 - [x] (AUDITED) **LAB-008: Programmatic Stream Generation**
   - Concepts: `Sinks.Many`, `Sinks.One`. Manual control with `Flux.create` vs `Flux.generate`.
-- [ ] **LAB-009: Backpressure Strategies & Flow Control**
+- [x] (AUDITED) **LAB-009: Backpressure Strategies & Flow Control**
   - Concepts: `buffer`, `window`, `onBackpressureDrop`, `onBackpressureBuffer`.
 - [ ] **LAB-010: Testing & Debugging Matrix**
   - Concepts: Advanced `StepVerifier`, `PublisherProbe`, `Hooks.onOperatorDebug`, Reactor Context.

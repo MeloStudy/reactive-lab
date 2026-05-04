@@ -37,7 +37,7 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
 
 - [x] (AUDITED) **LAB-011: Reactive Web with Spring WebFlux**
   - Concepts: Annotated Controllers vs Functional Endpoints (`RouterFunction`), Server-Sent Events (SSE), Streaming JSON.
-- [ ] **LAB-012: WebClient: Orchestrating Downstream Services**
+- [x] (AUDITED) **LAB-012: WebClient: Orchestrating Downstream Services**
   - Concepts: `retrieve()` vs `exchange()`, non-blocking HTTP calls, zip/flatmap for service orchestration.
 - [ ] **LAB-013: Error Handling & Resilience in WebFlux**
   - Concepts: Global Error Handlers, `onErrorReturn`, `onErrorResume`, `retry`, `timeout` at the web layer.

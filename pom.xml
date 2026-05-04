@@ -23,6 +23,7 @@
         <module>labs/009-backpressure-strategies</module>
         <module>labs/010-testing-debugging-matrix</module>
         <module>labs/011-reactive-web-webflux</module>
+        <module>labs/012-webclient-orchestration</module>
         <module>projects/001-github-insights</module>
     </modules>
 

@@ -29,8 +29,8 @@ Focus: Deep dive into internal mechanics, flow control, and multi-threading.
   - Concepts: `Sinks.Many`, `Sinks.One`. Manual control with `Flux.create` vs `Flux.generate`.
 - [x] (AUDITED) **LAB-009: Backpressure Strategies & Flow Control**
   - Concepts: `buffer`, `window`, `onBackpressureDrop`, `onBackpressureBuffer`.
-- [ ] (READY) **LAB-010: Testing & Debugging Matrix**
-  - Concepts: Advanced `StepVerifier`, `PublisherProbe`, `Hooks.onOperatorDebug`, Reactor Context.
+- [x] (AUDITED) **LAB-010: Testing & Debugging Matrix**
+  - Concepts: Advanced `StepVerifier`, `PublisherProbe`, `Hooks.onOperatorDebug`, Reactor Context, **BlockHound**.
 
 ## Level 3: Enterprise Reactive Services (Spring WebFlux)
 Focus: Building non-blocking, high-performance REST APIs and microservices.

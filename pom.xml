@@ -22,6 +22,7 @@
         <module>labs/008-programmatic-streams</module>
         <module>labs/009-backpressure-strategies</module>
         <module>labs/010-testing-debugging-matrix</module>
+        <module>labs/011-reactive-web-webflux</module>
         <module>projects/001-github-insights</module>
     </modules>
 
@@ -35,12 +36,13 @@
         <project-reactor.bom.version>2023.0.5</project-reactor.bom.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <slf4j.version>2.0.12</slf4j.version>
-        <logback.version>1.5.32</logback.version>
+        <logback.version>1.4.14</logback.version>
         <lombok.version>1.18.46</lombok.version>
         <junit.version>5.10.1</junit.version>
         <assertj.version>3.27.7</assertj.version>
         <testng.version>7.7.0</testng.version>
         <blockhound.version>1.0.8.RELEASE</blockhound.version>
+        <spring-boot.version>3.2.5</spring-boot.version>
     </properties>
 
     <dependencyManagement>
@@ -50,6 +52,15 @@
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-bom</artifactId>
                 <version>${project-reactor.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            
+            <!-- Spring Boot BOM -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -99,6 +110,11 @@
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
             </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
 
             <!-- BlockHound -->
             <dependency>
@@ -124,6 +140,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.11.0</version>
+                    <configuration>
+                        <parameters>true</parameters>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

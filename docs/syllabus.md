@@ -35,7 +35,7 @@ Focus: Deep dive into internal mechanics, flow control, and multi-threading.
 ## Level 3: Enterprise Reactive Services (Spring WebFlux)
 Focus: Building non-blocking, high-performance REST APIs and microservices.
 
-- [ ] **LAB-011: Reactive Web with Spring WebFlux**
+- [x] (AUDITED) **LAB-011: Reactive Web with Spring WebFlux**
   - Concepts: Annotated Controllers vs Functional Endpoints (`RouterFunction`), Server-Sent Events (SSE), Streaming JSON.
 - [ ] **LAB-012: WebClient: Orchestrating Downstream Services**
   - Concepts: `retrieve()` vs `exchange()`, non-blocking HTTP calls, zip/flatmap for service orchestration.

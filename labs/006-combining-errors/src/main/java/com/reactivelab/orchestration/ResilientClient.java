@@ -1,10 +1,12 @@
 package com.reactivelab.orchestration;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
  * Scenario 3: Demonstrates the Recovery Ladder (Return -> Map -> Resume).
  */
+@Slf4j
 public class ResilientClient {
 
     /**
@@ -13,7 +15,7 @@ public class ResilientClient {
      */
     public Mono<String> callWithFallback(Mono<String> remoteCall, String defaultValue) {
         return remoteCall
-                .doOnError(e -> System.err.println("Remote call failed: " + e.getMessage()))
+                .doOnError(e -> log.error("Remote call failed: {}", e.getMessage()))
                 .onErrorMap(e -> new BusinessException("Service Unavailable", e))
                 .onErrorReturn(defaultValue);
     }

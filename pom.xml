@@ -32,6 +32,9 @@
         <!-- Dependency Versions -->
         <project-reactor.bom.version>2023.0.5</project-reactor.bom.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
+        <slf4j.version>2.0.12</slf4j.version>
+        <logback.version>1.5.32</logback.version>
+        <lombok.version>1.18.46</lombok.version>
         <junit.version>5.10.1</junit.version>
         <assertj.version>3.27.7</assertj.version>
         <testng.version>7.7.0</testng.version>
@@ -80,6 +83,26 @@
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>${testng.version}</version>
+            </dependency>
+
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+
+            <!-- Lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,5 +1,6 @@
 package com.reactivelab.lifecycle;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
 import reactor.core.publisher.Flux;
@@ -8,6 +9,7 @@ import reactor.core.publisher.Flux;
  * Scenario 2: The Resource Manager
  * Demonstrates managing multiple subscriptions using a Composite Disposable.
  */
+@Slf4j
 public class SubscriptionGroup {
 
     private final Disposable.Composite composite = Disposables.composite();
@@ -19,7 +21,7 @@ public class SubscriptionGroup {
     public final void addSubscriptions(Flux<Long>... fluxes) {
         for (Flux<Long> flux : fluxes) {
             Disposable d = flux.subscribe(
-                    item -> System.out.println("Group Received: " + item)
+                    item -> log.info("Group Received: {}", item)
             );
             composite.add(d);
         }

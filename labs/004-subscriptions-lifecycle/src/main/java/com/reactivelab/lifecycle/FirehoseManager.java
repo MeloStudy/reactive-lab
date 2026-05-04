@@ -1,5 +1,6 @@
 package com.reactivelab.lifecycle;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
@@ -9,6 +10,7 @@ import java.time.Duration;
  * Scenario 1: The Controlled Firehose
  * Demonstrates manual cancellation of a long-running Flux using the Disposable interface.
  */
+@Slf4j
 public class FirehoseManager {
 
     /**
@@ -30,9 +32,9 @@ public class FirehoseManager {
     public Disposable subscribeToFirehose(Flux<Long> flux) {
         // subscribe() returns a Disposable
         return flux.subscribe(
-                item -> System.out.println("Received: " + item),
-                error -> System.err.println("Error: " + error),
-                () -> System.out.println("Stream Completed")
+                item -> log.info("Received: {}", item),
+                error -> log.error("Error: {}", error.getMessage(), error),
+                () -> log.info("Stream Completed")
         );
     }
 }

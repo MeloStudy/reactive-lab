@@ -1,6 +1,7 @@
 package com.reactivelab.insights;
 
 import com.reactivelab.insights.model.GitHubEvent;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -8,11 +9,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 
+@Slf4j
 public class Main {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.err.println("Usage: java -jar insights.jar <path-to-json-file>");
+            log.error("Usage: java -jar insights.jar <path-to-json-file>");
             System.exit(1);
         }
 
@@ -20,7 +22,7 @@ public class Main {
         InsightsEngine engine = new InsightsEngine();
         AnalyticsService analytics = new AnalyticsService();
 
-        System.out.println("🚀 Starting Reactive GitHub Insights Engine...");
+        log.info("🚀 Starting Reactive GitHub Insights Engine...");
         Instant start = Instant.now();
 
         // Run the pipeline and share it among 3 subscribers (count, repos, langs)
@@ -45,18 +47,21 @@ public class Main {
 
     private static void printSummary(long total, long errors, Duration duration, 
                                      Map<String, Long> repos, Map<String, Long> langs) {
-        System.out.println("\n========================================");
-        System.out.println("📊 EXECUTIVE SUMMARY");
-        System.out.println("========================================");
-        System.out.printf("Total Events Processed: %d\n", total);
-        System.out.printf("Malformed Lines Skipped: %d\n", errors);
-        System.out.printf("Total Time: %d ms\n", duration.toMillis());
-        System.out.println("----------------------------------------");
-        System.out.println("🏆 TOP 5 REPOSITORIES (Stars)");
-        repos.forEach((name, count) -> System.out.printf("- %s: %d stars\n", name, count));
-        System.out.println("----------------------------------------");
-        System.out.println("🌍 TOP 5 LANGUAGES (PR Activity)");
-        langs.forEach((name, count) -> System.out.printf("- %s: %d PRs\n", name, count));
-        System.out.println("========================================\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n========================================\n");
+        sb.append("📊 EXECUTIVE SUMMARY\n");
+        sb.append("========================================\n");
+        sb.append(String.format("Total Events Processed: %d\n", total));
+        sb.append(String.format("Malformed Lines Skipped: %d\n", errors));
+        sb.append(String.format("Total Time: %d ms\n", duration.toMillis()));
+        sb.append("----------------------------------------\n");
+        sb.append("🏆 TOP 5 REPOSITORIES (Stars)\n");
+        repos.forEach((name, count) -> sb.append(String.format("- %s: %d stars\n", name, count)));
+        sb.append("----------------------------------------\n");
+        sb.append("🌍 TOP 5 LANGUAGES (PR Activity)\n");
+        langs.forEach((name, count) -> sb.append(String.format("- %s: %d PRs\n", name, count)));
+        sb.append("========================================\n");
+        
+        log.info("{}", sb.toString());
     }
 }

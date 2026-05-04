@@ -1,10 +1,12 @@
 package com.reactivelab.threading;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 class ContextualServiceTest {
 
     @Test
@@ -16,7 +18,7 @@ class ContextualServiceTest {
                 .assertNext(result -> {
                     assertThat(result).contains(testId);
                     assertThat(result).contains("parallel");
-                    System.out.println("Result: " + result);
+                    log.info("Result: {}", result);
                 })
                 .verifyComplete();
     }

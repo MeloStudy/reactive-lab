@@ -14,8 +14,8 @@ public class ComputeService {
      */
     public Flux<String> processHeavyTasks(Flux<Integer> inputs) {
         return inputs
-            .publishOn(Schedulers.parallel())
-            .map(this::heavyComputation);
+                .publishOn(Schedulers.parallel())
+                .map(this::heavyComputation);
     }
 
     private String heavyComputation(Integer input) {

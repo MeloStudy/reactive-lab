@@ -16,11 +16,11 @@ public class ContextualService {
      */
     public Mono<String> getCorrelationIdAfterHop() {
         return Mono.deferContextual(ctx -> {
-            String id = ctx.getOrDefault(CORRELATION_ID_KEY, "NOT_FOUND");
-            return Mono.just(id);
-        })
-        .publishOn(Schedulers.parallel())
-        .map(id -> "Correlation ID [" + id + "] found on thread " + Thread.currentThread().getName());
+                    String id = ctx.getOrDefault(CORRELATION_ID_KEY, "NOT_FOUND");
+                    return Mono.just(id);
+                })
+                .publishOn(Schedulers.parallel())
+                .map(id -> "Correlation ID [" + id + "] found on thread " + Thread.currentThread().getName());
     }
 
     /**
@@ -28,6 +28,6 @@ public class ContextualService {
      */
     public Mono<String> runWithContext(String id) {
         return getCorrelationIdAfterHop()
-            .contextWrite(Context.of(CORRELATION_ID_KEY, id));
+                .contextWrite(Context.of(CORRELATION_ID_KEY, id));
     }
 }

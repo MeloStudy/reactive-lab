@@ -9,7 +9,7 @@ import reactor.core.scheduler.Schedulers;
 public class BlockingService {
 
     /**
-     * Executes a blocking call. 
+     * Executes a blocking call.
      * Without subscribeOn, this would freeze the calling thread (e.g. the Event Loop).
      */
     public Mono<String> callBlockingResource() {
@@ -25,6 +25,6 @@ public class BlockingService {
      */
     public Mono<String> callBlockingResourceSafely() {
         return callBlockingResource()
-            .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }

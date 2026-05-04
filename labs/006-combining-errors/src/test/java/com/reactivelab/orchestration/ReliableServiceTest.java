@@ -7,7 +7,7 @@ import reactor.test.publisher.PublisherProbe;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ReliableServiceTest {
+class ReliableServiceTest {
 
     @Test
     void shouldRetrySpecifiedTimes() {

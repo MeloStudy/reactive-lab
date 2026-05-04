@@ -8,16 +8,22 @@ import reactor.core.publisher.Mono;
 public class ResilientClient {
 
     /**
-     * Tries a call.
-     * 1. Logs error (Side-effect).
-     * 2. Maps technical exception to business exception (Translation).
-     * 3. Returns a default value if it fails (Fallback).
+     * Tries a call and returns a default value if it fails.
+     * Note: This swallows the error, so the translation in the pipeline is not visible to the subscriber.
      */
     public Mono<String> callWithFallback(Mono<String> remoteCall, String defaultValue) {
         return remoteCall
-                .doOnError(e -> System.err.println("Remote call failed: " + e.getMessage())) // Side-effect
-                .onErrorMap(e -> new BusinessException("Service Unavailable", e)) // Translation
-                .onErrorReturn(defaultValue); // Static Fallback
+                .doOnError(e -> System.err.println("Remote call failed: " + e.getMessage()))
+                .onErrorMap(e -> new BusinessException("Service Unavailable", e))
+                .onErrorReturn(defaultValue);
+    }
+
+    /**
+     * Tries a call and translates any technical exception into a BusinessException.
+     */
+    public Mono<String> callWithTranslation(Mono<String> remoteCall) {
+        return remoteCall
+                .onErrorMap(e -> new BusinessException("Service Translation: " + e.getMessage(), e));
     }
 
     /**

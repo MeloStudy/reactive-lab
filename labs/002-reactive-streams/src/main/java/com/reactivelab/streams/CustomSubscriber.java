@@ -22,8 +22,21 @@ public class CustomSubscriber<T> implements Subscriber<T> {
     private Throwable error;
     private boolean completed = false;
 
+    private final long initialDemand;
+
+    public CustomSubscriber() {
+        this(0); // Default to manual demand (0)
+    }
+
+    public CustomSubscriber(long initialDemand) {
+        this.initialDemand = initialDemand;
+    }
+
     @Override
     public void onSubscribe(Subscription s) {
+        // Rule 2.13: Subscription MUST NOT be null
+        if (s == null) throw new NullPointerException("Rule 2.13: Subscription cannot be null");
+
         // Rule 2.5: A Subscriber MUST NOT be called with more than one Subscription.
         // If we already have one, we MUST cancel the new one to prevent resource leaks.
         if (this.subscription != null) {
@@ -31,9 +44,11 @@ public class CustomSubscriber<T> implements Subscriber<T> {
             return;
         }
         this.subscription = s;
-        
-        // Note: We don't call request() here automatically. 
-        // This allows the test to control demand manually.
+
+        // If we have an initial demand, we request it immediately to satisfy TCK/automation.
+        if (initialDemand > 0) {
+            s.request(initialDemand);
+        }
     }
 
     @Override

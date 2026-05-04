@@ -22,6 +22,14 @@ public class PublisherTCKTest extends PublisherVerification<Integer> {
         return new CustomPublisher((int) Math.min(elements, Integer.MAX_VALUE));
     }
 
+    /**
+     * PEDAGOGICAL NOTE:
+     * Why are we implementing a failed publisher here instead of using CustomPublisher?
+     * <p>
+     * CustomPublisher is designed to emit valid sequences. The TCK requires a dedicated
+     * failing publisher to verify how subscribers handle error signals after a handshake.
+     * Implementing it in-place keeps our main logic clean of "test-only" error states.
+     */
     @Override
     public Publisher<Integer> createFailedPublisher() {
         // Rule 1.9: A failing publisher MUST signal onError

@@ -40,8 +40,18 @@ The TCK (Technology Compatibility Kit) is the ultimate judge of your implementat
 
 ### Execution
 
+Run all compliance tests:
 ```bash
+mvn test
+```
+
+Or run specific TCK tests:
+```bash
+# Publisher validation
 mvn test -Dtest=PublisherTCKTest
+
+# Subscriber validation
+mvn test -Dtest=SubscriberTCKTest
 ```
 
 ## 🧩 Implementation Deep Dive

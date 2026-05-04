@@ -8,10 +8,10 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SubscriptionGroupTest {
+class SubscriptionGroupTest {
 
     @Test
-    public void testGroupedCancellation() {
+    void testGroupedCancellation() {
         SubscriptionGroup group = new SubscriptionGroup();
 
         // Create probes to verify cancellation signals

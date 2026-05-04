@@ -9,10 +9,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LifecycleTrackerTest {
+class LifecycleTrackerTest {
 
     @Test
-    public void testLifecycleHooksExecutionOrder() {
+    void testLifecycleHooksExecutionOrder() {
         LifecycleTracker tracker = new LifecycleTracker();
         List<String> eventLog = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class LifecycleTrackerTest {
     }
 
     @Test
-    public void testLifecycleHooksOnCancel() {
+    void testLifecycleHooksOnCancel() {
         LifecycleTracker tracker = new LifecycleTracker();
         List<String> eventLog = new ArrayList<>();
 

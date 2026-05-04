@@ -6,7 +6,7 @@ import reactor.test.StepVerifier;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class PrefetchLabTest {
+class PrefetchLabTest {
 
     @Test
     void shouldObservePrefetchBehavior() {

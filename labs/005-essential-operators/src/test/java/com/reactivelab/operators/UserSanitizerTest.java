@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-public class UserSanitizerTest {
+class UserSanitizerTest {
 
     private final UserSanitizer sanitizer = new UserSanitizer();
 

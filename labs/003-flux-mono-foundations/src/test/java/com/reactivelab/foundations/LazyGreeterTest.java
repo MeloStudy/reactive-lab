@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LazyGreeterTest {
+class LazyGreeterTest {
 
     @Test
     void shouldNotExecuteSideEffectUntilSubscription() {
@@ -25,7 +25,7 @@ public class LazyGreeterTest {
         // ASSERT: Prove the "Lazy" nature. Assembly != Execution.
         assertThat(callCount.get())
                 .as("Side effect should not happen at assembly time")
-                .isEqualTo(0);
+                .isZero();
 
         // SUBSCRIPTION TIME: This is what triggers the upstream demand.
         StepVerifier.create(greetingMono)

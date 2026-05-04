@@ -5,7 +5,7 @@ import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BlockingServiceTest {
+class BlockingServiceTest {
 
     @Test
     void shouldRunOnBoundedElasticWithSubscribeOn() {

@@ -5,7 +5,7 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 
-public class StreamFactoriesTest {
+class StreamFactoriesTest {
 
     private final StreamFactories factories = new StreamFactories();
 

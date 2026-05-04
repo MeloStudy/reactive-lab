@@ -42,9 +42,11 @@ public class ChatBridge {
     // Mock Service for exercise
     public static class ExternalChatService {
         public void register(ChatListener listener) {
+            // mocked register service
         }
 
         public void unregister(ChatListener listener) {
+            // mocked unregister service
         }
     }
 }

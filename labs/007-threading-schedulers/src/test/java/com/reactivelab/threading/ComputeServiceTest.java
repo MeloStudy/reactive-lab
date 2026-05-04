@@ -6,7 +6,7 @@ import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ComputeServiceTest {
+class ComputeServiceTest {
 
     @Test
     void shouldSwitchToParallelWithPublishOn() {

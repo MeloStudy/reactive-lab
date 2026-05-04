@@ -3,7 +3,7 @@ package com.reactivelab.generation;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
-public class SequenceGeneratorTest {
+class SequenceGeneratorTest {
 
     @Test
     void shouldGenerateFibonacciSequence() {

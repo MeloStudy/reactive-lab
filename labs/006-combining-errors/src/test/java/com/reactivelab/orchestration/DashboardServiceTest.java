@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-public class DashboardServiceTest {
+class DashboardServiceTest {
 
     @Test
     void shouldZipUserAndFriends() {

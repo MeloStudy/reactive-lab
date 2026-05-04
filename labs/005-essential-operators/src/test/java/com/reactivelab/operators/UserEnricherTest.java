@@ -7,7 +7,7 @@ import reactor.test.StepVerifier;
 
 import java.time.Duration;
 
-public class UserEnricherTest {
+class UserEnricherTest {
 
     @Test
     void shouldInterleaveEmissionsWithFlatMap() {

@@ -9,10 +9,10 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FirehoseManagerTest {
+class FirehoseManagerTest {
 
     @Test
-    public void testManualCancellation() {
+    void testManualCancellation() {
         FirehoseManager manager = new FirehoseManager();
 
         // We use virtual time to test the interval without actually waiting real-world seconds.
@@ -26,7 +26,7 @@ public class FirehoseManagerTest {
     }
 
     @Test
-    public void testDisposableInterface() {
+    void testDisposableInterface() {
         FirehoseManager manager = new FirehoseManager();
 
         // Use a probe to verify cancellation signal was sent upstream

@@ -6,7 +6,7 @@ import reactor.test.StepVerifier;
 
 import java.time.Duration;
 
-public class ActivityAggregatorTest {
+class ActivityAggregatorTest {
 
     private final ActivityAggregator aggregator = new ActivityAggregator();
 

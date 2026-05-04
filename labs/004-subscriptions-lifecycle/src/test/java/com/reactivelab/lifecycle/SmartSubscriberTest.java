@@ -5,10 +5,10 @@ import reactor.core.publisher.Flux;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SmartSubscriberTest {
+class SmartSubscriberTest {
 
     @Test
-    public void testManualDemandControl() {
+    void testManualDemandControl() {
         // GIVEN: A cold Flux with 5 items
         Flux<Integer> numbers = Flux.just(1, 2, 3, 4, 5);
 

@@ -6,7 +6,7 @@ import reactor.test.StepVerifier;
 
 import java.time.Duration;
 
-public class TaskRunnerTest {
+class TaskRunnerTest {
 
     @Test
     void shouldMaintainSequentialOrderWithConcatMap() {

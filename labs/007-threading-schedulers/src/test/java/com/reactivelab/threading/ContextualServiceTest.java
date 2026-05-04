@@ -5,7 +5,7 @@ import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ContextualServiceTest {
+class ContextualServiceTest {
 
     @Test
     void shouldPropagateContextAcrossThreads() {

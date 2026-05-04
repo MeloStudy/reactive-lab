@@ -7,7 +7,7 @@ import reactor.test.StepVerifier;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ChatBridgeTest {
+class ChatBridgeTest {
 
     @Test
     void shouldBridgeMessages() {

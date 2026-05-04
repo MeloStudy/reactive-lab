@@ -6,7 +6,7 @@ import reactor.test.publisher.TestPublisher;
 
 import java.time.Duration;
 
-public class SearchDebouncerTest {
+class SearchDebouncerTest {
 
     @Test
     void shouldCancelPreviousSearchWithSwitchMap() {

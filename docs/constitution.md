@@ -27,7 +27,7 @@ With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual
 - **Native Execution**: Guide students to run `mvn test` directly in the README.
 - **Interactive Self-Assessment**: Every laboratory README MUST include a "Self-Assessment" or "Knowledge Check" section using collapsible `<details>` blocks to provide immediate pedagogical feedback.
 - **Backpressure Scenarios**: Labs involving data streams MUST explain how backpressure is handled.
-- **Testing Standard**: Labs MUST use **StepVerifier** (Project Reactor) for validating reactive sequences and signal timing.
+- **Testing Standard**: Labs MUST use **StepVerifier** (Project Reactor) for validating reactive sequences and signal timing. Following JUnit 5 and SonarQube best practices, test classes and methods MUST NOT use the `public` access modifier (package-private is preferred).
 - **Git Hygiene**: A global `.gitignore` MUST be maintained at the root. Individual labs SHOULD NOT have local `.gitignore` files unless they have unique, non-standard dependencies.
 
 
@@ -55,4 +55,4 @@ To ensure security, consistency, and maintainability across the laboratory ecosy
 - **`IMPLEMENTED`**: Code and docs complete.
 - **`AUDITED`**: Pedagogical audit passed.
 
-**Version**: 0.2.0 | **Ratified**: 2026-05-03
+**Version**: 0.2.1 | **Ratified**: 2026-05-04

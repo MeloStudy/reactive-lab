@@ -3,7 +3,6 @@ package com.reactivelab.operators;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-import reactor.test.publisher.PublisherProbe;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,17 +15,17 @@ public class PrefetchLabTest {
 
         // A source that tracks how many items were requested
         Flux<Integer> source = Flux.range(1, 100)
-            .doOnRequest(n -> requestCount.addAndGet((int) n));
+                .doOnRequest(n -> requestCount.addAndGet((int) n));
 
         // Use a low prefetch of 2
         StepVerifier.create(lab.flattenWithControl(source, 1, 2))
-            .expectSubscription()
-            .thenRequest(1) // Request 1 from flatMap
-            .expectNext(10)
-            .thenRequest(1)
-            .expectNext(20)
-            .thenCancel()
-            .verify();
+                .expectSubscription()
+                .thenRequest(1) // Request 1 from flatMap
+                .expectNext(10)
+                .thenRequest(1)
+                .expectNext(20)
+                .thenCancel()
+                .verify();
 
         // Even though we only requested 2 items from the StepVerifier, 
         // flatMap with prefetch=2 should have requested 2 from the source initially.

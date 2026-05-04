@@ -2,6 +2,7 @@ package com.reactivelab.operators;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 import java.time.Duration;
 
 /**
@@ -21,8 +22,8 @@ public class UserEnricher {
      */
     public Flux<String> enrichUserIds(Flux<Integer> ids) {
         return ids.flatMap(id -> userService.findById(id)
-            .map(user -> "User: " + user)
-            .delayElement(Duration.ofMillis(id % 10 == 0 ? 100 : 10))); // Simulate variable latency
+                .map(user -> "User: " + user)
+                .delayElement(Duration.ofMillis(id % 10 == 0 ? 100 : 10))); // Simulate variable latency
     }
 
     public interface UserService {

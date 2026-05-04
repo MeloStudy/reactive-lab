@@ -13,9 +13,9 @@ public class UserSanitizerTest {
         Flux<String> names = Flux.just("  Alice  ", "bo", "  CHARLIE  ", "", "David");
 
         StepVerifier.create(sanitizer.sanitizeNames(names))
-            .expectNext("alice")   // 1. Signal: Cleaned and lowecased
-            .expectNext("charlie") // 2. Signal: "bo" was filtered (<3 chars)
-            .expectNext("david")   // 3. Signal: "David" kept its length
-            .verifyComplete();     // 4. Assert: Terminal signal
+                .expectNext("alice")   // 1. Signal: Cleaned and lowercased
+                .expectNext("charlie") // 2. Signal: "bo" was filtered (<3 chars)
+                .expectNext("david")   // 3. Signal: "David" kept its length
+                .verifyComplete();     // 4. Assert: Terminal signal
     }
 }

@@ -15,8 +15,8 @@ public class UserSanitizer {
      */
     public Flux<String> sanitizeNames(Flux<String> input) {
         return input
-            .map(String::trim)
-            .map(String::toLowerCase)
-            .filter(name -> name.length() >= 3);
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .filter(name -> name.length() >= 3);
     }
 }

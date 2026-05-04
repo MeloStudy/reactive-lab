@@ -2,6 +2,7 @@ package com.reactivelab.operators;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 import java.time.Duration;
 
 /**
@@ -15,6 +16,6 @@ public class TaskRunner {
      */
     public Flux<String> runTasksSequentially(Flux<String> tasks) {
         return tasks.concatMap(task -> Mono.just("Finished: " + task)
-            .delayElement(Duration.ofMillis(50))); // Fixed delay to verify order
+                .delayElement(Duration.ofMillis(50))); // Fixed delay to verify order
     }
 }

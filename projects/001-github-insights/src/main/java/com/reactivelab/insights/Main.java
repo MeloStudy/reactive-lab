@@ -47,20 +47,21 @@ public class Main {
 
     private static void printSummary(long total, long errors, Duration duration, 
                                      Map<String, Long> repos, Map<String, Long> langs) {
+        String nl = System.lineSeparator();
         StringBuilder sb = new StringBuilder();
-        sb.append("\n========================================\n");
-        sb.append("📊 EXECUTIVE SUMMARY\n");
-        sb.append("========================================\n");
-        sb.append(String.format("Total Events Processed: %d\n", total));
-        sb.append(String.format("Malformed Lines Skipped: %d\n", errors));
-        sb.append(String.format("Total Time: %d ms\n", duration.toMillis()));
-        sb.append("----------------------------------------\n");
-        sb.append("🏆 TOP 5 REPOSITORIES (Stars)\n");
-        repos.forEach((name, count) -> sb.append(String.format("- %s: %d stars\n", name, count)));
-        sb.append("----------------------------------------\n");
-        sb.append("🌍 TOP 5 LANGUAGES (PR Activity)\n");
-        langs.forEach((name, count) -> sb.append(String.format("- %s: %d PRs\n", name, count)));
-        sb.append("========================================\n");
+        sb.append(nl).append("========================================").append(nl);
+        sb.append("📊 EXECUTIVE SUMMARY").append(nl);
+        sb.append("========================================").append(nl);
+        sb.append(String.format("Total Events Processed: %d%n", total));
+        sb.append(String.format("Malformed Lines Skipped: %d%n", errors));
+        sb.append(String.format("Total Time: %d ms%n", duration.toMillis()));
+        sb.append("----------------------------------------").append(nl);
+        sb.append("🏆 TOP 5 REPOSITORIES (Stars)").append(nl);
+        repos.forEach((name, count) -> sb.append(String.format("- %s: %d stars%n", name, count)));
+        sb.append("----------------------------------------").append(nl);
+        sb.append("🌍 TOP 5 LANGUAGES (PR Activity)").append(nl);
+        langs.forEach((name, count) -> sb.append(String.format("- %s: %d PRs%n", name, count)));
+        sb.append("========================================").append(nl);
         
         log.info("{}", sb.toString());
     }

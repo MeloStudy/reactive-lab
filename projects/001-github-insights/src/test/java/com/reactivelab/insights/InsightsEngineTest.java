@@ -34,16 +34,16 @@ class InsightsEngineTest {
         // Verify Top Repositories (Stars)
         StepVerifier.create(analytics.getTopRepositories(pipeline, 5))
                 .assertNext(map -> {
-                    assertThat(map.get("repo/a")).isEqualTo(3);
-                    assertThat(map.get("repo/b")).isEqualTo(1);
+                    assertThat(map).containsEntry("repo/a", 3L);
+                    assertThat(map).containsEntry("repo/b", 1L);
                 })
                 .verifyComplete();
 
         // Verify Top Languages
         StepVerifier.create(analytics.getTopLanguages(pipeline, 5))
                 .assertNext(map -> {
-                    assertThat(map.get("Java")).isEqualTo(2);
-                    assertThat(map.get("Python")).isEqualTo(1);
+                    assertThat(map).containsEntry("Java", 2L);
+                    assertThat(map).containsEntry("Python", 1L);
                 })
                 .verifyComplete();
     }

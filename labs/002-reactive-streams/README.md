@@ -44,6 +44,33 @@ The TCK (Technology Compatibility Kit) is the ultimate judge of your implementat
 mvn test -Dtest=PublisherTCKTest
 ```
 
+## 🧩 Implementation Deep Dive
+
+### 1. The WIP Drain Loop Pattern
+This is the "heartbeat" of reactive libraries. It solves the problem of how to emit data safely and sequentially without using heavy locks (`synchronized`).
+
+- **The Gatekeeper (Mutual Exclusion)**: We use an `AtomicInteger wip`. Only the thread that successfully transitions the value from 0 to 1 enters the emission loop. Others simply mark that "there is more work" by incrementing the value and exiting.
+- **The Drain (Emission)**: The thread that entered the loop emits elements as long as there is accumulated demand.
+- **The Catch-up (WIP Check)**: Before exiting, the thread checks if the `wip` is greater than 1. If it is, it means new demand arrived while it was emitting, so it executes the loop again instead of exiting.
+
+This ensures compliance with **Rule 1.2**: `onNext` signals MUST be serialized.
+
+### 2. Why not `synchronized`?
+We use `AtomicLong` with a **CAS (Compare-And-Swap) Loop** for demand management:
+- **Efficiency**: `synchronized` is a heavy-weight lock that can block threads and cause context switches.
+- **Lock-Free**: CAS uses CPU-level instructions to update values atomically without ever putting a thread to sleep.
+- **Scalability**: In high-throughput systems, lock-free structures scale much better than monitors.
+- **Overflow Handling**: In Java, adding to `Long.MAX_VALUE` results in a negative value (bit wrap-around). The spec requires us to detect this and cap the demand at `Long.MAX_VALUE` to signify "unbounded" demand.
+
+### 3. Backpressure in Action
+This lab demonstrates **Pull-based Backpressure**:
+1. The `Publisher` is ready to emit `count` items but waits.
+2. The `Subscriber` calls `request(n)`.
+3. The `Subscription` increments the `demand` and triggers `drain()`.
+4. Elements are "pushed" to the `Subscriber` only up to the requested amount.
+
+---
+
 ## 🔍 TCK Failure & Spec Rule Guide
 
 The TCK (Technology Compatibility Kit) runs rigorous tests. If your implementation fails, refer to this guide to understand which part of the **Reactive Streams Specification** is being violated:

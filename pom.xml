@@ -21,6 +21,7 @@
         <module>labs/007-threading-schedulers</module>
         <module>labs/008-programmatic-streams</module>
         <module>labs/009-backpressure-strategies</module>
+        <module>labs/010-testing-debugging-matrix</module>
         <module>projects/001-github-insights</module>
     </modules>
 
@@ -39,6 +40,7 @@
         <junit.version>5.10.1</junit.version>
         <assertj.version>3.27.7</assertj.version>
         <testng.version>7.7.0</testng.version>
+        <blockhound.version>1.0.8.RELEASE</blockhound.version>
     </properties>
 
     <dependencyManagement>
@@ -96,6 +98,13 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+
+            <!-- BlockHound -->
+            <dependency>
+                <groupId>io.projectreactor.tools</groupId>
+                <artifactId>blockhound</artifactId>
+                <version>${blockhound.version}</version>
             </dependency>
 
             <!-- Lombok -->

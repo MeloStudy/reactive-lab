@@ -45,7 +45,7 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
   - Concepts: Non-blocking DB drivers, Connection Pooling in R2DBC, Spring Data R2DBC repositories.
 - [x] (AUDITED) **LAB-015: Reactive Persistence with MongoDB**
   - Concepts: Reactive Streams with NoSQL, Tailable Cursors, Change Streams, GridFS.
-- [ ] **LAB-016: Reactive Context & Tracing Propagation**
+- [x] (AUDITED) **LAB-016: Reactive Context & Tracing Propagation**
   - Concepts: `Reactor Context`, Propagating MDC (Logging) and Security state across reactive threads.
 - [ ] **MINI-PROJECT-2: The Reactive Store Microservice**
   - Objective: Building a complete microservice with WebFlux, WebClient orchestration, and Context propagation.

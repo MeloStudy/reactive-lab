@@ -35,3 +35,28 @@ Reactor provides a `Context` which is a key-value store tied to the **Subscripti
 - It is immutable.
 - Use `contextWrite()` to add data and `deferContextual()` to read it.
 - It survives thread hops because it follows the signal path, not the thread stack.
+
+## 5. Anatomy of a Scheduler (Under the Hood)
+
+A Scheduler is more than just a Thread Pool; it is an asynchronous event manager.
+
+### The "Timer Wheel"
+When you use `delayElement` or time-based operations, Reactor does not "sleep" a thread.
+1.  It registers a task in a data structure called a **Timer Wheel**.
+2.  It **releases the thread** immediately so it can process other signals.
+3.  A single lightweight control thread rotates the "wheel," and when the time expires, it places the resumption task into the Scheduler's work queue.
+
+### The Work Queue
+Each thread in the Scheduler (Worker) consumes from a queue. If a Worker is busy, the signal waits in the queue. This ensures the CPU is always occupied with real work, not waiting for I/O.
+
+---
+
+## 6. The Event Loop Bridge (Netty)
+
+In Java, the reactive engine is typically **Netty**. Unlike Node.js (which has a single Event Loop), Java utilizes an **`EventLoopGroup`**.
+
+1.  **Thread Affinity**: By default, there is one Event Loop per CPU core.
+2.  **Non-Blocking**: The Event Loop uses OS mechanisms (`epoll`, `kqueue`) to delegate network waiting to the Kernel.
+3.  **Notification**: When the OS Kernel detects data on the Network Interface Card (NIC), it notifies the Event Loop, which then places the continuation task on the corresponding Scheduler.
+
+> **Important**: Reactive efficiency comes from keeping data on the same Event Loop for as long as possible to avoid expensive **Context Switches** (jumping between threads).

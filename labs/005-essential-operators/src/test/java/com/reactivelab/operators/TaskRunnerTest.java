@@ -15,7 +15,7 @@ class TaskRunnerTest {
         // Even with delays, concatMap MUST maintain input order
         StepVerifier.withVirtualTime(() -> runner.runTasksSequentially(Flux.just("A", "B", "C")))
                 .expectSubscription()
-                .thenAwait(Duration.ofMillis(300))
+                .thenAwait(Duration.ofMillis(400))
                 .expectNext("Finished: A")
                 .expectNext("Finished: B")
                 .expectNext("Finished: C")

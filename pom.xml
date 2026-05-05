@@ -26,6 +26,7 @@
         <module>labs/012-webclient-orchestration</module>
         <module>labs/013-error-handling-resilience</module>
         <module>labs/014-reactive-persistence-r2dbc</module>
+        <module>labs/015-reactive-persistence-mongodb</module>
         <module>projects/001-github-insights</module>
     </modules>
 

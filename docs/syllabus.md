@@ -43,7 +43,7 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
   - Concepts: Global Error Handlers, `onErrorReturn`, `onErrorResume`, `retry`, `timeout` at the web layer.
 - [x] (AUDITED) **LAB-014: Reactive Persistence with R2DBC**
   - Concepts: Non-blocking DB drivers, Connection Pooling in R2DBC, Spring Data R2DBC repositories.
-- [ ] **LAB-015: Reactive Persistence with MongoDB**
+- [x] (AUDITED) **LAB-015: Reactive Persistence with MongoDB**
   - Concepts: Reactive Streams with NoSQL, Tailable Cursors, Change Streams, GridFS.
 - [ ] **LAB-016: Reactive Context & Tracing Propagation**
   - Concepts: `Reactor Context`, Propagating MDC (Logging) and Security state across reactive threads.

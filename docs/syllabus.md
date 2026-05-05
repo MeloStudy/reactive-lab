@@ -39,7 +39,7 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
   - Concepts: Annotated Controllers vs Functional Endpoints (`RouterFunction`), Server-Sent Events (SSE), Streaming JSON.
 - [x] (AUDITED) **LAB-012: WebClient: Orchestrating Downstream Services**
   - Concepts: `retrieve()` vs `exchange()`, non-blocking HTTP calls, zip/flatmap for service orchestration.
-- [ ] **LAB-013: Error Handling & Resilience in WebFlux**
+- [x] (AUDITED) **LAB-013: Error Handling & Resilience in WebFlux**
   - Concepts: Global Error Handlers, `onErrorReturn`, `onErrorResume`, `retry`, `timeout` at the web layer.
 - [ ] **LAB-014: Reactive Persistence with R2DBC**
   - Concepts: Non-blocking DB drivers, Connection Pooling in R2DBC, Spring Data R2DBC repositories.

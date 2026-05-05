@@ -41,9 +41,11 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
   - Concepts: `retrieve()` vs `exchange()`, non-blocking HTTP calls, zip/flatmap for service orchestration.
 - [x] (AUDITED) **LAB-013: Error Handling & Resilience in WebFlux**
   - Concepts: Global Error Handlers, `onErrorReturn`, `onErrorResume`, `retry`, `timeout` at the web layer.
-- [ ] **LAB-014: Reactive Persistence with R2DBC**
+- [ ] (READY) **LAB-014: Reactive Persistence with R2DBC**
   - Concepts: Non-blocking DB drivers, Connection Pooling in R2DBC, Spring Data R2DBC repositories.
-- [ ] **LAB-015: Reactive Context & Tracing Propagation**
+- [ ] **LAB-015: Reactive Persistence with MongoDB**
+  - Concepts: Reactive Streams with NoSQL, Tailable Cursors, Change Streams, GridFS.
+- [ ] **LAB-016: Reactive Context & Tracing Propagation**
   - Concepts: `Reactor Context`, Propagating MDC (Logging) and Security state across reactive threads.
 - [ ] **MINI-PROJECT-2: The Reactive Store Microservice**
   - Objective: Building a complete microservice with WebFlux, WebClient orchestration, and Context propagation.
@@ -51,19 +53,19 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
 ## Level 4: Resilient & Event-Driven Systems
 Focus: Production-grade patterns, observability, and integrating with streaming platforms.
 
-- [ ] **LAB-016: Advanced Resilience Patterns (Resilience4j)**
+- [ ] **LAB-017: Advanced Resilience Patterns (Resilience4j)**
   - Concepts: Circuit Breakers, Bulkheads, Rate Limiters, and Time Limiters integrated with Reactor.
-- [ ] **LAB-017: Observability & Tracing (Zipkin/Jaeger)**
+- [ ] **LAB-018: Observability & Tracing (Zipkin/Jaeger)**
   - Concepts: Micrometer Observation, Distributed Tracing, Span propagation in non-blocking pipelines.
-- [ ] **LAB-018: Reactive Messaging with Apache Kafka**
+- [ ] **LAB-019: Reactive Messaging with Apache Kafka**
   - Concepts: Reactor Kafka, non-blocking Producer/Consumer, backpressure-aware message processing.
 
 ## Level 5: The New Frontier & Final Project
 Focus: Modern Java concurrency comparisons and consolidation in a real-world architecture.
 
-- [ ] **LAB-019: Modern Concurrency: Virtual Threads vs Reactive Streams**
+- [ ] **LAB-020: Modern Concurrency: Virtual Threads vs Reactive Streams**
   - Concepts: Project Loom (Virtual Threads) vs Project Reactor. Performance benchmarks and decision matrix.
-- [ ] **LAB-020: Alternative Frameworks: Quarkus Mutiny**
+- [ ] **LAB-021: Alternative Frameworks: Quarkus Mutiny**
   - Concepts: The `Uni` and `Multi` pattern, Quarkus reactive ecosystem vs Spring WebFlux.
 - [ ] **CAPSTONE PROJECT: Event-Driven Reactive Architecture**
   - Objective: Build a distributed system with WebFlux, R2DBC, and Kafka handling high throughput.

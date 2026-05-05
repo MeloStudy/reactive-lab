@@ -42,5 +42,18 @@ Flattening operators don't just "merge" streams; they manage buffers and demand.
 > [!NOTE]
 > By default, `flatMap` has a prefetch of **256**. This means it will eagerly request 256 items from the source to maximize throughput, potentially overwhelming downstream if not handled correctly.
 
-## 4. `flatMapIterable`
+## 5. Deep Dive: Logical Concurrency vs. Physical Parallelism
+
+Understanding the difference between these two is critical for mastering `flatMap`.
+
+### Logical Concurrency
+Is the ability to **deal** with many things at once. In `flatMap`, we can have thousands of active inner `Monos` waiting for network or time. They are all "concurrently alive" in memory as state machines.
+
+### Physical Parallelism
+Is the ability to **do** many things at once. This requires multiple CPU cores and multiple threads.
+
+> [!TIP]
+> `flatMap` is inherently **concurrent**, but not necessarily **parallel**. If you process 100 IDs and they all complete within the same thread of the Event Loop, you have concurrency (managing 100 flows) without parallelism (only 1 thread was used). This is the efficiency of the Reactive model!
+
+## 6. `flatMapIterable`
 When your transformation returns an `Iterable` (like a `List`) instead of a `Publisher`, use `flatMapIterable`. It is much more efficient than `flatMap(Flux::fromIterable)` because it avoids the overhead of creating multiple `Flux` instances.

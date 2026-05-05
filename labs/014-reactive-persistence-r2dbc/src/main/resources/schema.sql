@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DOUBLE PRECISION NOT NULL,
+    stock INTEGER NOT NULL,
+    metadata JSONB
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    id SERIAL PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    quantity INTEGER NOT NULL,
+    total_amount DOUBLE PRECISION NOT NULL
+);

@@ -85,10 +85,10 @@ A key part of the reactive mindset is understanding that **the application threa
 
 | Task Type | Who handles it? | How we handle it (Looking ahead to Java) |
 | :--- | :--- | :--- |
-| **I/O (Network, API, Files)** | **The OS Kernel** (NIO) | The thread just registers a callback and moves on. |
-| **Reactive Database** | **The OS Socket** | Non-blocking drivers keep the thread free. |
-| **Legacy DB (JDBC)** | **A Specialized Thread Pool** | We isolate the "blocking" part to a side pool so it doesn't kill the main loop. |
-| **CPU Heavy (Math, Encryption)** | **All CPU Cores** | Parallel computation across all physical cores. |
+| **I/O (Network, API, Files)** | **The OS Kernel** (NIO) | The thread registers a callback in the **Event Loop** and moves on. The **NIC** triggers an interrupt when data arrives. |
+| **Reactive Database** | **The OS Socket** | Non-blocking drivers (R2DBC) use the OS to wait for bytes, keeping threads free. |
+| **Legacy DB (JDBC)** | **A Specialized Thread Pool** | We isolate the "blocking" part to `boundedElastic()` so it doesn't kill the main loop. |
+| **CPU Heavy (Math, Encryption)** | **All CPU Cores** | Parallel computation across physical cores via `Schedulers.parallel()`. |
 | **Memory Heavy (Huge Files)** | **Streaming (The Window)** | We don't load the whole file; we process small "windows" of data. |
 
 > **Mindset Tip**: In the reactive world, if you find yourself waiting for a result, you've failed to delegate.
@@ -175,3 +175,16 @@ To truly understand the mindset shift, let's look at how common problems are sol
 | **Errors** | Exceptions (Flow breakers) | Signals (onError) |
 | **Scalability** | Limited by Thread count | Limited by CPU/Memory |
 | **Complexity** | Lower (Sequential) | Higher (Functional/Async) |
+
+---
+
+## 11. The Event Loop in the Java Ecosystem
+
+It is often said that the Event Loop is a Node.js thing, but in Java, it is the engine that drives **Spring WebFlux** (via Netty).
+
+### Java vs. Node.js
+*   **Node.js**: Uses a single Event Loop (one single thread). If that thread blocks, the entire application dies.
+*   **Java (Netty)**: Uses an **`EventLoopGroup`**. By default, it creates one Event Loop thread for each available CPU core. This means Java can process multiple event loops in parallel, combining the best of the asynchronous world with the power of multi-core hardware.
+
+### The Role of the Network (NIC)
+Your code does not "wait" for the network card. The Event Loop asks the **OS Kernel** to watch it. When the **NIC** receives packets, the Kernel wakes up the Event Loop so it can execute your logic. The "Wait" is physical and external to the JVM.

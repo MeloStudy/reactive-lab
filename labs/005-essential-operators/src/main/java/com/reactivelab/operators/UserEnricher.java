@@ -18,12 +18,18 @@ public class UserEnricher {
 
     /**
      * Enriches IDs by fetching user details asynchronously.
-     * Rule: flatMap allows for concurrency and interleaving of emissions.
+     *
+     * Why is this asynchronous?
+     * 1. flatMap subscribes to multiple Monos (from userService) concurrently.
+     * 2. delayElement releases the thread, simulating non-blocking I/O.
+     * 3. Interleaving: Because of variable latency (10ms vs 100ms),
+     *    emissions may return in a different order than requested.
      */
     public Flux<String> enrichUserIds(Flux<Integer> ids) {
         return ids.flatMap(id -> userService.findById(id)
                 .map(user -> "User: " + user)
-                .delayElement(Duration.ofMillis(id % 10 == 0 ? 100 : 10))); // Simulate variable latency
+                // delayElement forces a thread switch, proving non-blocking behavior
+                .delayElement(Duration.ofMillis(id % 10 == 0 ? 100 : 10)));
     }
 
     public interface UserService {

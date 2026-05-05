@@ -7,6 +7,7 @@ Transformation is the most common operation in a reactive pipeline. While synchr
 ### `map(T -> V)`
 A synchronous 1-to-1 transformation. It receives a value and returns a new value.
 - **Rule**: Must be a pure function.
+- **Thread Affinity**: Executes on the same thread that emitted the element.
 - **Best for**: Formatting, simple logic, mapping to DTOs.
 
 ### `filter(T -> boolean)`
@@ -17,27 +18,29 @@ A synchronous filter. If it returns false, the item is dropped, and the operator
 When you need to transform an item into another **Publisher** (e.g., calling an async DB or Web service), you cannot use `map`. You need an operator that "flattens" the inner stream into the main pipeline.
 
 ### `flatMap` (Concurrent & Interleaved)
-- **Behavior**: Subscribes to inner publishers as they arrive.
-- **Ordering**: **NOT guaranteed**. If Inner B is faster than Inner A, B will emit first.
-- **Best for**: Performance and maximum throughput.
+- **Behavior**: Subscribes to inner publishers as they arrive, up to a `concurrency` limit.
+- **Asynchrony**: Truly non-blocking. It doesn't wait for one result to return before requesting the next.
+- **Ordering**: **NOT guaranteed**. Faster inner streams will "overtake" slower ones.
+- **Best for**: Performance and maximum throughput where order doesn't matter.
 
 ### `concatMap` (Sequential & Ordered)
-- **Behavior**: Subscribes to the first inner publisher and **waits** for it to complete before subscribing to the next.
-- **Ordering**: **Guaranteed**.
-- **Best for**: Tasks that must happen in a specific sequence (e.g., DB updates).
+- **Behavior**: Subscribes to the first inner publisher and **waits** for it to complete (`onComplete`) before subscribing to the next.
+- **Ordering**: **Guaranteed** to match the source order.
+- **Best for**: Sequential tasks (e.g., dependent DB updates) or when ordering is a business requirement.
 
 ### `switchMap` (Latest-only & Cancellation)
-- **Behavior**: When a new item arrives from the source, it **cancels** the previous inner subscription and starts the new one.
-- **Best for**: Autocomplete, search bars, or any scenario where the latest data renders previous data obsolete.
+- **Behavior**: When a new item arrives from the source, it **immediately cancels** the previous inner subscription and starts the new one.
+- **Best for**: Scenarios where only the latest data is relevant (e.g., search-as-you-type, autocomplete).
 
 ## 3. Prefetch & Concurrency
 
- flattening operators don't just "merge" streams; they manage buffers.
+Flattening operators don't just "merge" streams; they manage buffers and demand.
 
-- **Concurrency**: How many inner publishers can be active at the same time.
-- **Prefetch**: How many items the operator requests from the source *before* it actually needs them, to keep its internal buffer full.
+- **Concurrency**: The maximum number of active inner subscriptions allowed at once.
+- **Prefetch**: The number of elements requested from the upstream source in advance to keep the internal queue populated.
 
-By default, `flatMap` has a prefetch of **256**. This means it will request 256 items from the source as soon as it is subscribed to, even if it hasn't processed one yet!
+> [!NOTE]
+> By default, `flatMap` has a prefetch of **256**. This means it will eagerly request 256 items from the source to maximize throughput, potentially overwhelming downstream if not handled correctly.
 
 ## 4. `flatMapIterable`
 When your transformation returns an `Iterable` (like a `List`) instead of a `Publisher`, use `flatMapIterable`. It is much more efficient than `flatMap(Flux::fromIterable)` because it avoids the overhead of creating multiple `Flux` instances.

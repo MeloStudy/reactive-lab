@@ -11,11 +11,14 @@ import java.time.Duration;
 public class TaskRunner {
 
     /**
-     * Executes tasks sequentially.
-     * Rule: concatMap waits for the previous inner publisher to complete before subscribing to the next.
+     * Executes tasks sequentially, preserving source order.
+     *
+     * concatMap waits for the previous inner publisher to complete
+     * before subscribing to the next one.
+     * Use this when ordering is critical or for sequence-dependent updates.
      */
     public Flux<String> runTasksSequentially(Flux<String> tasks) {
         return tasks.concatMap(task -> Mono.just("Finished: " + task)
-                .delayElement(Duration.ofMillis(50))); // Fixed delay to verify order
+                .delayElement(Duration.ofMillis(50))); // Fixed delay preserves order
     }
 }

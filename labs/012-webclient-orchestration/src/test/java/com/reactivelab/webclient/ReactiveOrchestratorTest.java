@@ -33,16 +33,20 @@ class ReactiveOrchestratorTest {
             public MockResponse dispatch(okhttp3.mockwebserver.RecordedRequest request) {
                 try {
                     String path = request.getPath();
-                    if (path.matches("/users/\\d+$")) {
-                        User user = User.builder().id("1").username("melo").preferenceId("pref_123").build();
-                        return new MockResponse().setBody(objectMapper.writeValueAsString(user))
-                                .addHeader("Content-Type", "application/json");
-                    } else if (path.matches("/users/\\d+/orders$")) {
+                    if (path.matches("/users/\\d+/orders$")) {
                         List<Order> orders = List.of(
                                 Order.builder().id("101").product("Keyboard").build(),
                                 Order.builder().id("102").product("Mouse").build()
                         );
-                        return new MockResponse().setBody(objectMapper.writeValueAsString(orders))
+                        return new MockResponse()
+                                .setBody(objectMapper.writeValueAsString(orders))
+                                .setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS)
+                                .addHeader("Content-Type", "application/json");
+                    } else if (path.matches("/users/\\d+$")) {
+                        User user = User.builder().id("1").username("melo").preferenceId("pref_123").build();
+                        return new MockResponse()
+                                .setBody(objectMapper.writeValueAsString(user))
+                                .setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS)
                                 .addHeader("Content-Type", "application/json");
                     } else if (path.matches("/preferences/.*")) {
                         Preference preference = Preference.builder().id("pref_123").theme("DARK").build();

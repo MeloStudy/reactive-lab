@@ -41,7 +41,7 @@
         <project-reactor.bom.version>2023.0.5</project-reactor.bom.version>
         <reactive-streams.version>1.0.4</reactive-streams.version>
         <slf4j.version>2.0.12</slf4j.version>
-        <logback.version>1.4.14</logback.version>
+        <logback.version>1.5.13</logback.version>
         <lombok.version>1.18.46</lombok.version>
         <junit.version>5.10.1</junit.version>
         <assertj.version>3.27.7</assertj.version>

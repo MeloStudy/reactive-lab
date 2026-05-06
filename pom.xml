@@ -13,6 +13,7 @@
     <description>Parent POM for all Reactive Programming laboratories</description>
 
     <modules>
+        <module>labs/000-shared-resources</module>
         <module>labs/002-reactive-streams</module>
         <module>labs/003-flux-mono-foundations</module>
         <module>labs/004-subscriptions-lifecycle</module>
@@ -109,6 +110,16 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <!-- Global Dependencies inherited by all Labs -->
+    <dependencies>
+        <dependency>
+            <groupId>com.reactivelab</groupId>
+            <artifactId>000-shared-resources</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>

@@ -39,7 +39,7 @@ class SocialFeedServiceTest {
         Flux<String> remote = Flux.just("Remote 1", "Remote 2")
                 .delayElements(Duration.ofMillis(10));
 
-        StepVerifier.withVirtualTime(() -> service.combineFeedsSequentially(cache, remote))
+        StepVerifier.withVirtualTime(() -> service.combineFeedsSequentially(cache, remote).log("sequential-feed"))
                 .expectSubscription()
                 .thenAwait(Duration.ofMillis(500))
                 // Cache MUST complete before Remote starts, even if Remote is faster

@@ -8,9 +8,11 @@
 2. Configure `pom.xml` (Java 21, Reactor).
 3. Package: `com.reactivelab.threading`.
 
-## Phase 2: Threading Mechanics
-1. **Scenario 1 (subscribeOn)**: Implement `BlockingService`. Show how `Thread.sleep` blocks the caller. Fix it with `subscribeOn(boundedElastic)`.
-2. **Scenario 2 (publishOn)**: Implement `ComputeService`. Use `publishOn(parallel)` to move expensive `map` operations.
+## Phase 2: Execution Control
+1. **Scenario 1 (Blocking)**: Implement `BlockingService`. Use `subscribeOn(boundedElastic)`.
+2. **Scenario 2 (Compute)**: Implement `ComputeService`. Use `publishOn(parallel)`.
+3. **Scenario 4 (Trap)**: Implement a test demonstrating `subscribeOn` immutability.
+4. **Scenario 5 (Virtual Threads)**: Add `Schedulers.fromExecutor(Executors.newVirtualThreadPerTaskExecutor())` demo.
 3. **Testing**: Use `Thread.currentThread().getName()` assertions within the pipeline to verify hops.
 
 ## Phase 3: The Context Bridge

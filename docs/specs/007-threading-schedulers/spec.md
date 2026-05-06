@@ -15,6 +15,7 @@
   - LO-003: Influence source execution context with `subscribeOn`.
   - LO-004: Select appropriate Schedulers (`parallel`, `boundedElastic`, `single`).
   - LO-005: Propagate immutable state across threads using the Reactor `Context`.
+  - LO-006: **Virtual Threads (Loom)**: Understand how to use Virtual Thread Executors as Schedulers.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -30,9 +31,13 @@ The learner will perform a heavy computation (e.g., recursive Fibonacci) inside 
 The learner will try to use a `ThreadLocal` value after a `publishOn` call and observe it returns `null`. They must refactor the code to use `.contextWrite()` and `deferContextual()` to propagate the value.
 **Validation**: Verify that the value is successfully retrieved even after multiple thread hops.
 
-### Scenario 4 - The Scheduler Trap (Priority: P2)
+### Scenario 4 - The Scheduler Trap (Priority: P1)
 Demonstrate the "Immutable Upstream" rule: Using multiple `subscribeOn` calls and verifying that only the first one (closest to the source) has an effect.
-**Validation**: Assert the thread name of the initial emission.
+**Validation**: Assert the thread name of the initial emission matches the FIRST scheduler.
+
+### Scenario 5 - The Virtual Thread Alternative (Priority: P2)
+Replace `boundedElastic` with a Virtual Thread Executor using `Schedulers.fromExecutor`.
+**Validation**: Verify that the execution thread is a Virtual Thread.
 
 ---
 

@@ -11,6 +11,7 @@ Reactor uses `Schedulers` to manage pools of threads:
 - **`Schedulers.single()`**: A single, reusable thread.
 - **`Schedulers.parallel()`**: Optimized for CPU-intensive work (N threads = N cores).
 - **`Schedulers.boundedElastic()`**: Optimized for I/O-intensive work (grows as needed, then shrinks). **Use this for blocking legacy code.**
+- **`Schedulers.fromExecutor(Executor)`**: Allows you to use any custom pool, including Java 21's Virtual Threads.
 
 ## 3. The Operators
 
@@ -60,3 +61,24 @@ In Java, the reactive engine is typically **Netty**. Unlike Node.js (which has a
 3.  **Notification**: When the OS Kernel detects data on the Network Interface Card (NIC), it notifies the Event Loop, which then places the continuation task on the corresponding Scheduler.
 
 > **Important**: Reactive efficiency comes from keeping data on the same Event Loop for as long as possible to avoid expensive **Context Switches** (jumping between threads).
+
+## 7. The Scheduler Trap (Immutable Upstream)
+
+A common mistake is thinking that `subscribeOn` works like `publishOn`.
+- `publishOn` switches threads **downstream** (forward in the pipeline).
+- `subscribeOn` switches threads **upstream** (backward to the source).
+
+**The Rule**: If you have multiple `subscribeOn` operators, only the one **closest to the source** defines the thread that performs the initial emission. All subsequent `subscribeOn` calls are effectively ignored for the purpose of emission context.
+
+## 8. Schedulers vs. Virtual Threads (Java 21+)
+
+With the arrival of Project Loom (Virtual Threads), do we still need Schedulers?
+
+| Feature | Schedulers (Platform Threads) | Virtual Threads (Loom) |
+| :--- | :--- | :--- |
+| **Footprint** | Heavy (~1MB per thread stack). | Lightweight (Bytes per stack). |
+| **Blocking** | Expensive. Ties up a kernel thread. | Cheap. Parked on the heap. |
+| **Usage** | Best for CPU-parallel work. | Best for massive blocking I/O. |
+| **Integration** | Native to Reactor. | Integrated via `Schedulers.fromExecutor`. |
+
+**Verdict**: Use `Schedulers.parallel()` for CPU work. For blocking I/O, you can now choose between `boundedElastic` (stable, pooled) or `Virtual Threads` (unbounded, extremely scalable).

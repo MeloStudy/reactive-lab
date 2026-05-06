@@ -19,6 +19,14 @@ Mastering a single stream is only half the battle. In real-world systems, you mu
 - **Rule of Order**: **Strictly Sequential**.
 - **Best for**: Task dependencies (e.g., Step 1 then Step 2).
 
+## 2. Choosing the Right Operator
+
+| Operator | Subscription Type | Emission Order | Best For |
+| :--- | :--- | :--- | :--- |
+| **`zip`** | Simultaneous | Paired (Tuple) | Aggregating data for a single object. |
+| **`merge`** | Simultaneous (Eager) | Interleaved | Performance/Latency when order is irrelevant. |
+| **`concat`** | Sequential (Lazy) | Strict Order | Dependent steps or cache-then-remote logic. |
+
 ## 2. The Error Channel
 
 In Reactive Streams, an **Error is a Terminal Signal**. Once a publisher emits an `onError` signal, the subscription is cancelled, and the stream is considered "dead". 
@@ -44,8 +52,12 @@ To build resilient systems, we use operators to "catch" and handle these errors 
    - Swallows the error and switches to an entirely new `Publisher`.
    - Use for calling backup services or fallback logic.
 
-## 3. Resilience Basics: `retry(n)`
+## 4. The Error Terminal Rule
 
-`retry` does not "fix" an error; it **re-subscribes** to the source from the beginning.
-- **Warning**: This works well for transient errors (network glitch) but can be dangerous for permanent errors (invalid input), as it will just fail again.
-- **Rule**: Only retry operations that are **Idempotent**.
+In Reactive Streams, **Errors are terminal signals**. This is a fundamental concept:
+- Once a `Publisher` sends an `onError`, the `Subscriber` is cancelled.
+- The pipeline for that specific subscription is **effectively dead**.
+- Recovery operators like `onErrorResume` work by **swallowing** the error signal and **starting a new subscription** to a different publisher. This is why it's called "Resume".
+
+> [!IMPORTANT]
+> A stream that has been "recovered" is actually a **new stream** that started where the old one failed.

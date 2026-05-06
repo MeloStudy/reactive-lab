@@ -7,6 +7,8 @@ import reactor.test.publisher.PublisherProbe;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class ReliableServiceTest {
 
     @Test
@@ -32,9 +34,6 @@ class ReliableServiceTest {
 
         // 1 initial attempt + 2 retries = 3 subscriptions
         probe.assertWasSubscribed();
-        // Since retry(n) means n TOTAL attempts or n RETRY attempts?
-        // In Reactor, retry(3) means 3 additional attempts (total 4).
-        // Let's verify exactly how many times it was called.
-        assert attempts.get() == 3;
+        assertThat(attempts.get()).isEqualTo(3);
     }
 }

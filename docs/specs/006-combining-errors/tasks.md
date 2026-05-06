@@ -1,28 +1,22 @@
-# Tasks: LAB-006: Combining & Basic Error Handling
+# Tasks: LAB-006: Combining & Basic Error Handling (REFINEMENT)
 
 ## Phase 1: Infrastructure
-- [ ] T001 Initialize Maven `pom.xml` and package structure.
-- [ ] T002 Verify project compiles.
+- [x] T001 Initialize Maven `pom.xml` and package structure.
+- [x] T002 Verify project compiles.
 
-## Phase 2: Stream Combination
-- [ ] T003 Implement `DashboardService` using `zip`.
-- [ ] T004 Implement `ActivityAggregator` using `merge` and `concat`.
-- [ ] T005 Test combination scenarios (order and interleaving).
+## Phase 2: Stream Combination Refinement
+- [/] T003 Refactor `ActivityAggregator` to `SocialFeedService`.
+- [ ] T004 Implement `merge` for interleaved feeds.
+- [ ] T005 Implement `concat` for sequential loading.
+- [ ] T006 Test combination scenarios with virtual time.
 
-## Phase 3: Error Handling Strategies
-- [ ] T006 Implement `ResilientClient` with `doOnError` and `onErrorReturn`.
-- [ ] T007 Implement exception translation with `onErrorMap`.
-- [ ] T008 Implement failover logic with `onErrorResume`.
+## Phase 3: Pedagogical Enrichment
+- [ ] T007 Add SLF4J logging and inline comments to all services.
+- [ ] T008 Update `CONCEPT.md` with "When to use what" table.
+- [ ] T009 Update `README.md` with Social Feed scenario.
+- [ ] T010 Add relative code links to `README.md`.
+- [ ] T011 Enhance "Knowledge Check" quiz.
 
-## Phase 4: Resilience Foundations
-- [ ] T009 Implement transient error recovery with `retry`.
-- [ ] T010 Verify retry count using `PublisherProbe`.
-
-## Phase 5: Educational Content
-- [ ] T011 Write `CONCEPT.md` (Marble diagrams and Error Channel).
-- [ ] T012 Write `README.md` with "Knowledge Check" quiz.
-- [ ] T013 Add Command Dissection for `zip` and `onErrorResume`.
-
-## Phase 6: Final Audit
-- [ ] T014 Verify all tests pass.
-- [ ] T015 Final pedagogical certification.
+## Phase 4: Final Certification
+- [ ] T012 Run all tests and verify SC-001.
+- [ ] T013 Final pedagogical audit and set status to AUDITED.

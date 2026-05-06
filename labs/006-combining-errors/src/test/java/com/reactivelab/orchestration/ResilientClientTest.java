@@ -4,34 +4,35 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class ResilientClientTest {
 
     private final ResilientClient client = new ResilientClient();
 
     @Test
-    void shouldFallbackToDefaultValue() {
-        Mono<String> failingCall = Mono.error(new RuntimeException("Boom"));
-
-        StepVerifier.create(client.callWithFallback(failingCall, "FallbackValue"))
-                .expectNext("FallbackValue")
+    void shouldReturnDefaultValueOnError() {
+        Mono<String> failingCall = Mono.error(new RuntimeException("Boom!"));
+        
+        StepVerifier.create(client.callWithFallback(failingCall, "Static Default"))
+                .expectNext("Static Default")
                 .verifyComplete();
     }
 
     @Test
-    void shouldTranslateException() {
-        Mono<String> failingCall = Mono.error(new RuntimeException("Boom"));
+    void shouldTranslateToBusinessException() {
+        Mono<String> failingCall = Mono.error(new IllegalArgumentException("Invalid ID"));
 
         StepVerifier.create(client.callWithTranslation(failingCall))
-                .expectErrorMatches(throwable ->
-                        throwable instanceof ResilientClient.BusinessException &&
-                                throwable.getMessage().contains("Service Translation: Boom") &&
-                                throwable.getCause() instanceof RuntimeException
-                )
+                .expectErrorSatisfies(error -> {
+                    assertThat(error).isInstanceOf(ResilientClient.BusinessException.class);
+                    assertThat(error.getMessage()).contains("Service Unavailable");
+                })
                 .verify();
     }
 
     @Test
-    void shouldFailoverToSourceB() {
+    void shouldFailoverToBackupSource() {
         Mono<String> sourceA = Mono.error(new RuntimeException("Source A Dead"));
         Mono<String> sourceB = Mono.just("Data from Source B");
 

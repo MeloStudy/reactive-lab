@@ -10,8 +10,10 @@
 
 ## Phase 2: Combination Operators
 1. **Scenario 1 (Zip)**: Implement `DashboardService`. Combine `Mono<User>` and `Mono<Long>` (friends) into `UserHeader`.
-2. **Scenario 2 (Merge/Concat)**: Implement `ActivityAggregator`. Combine two `Flux` sources and observe interleaving vs sequentiality.
-3. **Testing**: Use `StepVerifier` to verify combined results.
+2. **Scenario 2 (Merge/Concat)**: Implement `SocialFeedService`. 
+   - `merge`: Combine two `Flux` sources (Twitter, Instagram) and observe interleaving.
+   - `concat`: Combine Cache and Remote sources and observe sequentiality.
+3. **Testing**: Use `StepVerifier.withVirtualTime` to verify interleaving vs sequentiality.
 
 ## Phase 3: The Recovery Ladder
 1. **Logging**: Implement `doOnError` in `ResilientClient`.

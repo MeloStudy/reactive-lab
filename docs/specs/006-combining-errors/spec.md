@@ -17,27 +17,33 @@
   - LO-005: Implement recovery fallbacks using `onErrorReturn` and `onErrorResume`.
   - LO-006: Translate exceptions using `onErrorMap`.
   - LO-007: Apply basic transient error recovery with `retry`.
+  - LO-008: **Decision Making**: Choose the optimal combination operator based on performance and ordering requirements.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
 ### Scenario 1 - The Dashboard Aggregator (Priority: P1)
-Combine a User profile (`Mono`) with their recent Activity (`Flux`) and Friends count (`Mono`).
+Combine a User profile (`Mono`) with their Friends count (`Mono`).
 - Use `zip` to combine Profile + Friends into a Header.
-- Use `merge` to display Activity alongside other notifications.
-**Validation**: Verify consolidated object contains all data.
+**Validation**: Verify consolidated header string contains both user name and count.
 
-### Scenario 2 - The Resilient Service (Priority: P1)
+### Scenario 2 - The Social Feed Service (Priority: P1)
+Orchestrate data from multiple sources with different performance profiles.
+- Use `merge` to interleave "Twitter" and "Instagram" feeds for low latency.
+- Use `concat` to sequentialize a "Local Cache" load followed by a "Remote Refresh".
+**Validation**: Verify interleaving with virtual time for `merge` and strict ordering for `concat`.
+
+### Scenario 3 - The Resilient Service (Priority: P1)
 A service that calls an unstable API.
 - If it fails, log the error with `doOnError`.
 - Map technical exceptions (e.g., `TimeoutException`) to business exceptions with `onErrorMap`.
 - Provide a static default object if it fails completely using `onErrorReturn`.
 **Validation**: Verify that the stream never terminates with an error and returns the default.
 
-### Scenario 3 - The Failover Strategy (Priority: P1)
+### Scenario 4 - The Failover Strategy (Priority: P1)
 Attempt to fetch data from "Source A". If it fails, switch to "Source B" using `onErrorResume`.
 **Validation**: Verify that data from Source B is emitted when Source A throws an error.
 
-### Scenario 4 - The Flaky Network (Priority: P2)
+### Scenario 5 - The Flaky Network (Priority: P2)
 A stream that emits an error 50% of the time. Use `retry(3)` to stabilize it.
 **Validation**: Assert that the stream eventually completes successfully after a few attempts.
 

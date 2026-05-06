@@ -6,9 +6,10 @@ import reactor.test.StepVerifier;
 
 class DashboardServiceTest {
 
+    private final DashboardService service = new DashboardService();
+
     @Test
     void shouldZipUserAndFriends() {
-        DashboardService service = new DashboardService();
         Mono<String> user = Mono.just("melo");
         Mono<Long> friends = Mono.just(500L);
 
@@ -18,13 +19,11 @@ class DashboardServiceTest {
     }
 
     @Test
-    void zipShouldWaitForAllSources() {
-        DashboardService service = new DashboardService();
-        // Mono.empty() or a delayed source will block the zip from producing
+    void zipShouldCompleteEmptyIfAnySourceIsEmpty() {
         Mono<String> user = Mono.just("melo");
         Mono<Long> emptyFriends = Mono.empty();
 
         StepVerifier.create(service.buildHeader(user, emptyFriends))
-                .verifyComplete(); // Zip completes immediately if any source completes empty
+                .verifyComplete(); 
     }
 }

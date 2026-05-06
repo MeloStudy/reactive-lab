@@ -11,7 +11,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>lab-016-reactive-context-propagation</artifactId>
+    <artifactId>016-reactive-context-propagation</artifactId>
     <name>LAB-016: Reactive Context &amp; Tracing Propagation</name>
 
     <dependencies>
@@ -24,8 +24,9 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

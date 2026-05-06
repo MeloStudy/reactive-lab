@@ -50,9 +50,9 @@ public class ResilientClient {
      * when the primary one fails.
      */
     public Mono<String> callWithFailover(Mono<String> sourceA, Mono<String> sourceB) {
-        return sourceA.onErrorResume(e -> {
+        return sourceA.log("onErrorResume").onErrorResume(e -> {
             log.info("Source A failed, switching to Source B (Failover)");
-            return sourceB;
+            return sourceB.log("Failover Source");
         });
     }
 

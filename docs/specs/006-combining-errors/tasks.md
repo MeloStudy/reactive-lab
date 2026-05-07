@@ -1,22 +1,27 @@
-# Tasks: LAB-006: Combining & Basic Error Handling (REFINEMENT)
+# Tasks: LAB-006: Combining & Aggregation Operators
 
 ## Phase 1: Infrastructure
 - [x] T001 Initialize Maven `pom.xml` and package structure.
-- [x] T002 Verify project compiles.
 
-## Phase 2: Stream Combination Refinement
-- [/] T003 Refactor `ActivityAggregator` to `SocialFeedService`.
-- [ ] T004 Implement `merge` for interleaved feeds.
-- [ ] T005 Implement `concat` for sequential loading.
-- [ ] T006 Test combination scenarios with virtual time.
+## Phase 2: Stream Combination
+- [x] T002 Implement `DashboardService` (zip).
+- [x] T003 Implement `SocialFeedService` (merge/concat).
 
-## Phase 3: Pedagogical Enrichment
-- [ ] T007 Add SLF4J logging and inline comments to all services.
-- [ ] T008 Update `CONCEPT.md` with "When to use what" table.
-- [ ] T009 Update `README.md` with Social Feed scenario.
-- [ ] T010 Add relative code links to `README.md`.
-- [ ] T011 Enhance "Knowledge Check" quiz.
+## Phase 3: Accumulation & Reduction [NEW]
+- [x] T004 Implement `TransactionTracker` (scan).
+- [x] T005 Implement `TotalCalculator` (reduce).
+- [x] T006 Write tests for `scan` and `reduce`.
 
-## Phase 4: Final Certification
-- [ ] T012 Run all tests and verify SC-001.
-- [ ] T013 Final pedagogical audit and set status to AUDITED.
+## Phase 4: Batching & Windowing [NEW]
+- [x] T007 Implement `BatchProcessor` (buffer).
+- [x] T008 Implement `WindowProcessor` (window).
+- [x] T009 Write tests for `buffer` and `window`.
+
+## Phase 5: Educational Content [REFINEMENT]
+- [x] T010 Update `CONCEPT.md` with Accumulation vs Reduction and Memory implications.
+- [x] T011 Update `README.md` with new scenarios and Command Dissections.
+- [x] T012 Add "Aggregation" section to Interactive Self-Assessment.
+
+## Phase 6: Final Audit
+- [x] T013 Verify all tests pass.
+- [x] T014 Final pedagogical certification.

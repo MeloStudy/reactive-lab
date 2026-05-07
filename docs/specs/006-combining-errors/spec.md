@@ -1,4 +1,4 @@
-# Lab Specification: LAB-006: Combining & Basic Error Handling
+# Lab Specification: LAB-006: Combining & Aggregation Operators
 
 **Feature Branch**: `006-combining-errors`
 **Created**: 2026-05-03
@@ -7,63 +7,61 @@
 
 ## Syllabus Alignment *(mandatory)*
 
-- **Concept**: Orchestrating multiple streams and implementing basic resilience patterns.
-- **Prerequisites**: LAB-005: Essential Transformation Operators.
+- **Concept**: Orchestrating multiple streams and aggregating data over time or into structures.
+- **Prerequisites**: LAB-005: Essential Transformation & Filtering.
 - **Learning Objectives**:
-  - LO-001: Combine streams eagerly with `merge` and understand interleaving.
+  - LO-001: Combine streams eagerly with `merge` (interleaving).
   - LO-002: Combine streams sequentially with `concat`.
   - LO-003: Pair elements from different sources with `zip`.
-  - LO-004: Handle errors with side-effects using `doOnError`.
-  - LO-005: Implement recovery fallbacks using `onErrorReturn` and `onErrorResume`.
-  - LO-006: Translate exceptions using `onErrorMap`.
-  - LO-007: Apply basic transient error recovery with `retry`.
-  - LO-008: **Decision Making**: Choose the optimal combination operator based on performance and ordering requirements.
+  - LO-004: **Accumulate state** over time using `scan` (emitting intermediates).
+  - LO-005: **Reduce** a stream into a single final value with `reduce`.
+  - LO-006: **Batch items** into collections using `buffer`.
+  - LO-007: **Partition items** into sub-streams using `window`.
+  - LO-008: Handle errors and recovery using `onErrorResume` and `retry`.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
 ### Scenario 1 - The Dashboard Aggregator (Priority: P1)
-Combine a User profile (`Mono`) with their Friends count (`Mono`).
-- Use `zip` to combine Profile + Friends into a Header.
-**Validation**: Verify consolidated header string contains both user name and count.
+Combine a User profile (`Mono`) with their Friends count (`Mono`) using `zip`.
+**Validation**: Verify consolidated header string.
 
-### Scenario 2 - The Social Feed Service (Priority: P1)
-Orchestrate data from multiple sources with different performance profiles.
-- Use `merge` to interleave "Twitter" and "Instagram" feeds for low latency.
-- Use `concat` to sequentialize a "Local Cache" load followed by a "Remote Refresh".
-**Validation**: Verify interleaving with virtual time for `merge` and strict ordering for `concat`.
+### Scenario 2 - The Running Balance (Accumulation) (Priority: P1)
+Given a stream of transaction amounts, calculate the **running balance** after each transaction using `scan`.
+**Validation**: Verify each intermediate balance emission.
 
-### Scenario 3 - The Resilient Service (Priority: P1)
-A service that calls an unstable API.
-- If it fails, log the error with `doOnError`.
-- Map technical exceptions (e.g., `TimeoutException`) to business exceptions with `onErrorMap`.
-- Provide a static default object if it fails completely using `onErrorReturn`.
-**Validation**: Verify that the stream never terminates with an error and returns the default.
+### Scenario 3 - The Final Total (Reduction) (Priority: P1)
+Calculate the **total sum** of a completed stream of numbers using `reduce`.
+**Validation**: Verify the final `Mono<Integer>` result.
 
-### Scenario 4 - The Failover Strategy (Priority: P1)
-Attempt to fetch data from "Source A". If it fails, switch to "Source B" using `onErrorResume`.
-**Validation**: Verify that data from Source B is emitted when Source A throws an error.
+### Scenario 4 - The Batch Processor (Priority: P1)
+Group a stream of items into batches of 5 for bulk processing using `buffer(5)`.
+**Validation**: Verify that each emitted item is a `List` of size 5.
 
-### Scenario 5 - The Flaky Network (Priority: P2)
-A stream that emits an error 50% of the time. Use `retry(3)` to stabilize it.
-**Validation**: Assert that the stream eventually completes successfully after a few attempts.
+### Scenario 5 - The Windowed Stream (Priority: P2)
+Split a high-frequency stream into "windows" based on count or time using `window`.
+**Validation**: Verify that it emits `Flux<Flux<T>>` and each inner flux has the expected size.
+
+### Scenario 6 - Basic Resilience (Priority: P1)
+Implement a fallback using `onErrorResume` when a combination source fails.
+**Validation**: Verify switch to fallback source.
 
 ---
 
 ## Educational Requirements *(mandatory)*
 
 ### Concepts to Explain
-- **EX-001**: **Eager vs Lazy Combination**: `merge` (interleaved) vs `concat` (waiting).
-- **EX-002**: **Zip Cardinality**: Why `zip` waits for all sources and completes when the shortest source finishes.
-- **EX-003**: **The Error Channel**: How errors move through the pipeline and how they terminate subscriptions.
-- **EX-004**: **Recovery vs Side-Effect**: Difference between `doOnError` (peek) and `onErrorResume` (swallow and replace).
+- **EX-001**: **Eager vs Lazy Combination**: `merge` vs `concat`.
+- **EX-002**: **Accumulation vs Reduction**: Why `scan` emits every step while `reduce` only emits the final result.
+- **EX-003**: **Batching vs Windowing**: The difference between `List` containers (`buffer`) and sub-streams (`window`).
+- **EX-004**: **Collecting into Structures**: `collectMap` and `collectSortedList`.
 
 ### Technical Requirements
 - **TR-001**: Use Java 21 and Project Reactor.
 - **TR-002**: Use `StepVerifier` for all validations.
-- **TR-003**: README MUST include an **Interactive Self-Assessment** (Constitution v0.1.2).
-- **TR-004**: Document the "Error Terminal Rule": A stream is dead after an unhandled error.
+- **TR-003**: README MUST include an **Interactive Self-Assessment**.
 
 ## Success Criteria
-- **SC-001**: Successful orchestration of 3+ sources into a single object.
-- **SC-002**: Implementation of a multi-tier fallback strategy.
-- **SC-003**: All validation tests pass.
+- **SC-001**: Successful orchestration of multiple sources.
+- **SC-002**: Correct implementation of running totals (`scan`) and final totals (`reduce`).
+- **SC-003**: Efficient batching using `buffer`.
+- **SC-004**: All validation tests pass.

@@ -1,37 +1,42 @@
-# LAB-006: Combining & Basic Error Handling 🧩⚠️
+# LAB-006: Combining & Aggregation Operators 🧩📊
 
 Welcome to Lab 006! In this module, you will learn to orchestrate multiple reactive streams into a single result and implement basic resilience strategies to handle failures gracefully.
 
 ## 🎯 Learning Objectives
-- LO-001: Combine streams eagerly with `merge` and understanding interleaving.
+- LO-001: Combine streams eagerly with `merge` (interleaving).
 - LO-002: Combine streams sequentially with `concat`.
 - LO-003: Pair elements from different sources with `zip`.
-- LO-004: Handle errors with side-effects using `doOnError`.
-- LO-005: Implement recovery fallbacks using `onErrorReturn` and `onErrorResume`.
-- LO-006: Translate exceptions using `onErrorMap`.
-- LO-007: Apply basic transient error recovery with `retry`.
+- LO-004: **Accumulate state** over time using `scan`.
+- LO-005: **Reduce** a stream into a single final value with `reduce`.
+- LO-006: **Batch items** into collections using `buffer`.
+- LO-007: **Partition items** into sub-streams using `window`.
+- LO-008: Handle errors and recovery using `onErrorResume` and `retry`.
 
 ## 🛠️ Scenario Walkthrough
 
-### 1. The Dashboard Aggregator
+### 1. The Dashboard Aggregator [[Code]](src/main/java/com/reactivelab/orchestration/DashboardService.java)
 Build a user header by zipping together a User Profile and their Friends count. You will observe how `zip` ensures data integrity by waiting for all pieces to arrive.
-- **Code**: [DashboardService.java](./src/main/java/com/reactivelab/orchestration/DashboardService.java)
-- **Test**: [DashboardServiceTest.java](./src/test/java/com/reactivelab/orchestration/DashboardServiceTest.java)
 
-### 2. The Social Feed Service
-Orchestrate data from multiple sources with different performance profiles.
-- **Eager (merge)**: Combine Twitter and Instagram feeds for low latency. Items will be interleaved.
-- **Sequential (concat)**: Load a local cache before refreshing from a remote API.
-- **Code**: [SocialFeedService.java](./src/main/java/com/reactivelab/orchestration/SocialFeedService.java)
-- **Test**: [SocialFeedServiceTest.java](./src/test/java/com/reactivelab/orchestration/SocialFeedServiceTest.java)
+### 2. The Social Feed Aggregator [[Code]](src/main/java/com/reactivelab/orchestration/SocialFeedService.java)
+Explore the difference between eager and lazy combination. Use `merge` to fetch multiple feeds simultaneously (interleaving) or `concat` to ensure a strict sequence (e.g., Cache first, then Remote).
 
-### 3. The Resilient Client
+### 3. The Running Balance [[Code]](src/main/java/com/reactivelab/orchestration/TransactionTracker.java)
+Calculate the cumulative sum of transactions as they happen. You will use `scan` to emit the updated balance every time a new transaction occurs.
+
+### 4. The Final Total [[Code]](src/main/java/com/reactivelab/orchestration/TotalCalculator.java)
+Use `reduce` to aggregate all emissions into a single final value once the stream completes.
+
+### 5. The Batch Processor [[Code]](src/main/java/com/reactivelab/orchestration/BatchProcessor.java)
+Group high-frequency data into `List` batches using `buffer`. This is essential for bulk operations like database inserts.
+
+### 6. The Windowed Stream [[Code]](src/main/java/com/reactivelab/orchestration/WindowProcessor.java)
+Similar to batching, but instead of Lists, `window` produces sub-streams (`Flux<Flux<T>>`). This allows for concurrent processing of windows without waiting for the full batch to be collected.
+
+### 7. The Resilient Client [[Code]](src/main/java/com/reactivelab/orchestration/ResilientClient.java)
 Implement a "Recovery Ladder" for a flaky service:
 1. Log the failure with `doOnError`.
 2. Translate technical exceptions with `onErrorMap`.
 3. Provide a safe default value with `onErrorReturn` or failover with `onErrorResume`.
-- **Code**: [ResilientClient.java](./src/main/java/com/reactivelab/orchestration/ResilientClient.java)
-- **Test**: [ResilientClientTest.java](./src/test/java/com/reactivelab/orchestration/ResilientClientTest.java)
 
 ## 🚀 Execution Guide
 
@@ -53,10 +58,17 @@ Combines multiple streams eagerly.
 - **Subscription**: Subscribes to all sources at once.
 - **Interleaving**: Items appear as they arrive, regardless of source order.
 
-### `concat(flux1, flux2)`
-Combines multiple streams sequentially.
-- **Subscription**: Subscribes to `flux2` ONLY after `flux1` completes.
-- **Order**: Guarantees all items from `flux1` appear before `flux2`.
+### `scan(initial, (acc, val) -> ...)`
+- **Nature**: Stateful and intermediate.
+- **Output**: Emits the current state after each item.
+
+### `reduce(initial, (acc, val) -> ...)`
+- **Nature**: Terminal.
+- **Output**: Emits a single `Mono` only when the source completes.
+
+### `buffer(n)`
+- **Nature**: Grouping.
+- **Output**: Converts `Flux<T>` to `Flux<List<T>>`.
 
 ### `onErrorResume(e -> backupPublisher)`
 The ultimate safety net. 

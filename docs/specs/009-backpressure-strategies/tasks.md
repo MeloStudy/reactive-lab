@@ -1,27 +1,23 @@
-# Tasks: LAB-009: Backpressure Strategies & Flow Control
+# Tasks: LAB-009: Backpressure Strategies & Rate Limiting
 
-**Input**: Design documents from `/specs/009-backpressure-strategies/`
-**Prerequisites**: plan.md (required), spec.md (required).
+## Phase 1: Overflow Strategies
+- [x] T001 Implement `TelemetryService` with `onBackpressureBuffer`.
+- [x] T002 Implement `SensorMonitor` with `onBackpressureLatest`.
+- [x] T003 Reproduce and verify `OverflowException`.
+- [x] T004 Add `DROP_OLDEST` strategy validation.
 
-**Validation Goal**: This project follows strict "TDD for Learning" (Test-Driven Learning). The automated tests (JUnit/StepVerifier) MUST ensure exactly what the README teaches.
+## Phase 2: Rate & Request Limiting
+- [x] T005 Implement `ThrottledRequester` (`limitRate`).
+- [x] T006 Implement `QuotaEnforcer` (`limitRequest`).
+- [x] T007 Use `PublisherProbe` to verify exact request signals.
+- [x] T008 Add `ReplenishmentTest` for the 75% threshold rule.
 
-## Phase 1: Monorepo Setup & Data Seeding
-- [ ] T001 Scaffold lab directory by cloning `labs/000-base-setup/`.
-- [ ] T002 Update root `pom.xml` to include `009-backpressure-strategies`.
-- [ ] T003 Ensure `docker-compose.yml` reflects the correct container name format `reactive_lab_009`.
-- [ ] T004 Implement a "Fast Producer" helper class using `Sinks.many().multicast()` to generate signals that bypass standard backpressure.
+## Phase 3: Documentation & Assessment
+- [x] T009 Expand `CONCEPT.md` with demand-propagation and prefetch math.
+- [x] T010 Fix `README.md` structure and add Command Dissections.
+- [x] T011 Add 5-question Self-Assessment to `README.md`.
 
-## Phase 2: Validation Framework Implementation (TDD)
-- [ ] T005 Write JUnit tests for Scenario 1 (Buffering/Error) using `StepVerifier`.
-- [ ] T006 Write JUnit tests for Scenario 2 (Dropping/Latest/Windowing).
-- [ ] T007 Provide required codebase comments on what each test step validates.
-
-## Phase 3: Educational Content & Hands-On Environment
-- [ ] T008 Write the theoretical `CONCEPT.md` detailing the "Pull vs Push" mechanics.
-- [ ] T009 Write the step-by-step native `README.md` guide for Scenario 1 and 2.
-- [ ] T010 Inject **Command Dissection** blocks into `README.md` for `onBackpressure*` and `window()` operators.
-
-## Phase 4: Idempotency & Clean Up Verifications
-- [ ] T011 Verify `README.md` Atomic Cleanup command runs natively without errors.
-- [ ] T012 Verify `Makefile` shortcut targets operate purely as optional proxies.
-- [ ] T013 Perform end-to-end "Learner Journey" Walkthrough.
+## Phase 4: Final Certification
+- [x] T012 Standardize with `@Slf4j` and Lombok.
+- [x] T013 Verify all tests pass (`mvn test`).
+- [x] T014 Set status to `AUDITED` in `spec.md`.

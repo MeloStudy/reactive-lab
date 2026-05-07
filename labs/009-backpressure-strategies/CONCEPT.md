@@ -1,69 +1,60 @@
-# Concept: Backpressure Strategies & Flow Control
+# CONCEPT: Backpressure Strategies & Rate Limiting
 
-## The Backpressure Problem in Reactive Streams
+In a reactive system, producers and consumers often operate at different speeds. **Backpressure** is the feedback mechanism that allows a slow consumer to tell a fast producer to slow down, preventing resource exhaustion and system crashes.
 
-In a non-blocking, asynchronous pipeline, data producers and consumers often operate at different speeds. When a producer (upstream) emits data faster than a consumer (downstream) can process it, we face an **overflow condition**.
+## 1. Pull vs. Push: The Conflict
 
-Traditional blocking systems handle this by naturally slowing down the producer (e.g., the thread is blocked until the consumer is ready). In a reactive system, where threads are not blocked, we need an explicit protocol to signal demand. This is **Backpressure**.
+Reactive Streams are designed as a **Pull-based** model where the `Subscriber` controls the flow:
+- **Demand Propagation**: The `Subscriber` sends a `request(n)` signal upstream.
+- **Compliance**: The `Publisher` is obligated to send *no more* than `n` items until the next request signal.
 
-### Push vs. Pull Model
+However, some data sources are naturally **Push-based** (e.g., mouse movements, real-time sensor data, or high-volume multicasters like `Sinks.Many`). These sources ignore demand, creating a conflict that must be resolved with **Overflow Strategies**.
 
-1.  **Pull (Demand-based)**: The subscriber explicitly requests `n` elements. The publisher only sends at most `n`. This is the ideal Reactive Streams behavior.
-2.  **Push (Uncontrolled)**: The publisher ignores demand and pushes data as it becomes available (e.g., a mouse move event, a hot sensor stream). This is where backpressure strategies are mandatory.
+## 2. Overflow Strategies (The Shield)
 
----
+When a push-based source is too fast for the downstream, you must explicitly handle the excess data using one of these strategies:
 
-## Project Reactor Backpressure Operators
+### `onBackpressureBuffer`
+Stores items in an internal queue until the subscriber is ready.
+- **Best for**: Smoothing out temporary spikes in traffic where every data point is valuable.
+- **The Overflow Strategy**: Buffers are not infinite. You can configure what happens when the buffer is full:
+    - **ERROR**: Throw a `BackpressureOverflowException` (default).
+    - **DROP_OLDEST**: Discard the oldest item in the buffer to make room for the new one.
+    - **DROP_LATEST**: Discard the incoming item and keep the buffer as is.
 
-When the "Pull" model is bypassed, Project Reactor provides several strategies to handle the mismatch:
+### `onBackpressureDrop`
+Immediately discards any item emitted while the subscriber has zero outstanding demand.
+- **Best for**: Non-critical telemetry or logs where system stability is more important than data completeness.
+- **Hook**: You can provide a callback (e.g., `onBackpressureDrop(item -> log.warn("Dropped: " + item))`) to track data loss.
 
-### 1. Buffering (`onBackpressureBuffer`)
+### `onBackpressureLatest`
+Keeps only the very last item emitted, overwriting any previous buffered item.
+- **Best for**: Real-time state indicators (e.g., current stock price, vehicle speed) where only the most recent value is relevant.
 
-This strategy stores elements in a queue until the subscriber is ready to process them.
--   **When to use**: When spikes are temporary and memory allows for storage.
--   **Risk**: If the mismatch is permanent, the buffer will eventually overflow, leading to `OutOfMemoryError` or a `BackpressureOverflowException`.
--   **Configurability**: You can limit the buffer size and define what happens on overflow (e.g., drop oldest, drop latest, or error).
+## 3. Rate Limiting (The Regulator)
 
-### 2. Dropping (`onBackpressureDrop`)
+**Rate Limiting** proactively manages the **prefetch** behavior of the pipeline to protect downstream resources.
 
-This strategy simply discards elements that arrive when there is no demand.
--   **When to use**: When only the "newest" data is relevant at any given time, and missing intermediate data is acceptable (e.g., telemetry logs).
--   **Advantage**: Lowest memory overhead and guaranteed system stability.
+### `limitRate(highRequest, lowRequest)`
+Sets the maximum number of items the operator will request from upstream at once.
+- **The 75% Rule**: If only `highRequest` is provided, Reactor uses a "replenishment threshold". It requests `highRequest` items, and only when the subscriber has consumed **75%** of them, it requests the next batch to refill the buffer.
+- **Why?**: This prevents "Request Storms" and ensures a steady, predictable flow of data.
+- **Use Case**: Protecting an external API that has a strict rate limit of 100 requests per second.
 
-### 3. Latest (`onBackpressureLatest`)
+### `limitRequest(n)`
+Enforces a hard limit on the **total** number of items that can be requested. Once the limit is reached, the stream emits a `onComplete` signal, effectively severing the connection.
 
-Similar to dropping, but it always keeps the *most recent* element. If a new element arrives while demand is 0, it replaces the previous "latest" element.
--   **When to use**: Real-time dashboards or UI updates where you only care about the very last state.
+## 4. The Request Propagation Chain
 
----
+Backpressure works because the `request(n)` signal travels **upstream**. Consider this chain:
 
-## Higher-Level Flow Control: Buffering and Windowing
+1. **Subscriber**: Calls `request(1)`.
+2. **`limitRate(10)`**: Intercepts this. Since its internal buffer is empty, it sends `request(10)` to the source.
+3. **Source**: Emits 10 items as they become available.
+4. **`limitRate`**: Buffers those 10 items. It delivers the `1` item requested by the subscriber.
+5. **Subscriber**: After processing, calls `request(7)`.
+6. **`limitRate`**: Delivers those 7 items from its buffer. Total items delivered: 8.
+7. **Replenishment**: Having delivered 80% (>= 75%), `limitRate` sends a new `request(8)` to the source to refill its internal buffer.
 
-Sometimes, the best way to handle a high-frequency stream is to change the "grain" of the data.
-
-### `buffer()`
-Collects incoming elements into a `List` based on count or time and emits the list as a single element.
--   **Result**: `Flux<T>` becomes `Flux<List<T>>`.
--   **Impact**: Reduces the frequency of signals but increases the payload of each signal.
-
-### `window()`
-Similar to `buffer`, but instead of a `List`, it emits another `Flux`.
--   **Result**: `Flux<T>` becomes `Flux<Flux<T>>`.
--   **Impact**: Allows for nested reactive processing (e.g., calculating averages per 10-second window in a non-blocking way).
-
----
-
-## Internal Mechanics: The request(n) Signal
-
-Every reactive stream starts with a `Subscription`. When a subscriber is ready, it calls `request(n)`. This signal propagates upstream.
--   Operators like `publishOn` act as **backpressure boundaries**. They have an internal buffer (default 256) and handle requests to the upstream on behalf of the downstream.
--   If you use a `Sink` (like `Sinks.many().multicast()`), you are moving into the "Push" world. You must decide how the sink behaves when subscribers are slow.
-
-## Decision Matrix
-
-| Scenario | Strategy | Outcome |
-| :--- | :--- | :--- |
-| Temporary Spikes | `buffer` | No data loss, increased latency. |
-| Critical State Logs | `drop` | Data loss allowed, system stability prioritized. |
-| Real-time UI | `latest` | Only last state matters. |
-| High-freq Telemetry | `window` / `buffer` | Change granularity to reduce signal overhead. |
+> [!CAUTION]
+> Operators like `publishOn` have a default internal buffer of **256**. If your downstream processing is slower than the upstream emission, this buffer will fill up, and the operator will stop requesting items from the upstream, triggering backpressure naturally.

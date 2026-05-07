@@ -75,4 +75,25 @@ public class BackpressureTest {
                 .thenCancel()
                 .verify();
     }
+
+    @Test
+    void scenario1_dropOldestStrategy() {
+        Sinks.Many<Integer> sink = Sinks.many().multicast().directBestEffort();
+        
+        // Buffer size 2, drop oldest when full
+        Flux<Integer> flux = sink.asFlux()
+                .onBackpressureBuffer(2, i -> {}, reactor.core.publisher.BufferOverflowStrategy.DROP_OLDEST)
+                .log("drop-oldest");
+
+        StepVerifier.create(flux, 0)
+                .then(() -> {
+                    sink.tryEmitNext(1);
+                    sink.tryEmitNext(2);
+                    sink.tryEmitNext(3); // Should drop 1, buffer [2, 3]
+                })
+                .thenRequest(2)
+                .expectNext(2, 3)
+                .thenCancel()
+                .verify();
+    }
 }

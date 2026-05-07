@@ -1,99 +1,80 @@
-# LAB-009: Backpressure Strategies & Flow Control
+# LAB-009: Backpressure Strategies & Rate Limiting 🛡️⚡
 
-In this laboratory, you will learn how to handle scenarios where your data producer is faster than your consumer. You will move from a system that crashes under pressure to a resilient one using Project Reactor's flow control operators.
+In a high-performance reactive system, "speed mismatches" are inevitable. This laboratory focuses on the critical engineering skill of flow control: protecting your system from being overwhelmed by fast producers while maintaining high throughput.
 
-## Prerequisites
-- Java 21+
-- Maven
-- Completed LAB-007 (Threading) and LAB-008 (Sinks)
-
----
-
-## Scenario 1: The Overflowing Producer
-
-Imagine a high-frequency sensor (the Producer) pushing data into your system. Your database (the Consumer) is much slower. Without backpressure, the system will eventually fail.
-
-### 1.1 Reproducing the Crash
-Open `src/test/java/com/reactivelab/backpressure/BackpressureTest.java`. We use a `Sinks.many().multicast().directBestEffort()` to simulate a producer that ignores demand.
-
-If you run a stream without any backpressure operator and request 0, the elements will eventually fill up the internal buffers of the operators or the sink itself, causing an error.
-
-### 1.2 Applying the Buffer Strategy
-The `onBackpressureBuffer()` operator allows you to park elements in memory.
-
-```java
-Flux<Integer> bufferedFlux = producer.getFlux()
-    .onBackpressureBuffer(10);
-```
-
-**Command Dissection: `onBackpressureBuffer`**
-| Parameter | Description |
-| :--- | :--- |
-| `maxSize` | The number of elements to store before taking further action. |
-| `onOverflow` | A callback executed when the buffer is full. |
-
-**Rationale**: Use this when spikes are temporary. The buffer acts as a shock absorber.
+## 🎯 Learning Objectives
+- **Visualize** and reproduce a `BackpressureOverflowException`.
+- **Apply Overflow Strategies**: `onBackpressureBuffer`, `onBackpressureDrop`, and `onBackpressureLatest`.
+- **Master Buffer Strategies**: Configure `DROP_OLDEST` and `DROP_LATEST` behaviors.
+- **Implement Rate Limiting**: Use `limitRate` to control prefetch and replenishment thresholds.
+- **Enforce Quotas**: Use `limitRequest` to cap total stream consumption.
 
 ---
 
-## Scenario 2: Real-time Data Priority
+## 🛠️ Command Dissection
 
-In many real-world scenarios (like stock prices or mouse positions), an old value is useless if a newer one is available.
+### 1. `onBackpressureBuffer(size, overflowStrategy)`
+Protects the downstream by queuing items.
+- `size`: The maximum number of items to hold in memory.
+- `overflowStrategy`: What to do when the buffer is full (e.g., `BufferOverflowStrategy.DROP_OLDEST`).
 
-### 2.1 The Drop Strategy
-Use `onBackpressureDrop()` to discard any element that arrives when the downstream is not ready.
-
-```java
-Flux<Integer> droppedFlux = producer.getFlux()
-    .onBackpressureDrop(item -> log.info("Discarded: {}", item));
-```
-
-**Rationale**: This ensures your system stays responsive even under extreme load, at the cost of data loss.
-
-### 2.2 The Latest Strategy
-Use `onBackpressureLatest()` to keep only the most recent element.
-
-```java
-Flux<Integer> latestFlux = producer.getFlux()
-    .onBackpressureLatest();
-```
-
-**Result**: If elements 1, 2, 3, 4, 5 arrive while demand is 0, when the subscriber finally requests 1 element, it will receive **5**.
+### 2. `limitRate(n)`
+Tells the upstream exactly how many items it is allowed to send.
+- `n`: The prefetch amount.
+- **Replenishment**: By default, it requests more data when **75%** of the current batch is consumed.
 
 ---
 
-## Scenario 3: Flow Control via Windowing
+## 🧪 Scenarios
 
-Sometimes, instead of dropping data, you want to process it in batches.
+### Scenario 1: The Overflowing Producer
+A fast producer (`Sinks.Many`) pushes events regardless of consumer demand.
+- **Task**: Reproduce the `OverflowException` and fix it by adding a buffer.
+- **Key Operator**: `onBackpressureBuffer(10)`.
 
-### 3.1 Using `buffer()`
-Transform `Flux<T>` into `Flux<List<T>>`.
+### Scenario 2: High-Priority Real-Time Data
+You are receiving sensor data where only the most recent value is useful for the dashboard.
+- **Task**: Discard stale data using `onBackpressureLatest()`.
+- **Key Operator**: `onBackpressureLatest()`.
 
-```java
-flux.buffer(Duration.ofSeconds(1)) // Emit a list of elements every second
-```
+### Scenario 3: The API Quota (Rate Limiting)
+Your downstream service has a strict rate limit. You must regulate how much you request from your high-volume source.
+- **Task**: Implement `ThrottledRequester` using `limitRate(10)`.
+- **Key Operator**: `limitRate(10)`.
 
-### 3.2 Using `window()`
-Transform `Flux<T>` into `Flux<Flux<T>>`.
-
-```java
-flux.window(10) // Group elements into sub-fluxes of 10
-```
+### Scenario 4: The Subscription Cap
+You want to allow a user to consume exactly `N` items from a stream and then terminate the connection.
+- **Task**: Implement `QuotaEnforcer` using `limitRequest(5)`.
+- **Key Operator**: `limitRequest(5)`.
 
 ---
 
-## How to Run the Lab
+## 🧠 Self-Assessment Quiz
 
-1. **Run the Validation Tests**:
-   Execute the following command to verify your understanding of backpressure strategies:
-   ```bash
-   mvn test -pl labs/009-backpressure-strategies
-   ```
+1. **Why is `onBackpressureBuffer()` risky for infinite streams?**
+   - *Answer: Without a size limit or a drop strategy, the buffer can grow until it causes an `OutOfMemoryError`.*
 
-2. **Analyze the Output**:
-   Look at the `log()` output in the console. Notice when `request(n)` signals are sent and how they correspond to `onNext(t)` signals.
+2. **What is the default "replenishment threshold" for `limitRate(100)`?**
+   - *Answer: 75 items (75% of the prefetch amount).*
 
-## Atomic Cleanup
+3. **How does `onBackpressureLatest` differ from `onBackpressureDrop`?**
+   - *Answer: `onBackpressureDrop` discards everything when demand is zero. `onBackpressureLatest` discards previous items but always keeps the single most recent emission ready for the next request.*
+
+4. **Is `limitRate` a push or pull mechanism?**
+   - *Answer: It is a pull mechanism; it explicitly manipulates the `request(n)` signal sent upstream.*
+
+5. **What happens to the stream after `limitRequest(n)` reaches its limit?**
+   - *Answer: It emits an `onComplete` signal and cancels the upstream subscription.*
+
+---
+
+## 🚀 How to Run
+```bash
+# Run all flow control validation tests
+mvn test -pl labs/009-backpressure-strategies
+```
+
+## 🧹 Cleanup
 ```bash
 mvn clean -pl labs/009-backpressure-strategies
 ```

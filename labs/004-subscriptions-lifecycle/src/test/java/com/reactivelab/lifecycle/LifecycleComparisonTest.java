@@ -9,10 +9,6 @@ import java.time.Duration;
 
 class LifecycleComparisonTest {
 
-    public LifecycleComparisonTest() {
-        // Explicit constructor for JUnit instantiation
-    }
-
     @Test
     void testAutomaticCancellationWithTake() {
         LifecycleComparison comparison = new LifecycleComparison();

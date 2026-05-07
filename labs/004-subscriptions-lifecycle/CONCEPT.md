@@ -13,7 +13,17 @@ When you call `.subscribe()` on a Flux or Mono, several things happen internally
 2. The Publisher calls `subscriber.onSubscribe(subscription)`.
 3. The Subscriber is now "active" and can begin requesting data.
 
-## 2. Manual Cancellation (The Disposable)
+## 2. The Subscription State Machine
+
+A Subscription is not just a link; it is a stateful object. Understanding its transitions is key to debugging reactive leaks:
+
+1.  **UNSUBSCRIBED**: The initial state. No data flows.
+2.  **SUBSCRIBED**: Triggered by `.subscribe()`. The `onSubscribe` signal is sent. The stream is now ready but "dormant" until demand is requested.
+3.  **REQUESTING**: The Subscriber calls `request(n)`. The Publisher begins pushing items.
+4.  **TERMINATED**: The Publisher sends `onComplete` or `onError`. The Subscription is now dead and cannot be reused.
+5.  **CANCELLED**: The Subscriber calls `cancel()` (or `dispose()`). Signals stop flowing immediately, and the Publisher should release resources.
+
+## 3. Manual Cancellation (The Disposable)
 
 In Project Reactor, the `.subscribe()` method returns a `Disposable` object. This is your "handle" to the subscription.
 
@@ -27,7 +37,7 @@ handle.dispose(); // Stops the stream
 - **Resource Management**: Infinite streams (like clock intervals or socket listeners) will never stop on their own. They will cause memory leaks if not explicitly cancelled.
 - **Interruption**: You might want to stop a long-running process if the user navigates away from a page or a timeout occurs.
 
-## 3. Grouped Lifecycles (CompositeDisposable)
+## 4. Grouped Lifecycles (CompositeDisposable)
 
 If your component manages multiple subscriptions, it's tedious to track each `Disposable` individually. `Disposables.composite()` allows you to group them:
 
@@ -39,7 +49,7 @@ group.add(flux2.subscribe());
 group.dispose(); // Cancels flux1 and flux2 simultaneously
 ```
 
-## 4. Manual Demand (BaseSubscriber)
+## 5. Manual Demand (BaseSubscriber)
 
 While lambda-based subscriptions (`flux.subscribe(value -> ...)`) are convenient, they automatically request "unbounded" demand (`Long.MAX_VALUE`). To control the flow precisely, you should extend `BaseSubscriber`.
 
@@ -50,16 +60,27 @@ By overriding `hookOnSubscribe` and `hookOnNext`, you can implement a manual req
 
 This ensures you never receive more data than you are currently ready to process.
 
-## 5. Automatic Lifecycle (The 'take' operator)
+## 6. Automatic Lifecycle (The 'take' operator)
 
 Operators like `.take(n)` or `.takeUntil(predicate)` manage the lifecycle for you. When the condition is met, the operator sends a `cancel()` signal upstream to the source and an `onComplete()` signal downstream to the subscriber.
 
-## 6. Lifecycle Hooks (Side Effects)
-
-Reactor provides "doOn" operators to peek into the lifecycle without modifying the data:
-- `doOnSubscribe`: Executed when the subscription is established.
-- `doOnNext`: Executed for every emitted item.
-- `doOnComplete`: Executed when the stream finishes successfully.
-- `doOnError`: Executed when the stream fails.
-- `doOnCancel`: Executed when the subscriber manually cancels.
-- `doFinally`: Executed regardless of the termination signal (Complete, Error, or Cancel).
+## 7. Signal Peekers (Side Effects)
+ 
+Reactor provides "doOn" operators to peek into the lifecycle without modifying the data. These are known as **Side Effects** or **Signal Peekers**.
+ 
+| Operator | Signal Triggered | Common Use Case |
+| :--- | :--- | :--- |
+| `doOnSubscribe` | `onSubscribe` | Initializing resources or metrics. |
+| `doOnNext` | `onNext` | Logging, auditing, or non-intrusive caching. |
+| `doOnComplete` | `onComplete` | Finalizing success logs. |
+| `doOnError` | `onError` | Metric reporting or error logging. |
+| `doOnCancel` | Manual `.dispose()` | Resource cleanup on interruption. |
+| `doFinally` | Any Termination | Global cleanup (Complete, Error, or Cancel). |
+ 
+### Observation vs. Transformation
+ 
+- **Transformation (`map`, `flatMap`)**: Changes the item itself or the pipeline type. It is part of the business logic.
+- **Observation (`doOn...`)**: Does **not** change the stream. It receives the signal, performs a side effect (like logging or updating a counter), and passes the signal through unchanged.
+ 
+> [!IMPORTANT]
+> Always prefer `doFinally` for resource cleanup, as it is guaranteed to run regardless of how the stream terminated.

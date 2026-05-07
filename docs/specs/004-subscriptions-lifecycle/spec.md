@@ -1,4 +1,4 @@
-# Lab Specification: LAB-004: Subscriptions & Lifecycle Control
+# Lab Specification: LAB-004: Subscriptions, Lifecycle & Side Effects
 
 **Feature Branch**: `004-subscriptions-lifecycle`
 **Created**: 2026-05-02
@@ -7,7 +7,7 @@
 
 ## Syllabus Alignment *(mandatory)*
 
-- **Concept**: Mastering the subscription lifecycle, manual cancellation, and custom subscribers.
+- **Concept**: Mastering the subscription lifecycle, manual cancellation, custom subscribers, and observing signals.
 - **Prerequisites**: LAB-003: Flux & Mono Foundations.
 - **Learning Objectives**:
   - LO-001: Execute manual subscriptions using various `subscribe()` overloads.
@@ -15,6 +15,7 @@
   - LO-003: Utilize `Disposables.composite()` for multi-stream resource management.
   - LO-004: Implement custom demand control using `BaseSubscriber`.
   - LO-005: Distinguish between manual `dispose()` and operator-driven lifecycle (`take`).
+  - LO-006: Observe and manage side effects using signal peekers (`doOn...`).
 
 
 ## Interactive Scenarios & Validation *(mandatory)*
@@ -54,8 +55,12 @@ The learner will compare manual `dispose()` with the `take(n)` operator. They mu
 
 ---
 
-### Scenario 5 - The Lifecycle Watcher (Priority: P2)
+### Scenario 5 - The Signal Peeker (Side Effects) (Priority: P1)
 
+The learner will use "peekers" to observe the lifecycle of a stream without modifying it. They must implement a pipeline that logs or tracks state when an item is emitted (`doOnNext`), when an error occurs (`doOnError`), and when the stream completes or is cancelled (`doFinally`).
+
+**Validation (Automated Test)**:
+- Verify that specific side effects (e.g., updating a counter or atomic variable) are triggered at each stage of the lifecycle.
 
 ---
 
@@ -67,6 +72,7 @@ The learner will compare manual `dispose()` with the `take(n)` operator. They mu
 - **EX-002**: **Disposable & Resource Management**: How to prevent memory leaks by cancelling subscriptions.
 - **EX-003**: **BaseSubscriber vs Lambda**: When to use a simple lambda vs. a full subscriber implementation.
 - **EX-004**: **The Final Signal**: The difference between `onComplete/onError` (terminal) and `dispose()` (manual interruption).
+- **EX-005**: **Signal Peekers**: The difference between transformation (`map`) and observation (`doOn...`).
 
 ### Technical Requirements
 
@@ -81,4 +87,5 @@ The learner will compare manual `dispose()` with the `take(n)` operator. They mu
 
 - **SC-001**: Learner correctly cancels a stream and stops resource consumption.
 - **SC-002**: Learner successfully implements a manual request loop in `BaseSubscriber`.
-- **SC-003**: All validation tests pass.
+- **SC-003**: Learner correctly uses `doOn...` operators to observe stream signals.
+- **SC-004**: All validation tests pass.

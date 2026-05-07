@@ -1,4 +1,4 @@
-# LAB-004: Subscriptions & Lifecycle Control ⏱️
+# LAB-004: Subscriptions, Lifecycle & Side Effects ⏱️
 
 Welcome to Lab 004! In this module, you will move beyond passive subscriptions and learn how to actively manage the lifecycle of reactive streams.
 
@@ -8,6 +8,7 @@ Welcome to Lab 004! In this module, you will move beyond passive subscriptions a
 - LO-003: Utilize `Disposables.composite()` for multi-stream resource management.
 - LO-004: Implement custom demand control using `BaseSubscriber`.
 - LO-005: Distinguish between manual `dispose()` and operator-driven lifecycle (`take`).
+- LO-006: Observe and manage side effects using signal peekers (`doOn...`).
 
 ## 🛠️ Scenario Walkthrough
 
@@ -36,11 +37,14 @@ Attach side-effect hooks (`doOnSubscribe`, `doOnCancel`, etc.) to a pipeline to 
 
 ## 🚀 Execution Guide
 
-Run the TDD validation suite to verify your implementation:
+To certify your knowledge and verify the laboratory implementation, execute the following **Native Maven** command from the root directory:
 
-```powershell
-mvn test -pl labs/004-subscriptions-lifecycle
+```bash
+./mvnw test -pl labs/004-subscriptions-lifecycle
 ```
+
+> [!TIP]
+> If you are on Windows, use `mvn test -pl labs/004-subscriptions-lifecycle`.
 
 ## 🔍 Command Dissection
 
@@ -62,7 +66,13 @@ An abstract class provided by Reactor to make implementing custom subscribers ea
 ### `Disposables.composite()`
 Creates a container that can hold multiple `Disposable` objects. 
 - `composite.add(disposable)`: Adds a new subscription to the group.
-- `composite.dispose()`: Atomically cancels ALL subscriptions currently in the container and prevents any future additions from being active.
+- `composite.dispose()`: Atomically cancels ALL subscriptions currently in the container.
+
+### `doOn...` (Signal Peekers)
+Operators that allow you to "peek" into the stream lifecycle without changing the data.
+- `doOnNext`: Run a side effect for every value.
+- `doOnComplete` / `doOnError`: Run a side effect on termination.
+- `doFinally`: Guaranteed to run regardless of the signal (Complete, Error, or Cancel).
 
 ## 📝 Lifecycle Check (Self-Assessment)
 
@@ -93,4 +103,4 @@ Test your knowledge of Reactive Lifecycles:
    </details>
 
 ---
-**Next Lab**: [LAB-005: Error Handling & Resilience](../005-error-handling/README.md)
+**Next Lab**: [LAB-005: Essential Transformation & Filtering](../005-essential-operators/README.md)

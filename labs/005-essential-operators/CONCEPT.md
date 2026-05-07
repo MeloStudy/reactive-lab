@@ -5,22 +5,41 @@ Transformation and Filtering are the most common operations in a reactive pipeli
 ## 1. Synchronous vs. Asynchronous
 
 ### `map(T -> V)`
-A synchronous 1-to-1 transformation. It receives a value and returns a new value.
-- **Thread Affinity**: Executes on the same thread that emitted the element.
-- **Best for**: Formatting, simple logic, mapping to DTOs.
+A synchronous, functional transformation. It intercepts every item in the stream and applies a 1-to-1 mapping function.
+- **Thread Affinity**: By default, it executes on the same thread that emitted the element from the upstream.
+- **Pure Function**: The mapping function SHOULD be a pure function (no side effects) to maintain the integrity of the pipeline.
+- **Best for**: Data conversion (e.g., mapping a `UserEntity` to a `UserDto`), formatting, or simple computational logic.
 
 ### `filter(T -> boolean)`
-A synchronous filter. If it returns false, the item is dropped, and the operator requests one more from upstream to maintain demand.
+A synchronous conditional gate that decides which items are allowed to pass through the pipeline.
+- **Demand Awareness**: If the filter returns `false`, the item is silently dropped. Crucially, the operator then immediately sends a request for **one more element** from the upstream to satisfy the pending demand of the subscriber.
+- **Predicate Requirement**: Use for business rule enforcement (e.g., `user.isActive()`).
 
-## 2. The Flattening Trio (flatMap, concatMap, switchMap)
+## 2. The Flattening Trio: Managing Asynchronous Transformations
 
-When you need to transform an item into another **Publisher** (e.g., calling an async service), you need an operator that "flattens" the inner stream.
+When your transformation function returns another **Publisher** (like a `Flux` or `Mono` from a database or remote API), you cannot use a simple `map`. You need a "flattening" operator that subscribes to these inner publishers and merges their emissions back into the main pipeline.
 
-| Operator | Subscription Type | Emission Order | Best For |
-| :--- | :--- | :--- | :--- |
-| **`flatMap`** | Simultaneous | Interleaved | Maximum throughput. |
-| **`concatMap`** | Sequential | Strict Order | Task dependencies. |
-| **`switchMap`** | Latest-only | Cancellation | Search-as-you-type. |
+Choosing the right operator depends on your requirements for **concurrency**, **ordering**, and **cancellation**.
+
+### `flatMap(T -> Publisher<V>)`
+The most common operator for high-concurrency scenarios.
+- **Mechanics**: It subscribes to multiple inner publishers **simultaneously**.
+- **Interleaving**: Since inner publishers execute concurrently, their emissions are merged into the main stream as they arrive. This means the original order is **not guaranteed**.
+- **Concurrency Control**: By default, it has a prefetch/concurrency limit (usually 256). You can tune this to control how many simultaneous subscriptions are active.
+- **Best for**: Scenarios where throughput is prioritized over ordering (e.g., fetching multiple user profiles in parallel).
+
+### `concatMap(T -> Publisher<V>)`
+The go-to operator when **ordering is mandatory**.
+- **Mechanics**: It subscribes to the first inner publisher and **waits** for it to complete (`onComplete`) before subscribing to the next one.
+- **Strict Order**: It preserves the original order of elements perfectly, but it is strictly sequential.
+- **Performance**: Slower than `flatMap` because it processes one item at a time, eliminating concurrency.
+- **Best for**: Scenarios where tasks have dependencies or must be processed in a specific sequence (e.g., executing database transactions in order).
+
+### `switchMap(T -> Publisher<V>)`
+The "Cancellation" operator, perfect for **dynamic/stale data**.
+- **Mechanics**: As soon as a new item arrives from the upstream, it **cancels** the current inner subscription and subscribes to the new one immediately.
+- **Single Active Stream**: Only the most recent inner publisher's emissions reach the downstream. All previous ones are discarded upon cancellation.
+- **Best for**: "Search-as-you-type" or "Latest-only" scenarios. If a user types 'A' and then 'B', we don't care about the results for 'A' anymore; we only want the results for 'B'.
 
 ## 3. Slicing the Stream
 

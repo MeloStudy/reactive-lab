@@ -1,12 +1,11 @@
-# CONCEPT: Essential Transformation Operators
+# CONCEPT: Essential Transformation, Filtering & Slicing
 
-Transformation is the most common operation in a reactive pipeline. While synchronous transformations are straightforward, asynchronous "flattening" requires deep understanding of how signals are merged and managed.
+Transformation and Filtering are the most common operations in a reactive pipeline. While synchronous transformations are straightforward, asynchronous "flattening" and "slicing" require a deeper understanding of stream control.
 
 ## 1. Synchronous vs. Asynchronous
 
 ### `map(T -> V)`
 A synchronous 1-to-1 transformation. It receives a value and returns a new value.
-- **Rule**: Must be a pure function.
 - **Thread Affinity**: Executes on the same thread that emitted the element.
 - **Best for**: Formatting, simple logic, mapping to DTOs.
 
@@ -15,45 +14,38 @@ A synchronous filter. If it returns false, the item is dropped, and the operator
 
 ## 2. The Flattening Trio (flatMap, concatMap, switchMap)
 
-When you need to transform an item into another **Publisher** (e.g., calling an async DB or Web service), you cannot use `map`. You need an operator that "flattens" the inner stream into the main pipeline.
+When you need to transform an item into another **Publisher** (e.g., calling an async service), you need an operator that "flattens" the inner stream.
 
-### `flatMap` (Concurrent & Interleaved)
-- **Behavior**: Subscribes to inner publishers as they arrive, up to a `concurrency` limit.
-- **Asynchrony**: Truly non-blocking. It doesn't wait for one result to return before requesting the next.
-- **Ordering**: **NOT guaranteed**. Faster inner streams will "overtake" slower ones.
-- **Best for**: Performance and maximum throughput where order doesn't matter.
+| Operator | Subscription Type | Emission Order | Best For |
+| :--- | :--- | :--- | :--- |
+| **`flatMap`** | Simultaneous | Interleaved | Maximum throughput. |
+| **`concatMap`** | Sequential | Strict Order | Task dependencies. |
+| **`switchMap`** | Latest-only | Cancellation | Search-as-you-type. |
 
-### `concatMap` (Sequential & Ordered)
-- **Behavior**: Subscribes to the first inner publisher and **waits** for it to complete (`onComplete`) before subscribing to the next.
-- **Ordering**: **Guaranteed** to match the source order.
-- **Best for**: Sequential tasks (e.g., dependent DB updates) or when ordering is a business requirement.
+## 3. Slicing the Stream
 
-### `switchMap` (Latest-only & Cancellation)
-- **Behavior**: When a new item arrives from the source, it **immediately cancels** the previous inner subscription and starts the new one.
-- **Best for**: Scenarios where only the latest data is relevant (e.g., search-as-you-type, autocomplete).
+Sometimes you only need a segment of the stream or unique values.
 
-## 3. Prefetch & Concurrency
+### `take(n)`
+Emits the first `n` items and then **cancels** the upstream subscription. It is a very efficient way to stop a stream early.
 
-Flattening operators don't just "merge" streams; they manage buffers and demand.
+### `skip(n)`
+Drops the first `n` items and then begins emitting everything else.
 
-- **Concurrency**: The maximum number of active inner subscriptions allowed at once.
-- **Prefetch**: The number of elements requested from the upstream source in advance to keep the internal queue populated.
+### `distinct()`
+Filters out duplicate items. It tracks previously seen items in an internal state (usually a `HashSet`).
+> [!CAUTION]
+> `distinct()` on an infinite stream can lead to high memory consumption as the internal set of seen items grows forever.
 
-> [!NOTE]
-> By default, `flatMap` has a prefetch of **256**. This means it will eagerly request 256 items from the source to maximize throughput, potentially overwhelming downstream if not handled correctly.
+## 4. Flux to Mono Transitions (Aggregation)
 
-## 5. Deep Dive: Logical Concurrency vs. Physical Parallelism
+When you need to collect all items from a `Flux` into a single container, you transition to a `Mono`.
 
-Understanding the difference between these two is critical for mastering `flatMap`.
+### `collectList()`
+Collects all elements into a `java.util.List` and emits it as a `Mono<List<T>>` when the source `Flux` completes.
 
-### Logical Concurrency
-Is the ability to **deal** with many things at once. In `flatMap`, we can have thousands of active inner `Monos` waiting for network or time. They are all "concurrently alive" in memory as state machines.
+### `elementAt(index)`
+Picks a single element at the given index and emits it as a `Mono<T>`.
 
-### Physical Parallelism
-Is the ability to **do** many things at once. This requires multiple CPU cores and multiple threads.
-
-> [!TIP]
-> `flatMap` is inherently **concurrent**, but not necessarily **parallel**. If you process 100 IDs and they all complete within the same thread of the Event Loop, you have concurrency (managing 100 flows) without parallelism (only 1 thread was used). This is the efficiency of the Reactive model!
-
-## 6. `flatMapIterable`
+## 5. `flatMapIterable`
 When your transformation returns an `Iterable` (like a `List`) instead of a `Publisher`, use `flatMapIterable`. It is much more efficient than `flatMap(Flux::fromIterable)` because it avoids the overhead of creating multiple `Flux` instances.

@@ -1,72 +1,60 @@
-# Lab Specification: LAB-010: Testing & Debugging Matrix [AUDITED]
+# Lab Specification: LAB-010: Testing & Debugging Matrix
 
 **Feature Branch**: `010-testing-debugging-matrix`
 **Created**: 2026-05-04
-**Status**: Audited
+**Status**: AUDITED
 **Syllabus Section**: Level 2: The Core Spec & Advanced Control
 
 ## Syllabus Alignment *(mandatory)*
 
-- **Concept**: Advanced Testing (`StepVerifier`, `PublisherProbe`) and Debugging (`Hooks`, `Context`).
-- **Prerequisites**: LAB-009 (Backpressure), LAB-007 (Threading).
+- **Concept**: Advanced verification, time-warping, and debugging non-blocking pipelines.
+- **Prerequisites**: LAB-007 (Threading), LAB-009 (Backpressure).
 - **Learning Objectives**:
-  - LO-001: Use `StepVerifier.withVirtualTime` to test long-running streams instantly.
-  - LO-002: Use `PublisherProbe` to verify that a fallback or side-effect branch was executed.
-  - LO-003: Resolve "Missing Assembly" stack traces using `Hooks.onOperatorDebug()`.
-  - LO-004: Propagate metadata through a pipeline using `Context`.
-  - LO-005: Use `BlockHound` to automatically detect blocking calls on the event loop threads.
+  - LO-001: Master `StepVerifier.withVirtualTime` for time-sensitive streams.
+  - LO-002: Use `PublisherProbe` to verify branching logic (conditional streams).
+  - LO-003: Understand and use **Reactor Context** for cross-cutting concerns (Trace IDs).
+  - LO-004: Debug asynchronous stack traces using `Hooks.onOperatorDebug()` and `checkpoint()`.
+  - LO-005: Integrate **BlockHound** to enforce non-blocking execution.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
-### Scenario 1 - The Time Traveler (P1)
+### Scenario 1 - The Time Traveler (Priority: P1)
+Verify a stream that emits data once per day. Test 365 days of emissions in milliseconds.
+**Validation**: `StepVerifier` with `thenAwait(Duration.ofDays(365))` and `expectNextCount(365)`.
 
-Test a stream that emits elements every hour. The learner must use `VirtualTimeScheduler` to verify the first 24 hours of data in milliseconds.
+### Scenario 2 - The Branch Validator (Priority: P1)
+Use `switchIfEmpty` and verify that the fallback branch is actually subscribed to using `PublisherProbe`.
+**Validation**: `probe.assertWasSubscribed()`.
 
-**Validation (Automated Test)**: `StepVerifier` using `thenAwait` and `expectNextCount` to verify the full day of data.
+### Scenario 3 - The Trace Hunter (Priority: P1)
+Propagate a `correlationId` using `Context`. Perform a `publishOn` (thread hop) and verify the ID is still accessible.
+**Validation**: Assert context contains the expected key-value pair after the thread switch.
 
----
+### Scenario 4 - The BlockHound Sentry (Priority: P1)
+Simulate an accidental blocking call (`Thread.sleep`) in a reactive stream. Ensure BlockHound throws a `BlockingOperationError`.
+**Validation**: Verify that the test fails with the specific BlockHound exception.
 
-### Scenario 2 - The Silent Branch (P2)
-
-In a complex `switchIfEmpty` or `onErrorResume` scenario, verify that the fallback branch was actually "subscribed" to, even if it produces no data.
-
-**Validation (Automated Test)**: Use `PublisherProbe` to assert `assertWasSubscribed()`.
-
----
-
-### Scenario 3 - The Trace Hunter (P2)
-
-A pipeline fails with a cryptic `NullPointerException` deep in a `map` operator. The learner must enable debugging hooks to identify the exact line of assembly.
-
-**Validation (Manual/Guided)**: README instructions to enable hooks and analyze the "Assembly Stacktrace".
-
-### Scenario 4 - The Forbidden Block (P3)
-
-A developer accidentally includes a `Thread.sleep()` or a blocking I/O call inside a `flatMap` running on a Schedulers thread pool. The learner must configure BlockHound to detect and prevent this.
-
-**Validation (Automated Test)**: A test that triggers a blocking call and expects a `BlockingOperationError` when BlockHound is installed.
+### Scenario 5 - The Checkpoint Trace (Priority: P2)
+Use `checkpoint("my-custom-step")` to label a pipeline segment and identify where an error originated in the logs.
+**Validation**: Find the custom label in the error stack trace.
 
 ---
 
 ## Educational Requirements *(mandatory)*
 
 ### Concepts to Explain
-
-- **EX-001**: Why standard stack traces are useless in reactive programming (Assembly vs Execution time).
-- **EX-002**: Reactor Context: The non-blocking equivalent of `ThreadLocal`.
-- **EX-003**: Testing Time: Why `Thread.sleep` is an anti-pattern in reactive tests.
+- **EX-001**: **Assembly vs Execution**: Why the stack trace points to where the Flux was *created*, not where it *failed*.
+- **EX-002**: **The Scheduler Mocking**: How `VirtualTimeScheduler` hijacks the clock.
+- **EX-003**: **Contextual State**: Why Context is a "down-to-up" signal (it travels against the data flow).
+- **EX-004**: **BlockHound Mechanics**: How it uses bytecode instrumentation to detect forbidden calls.
 
 ### Technical Requirements
+- **TR-001**: Use Java 21 and Project Reactor.
+- **TR-002**: Use `StepVerifier` for all validations.
+- **TR-003**: Include BlockHound dependency in `pom.xml`.
 
-- **TR-001**: Lab MUST include automated validation tests (Java/JUnit).
-- **TR-002**: Reactive signals MUST be explicitly validated.
-- **TR-003**: Theoretical context MUST be provided in `CONCEPT.md`.
-
-## Success Criteria *(measurable outcomes)*
-
-- **SC-001**: Learner successfully tests a 1-year duration stream in under 1 second.
-- **SC-002**: Learner identifies a bug using `checkpoint()` or `Hooks`.
-
-## Assumptions
-
-- Java 21+ and Maven are installed.
+## Success Criteria
+- SC-001: Successful verification of long-duration streams via Virtual Time.
+- SC-002: Reliable detection of blocking code in reactive threads.
+- SC-003: Demonstration of state propagation via Context.
+- SC-004: All validation tests pass.

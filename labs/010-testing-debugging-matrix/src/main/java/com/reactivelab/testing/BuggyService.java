@@ -1,10 +1,10 @@
 package com.reactivelab.testing;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.context.Context;
-import java.time.Duration;
 
+@Slf4j
 public class BuggyService {
 
     /**
@@ -15,6 +15,7 @@ public class BuggyService {
         return input
                 .map(s -> {
                     if (s == null || s.equals("CRASH")) {
+                        log.error("Crashing on input: {}", s);
                         return null; // This will trigger a NPE deep in Reactor
                     }
                     return s.toUpperCase();
@@ -28,6 +29,7 @@ public class BuggyService {
     public Mono<String> processWithContext(String data) {
         return Mono.deferContextual(ctx -> {
             String correlationId = ctx.getOrDefault("correlation-id", "unknown");
+            log.info("Processing data [{}] with correlation-id: {}", data, correlationId);
             return Mono.just("Processed [" + data + "] with ID: " + correlationId);
         });
     }
@@ -39,11 +41,30 @@ public class BuggyService {
         return input
                 .map(i -> {
                     try {
+                        log.info("Blocking on element: {}", i);
                         Thread.sleep(10); // THIS IS FORBIDDEN ON EVENT LOOP
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
                     return i * 2;
                 });
+    }
+
+    /**
+     * Scenario 5: Checkpointing for labeled debugging.
+     */
+    public Flux<String> labeledPipeline(Flux<String> input) {
+        return input
+                .checkpoint("STAGE_1_INPUT")
+                .map(String::toUpperCase)
+                .checkpoint("STAGE_2_UPPER")
+                .<String>handle((s, sink) -> {
+                    if (s.contains("FAIL")) {
+                        sink.error(new RuntimeException("Manual failure in labeled pipeline"));
+                    } else {
+                        sink.next(s);
+                    }
+                })
+                .checkpoint("STAGE_3_FINAL");
     }
 }

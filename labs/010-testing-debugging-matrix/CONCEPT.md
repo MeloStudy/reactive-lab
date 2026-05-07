@@ -1,30 +1,41 @@
-# Testing & Debugging Matrix
+# CONCEPT: Testing & Debugging Matrix
 
-In reactive programming, the separation between **Assembly Time** (building the pipeline) and **Execution Time** (running the signals) makes traditional debugging tools like stack traces and `Thread.sleep` ineffective.
+Debugging a reactive application is notoriously difficult because of the disconnect between where code is written and where it is executed. This "stack trace gap" requires a specialized set of tools and a mental model shift.
 
-This lab covers the essential matrix of tools for verifying and diagnosing Reactor applications.
+## 1. The Assembly vs. Execution Divide
 
-## 🧱 Assembly vs. Execution
+In imperative Java, a stack trace is a snapshot of the current thread's state. In Project Reactor:
+- **Assembly Time**: This is when you define your pipeline (`flux.map(...).filter(...)`). This usually happens on the `main` thread.
+- **Execution Time**: This is when signals (`onNext`, `onError`) actually flow through the pipeline. This often happens on background threads (Schedulers).
 
-A standard Java stack trace shows the call stack at the moment an Exception occurs. In Reactor, an exception often occurs on a thread pool (e.g., `parallel-1`) long after the main thread has finished assembling the pipeline. This results in "truncated" stack traces.
+When an error occurs, the standard JVM stack trace only shows the **Execution** stack. It has no idea about the **Assembly** stack (where the operator was actually declared in your code).
 
-### 🔍 Debugging Tools
+### 🔍 Solving the Gap
+- **`Hooks.onOperatorDebug()`**: Reactor "records" the assembly-time stack trace for every operator. When an error occurs, it staples this recorded information to the original exception. 
+    - *Note*: This is memory-intensive and should only be used in local development or CI.
+- **`checkpoint("label")`**: A lightweight alternative. It manually adds a label to the pipeline's stack trace, pinpointing exactly which segment failed without the overhead of capturing the full stack.
 
-1.  **Hooks.onOperatorDebug()**: Enables a global hook that captures assembly-time information for every operator. It provides the "Assembly Stacktrace" which tells you exactly where the pipeline was defined.
-2.  **checkpoint()**: A lightweight version of `onOperatorDebug` that you can place at specific points in a pipeline to mark them for better error reporting.
-3.  **log()**: Peeks into all signals (`onNext`, `onError`, `onComplete`, `request`) passing through a specific point.
+## 2. Testing Time: The Virtual Time Warp
 
-## 🧪 Advanced Testing
+Testing time-based operators (like `interval`, `delayElements`, or `timeout`) can make tests slow and non-deterministic. Reactor's `VirtualTimeScheduler` hijacks the system clock, allowing you to advance time manually.
 
-### Virtual Time
-Testing streams that emit elements over long periods (days, months) is impossible with `Thread.sleep`. `StepVerifier.withVirtualTime` (or manual `VirtualTimeScheduler`) allows you to "fast-forward" time instantly.
+- **The Supplier Rule**: To use virtual time, you must wrap the *creation* of your `Flux` or `Mono` inside a `Supplier` passed to `StepVerifier.withVirtualTime(() -> myFlux)`. 
+- **Why?**: This ensures that when the operators are instantiated (Assembly Time), they already "see" the virtual scheduler instead of the real-time one.
 
-### PublisherProbes
-Sometimes you need to verify that a fallback branch (e.g., in `switchIfEmpty`) was executed, even if it doesn't emit any data that you can assert. `PublisherProbe` allows you to assert `wasSubscribed()`, `wasCancelled()`, etc.
+## 3. Reactor Context: Thread-Local for the Async World
 
-## 👮 BlockHound
-Reactive Event Loop threads (like those in Netty or `Schedulers.parallel()`) must NEVER be blocked. A single blocking call (I/O, `Thread.sleep`, `Mono.block()`) can freeze the entire application.
-**BlockHound** is a Java agent that instruments the JVM to detect and throw an error if a blocking call is made on a thread marked as non-blocking.
+In a multi-threaded asynchronous pipeline, `ThreadLocal` variables are dangerous because execution jumps between threads constantly. 
 
-## 📥 Reactor Context
-Since reactive streams can jump between threads, `ThreadLocal` is unreliable. Reactor provides a `Context` that travels alongside the signals, allowing you to propagate metadata (like Security tokens or Correlation IDs) without modifying your method signatures.
+**Reactor Context** is an immutable key-value store that:
+1.  **Travels Upstream**: Unlike data signals, Context travels from the `Subscriber` up to the `Publisher` during the subscription phase.
+2.  **Is Scope-Limited**: It belongs to a specific `Subscription` instance, not a global thread.
+3.  **Persistence**: It allows you to carry metadata (like Trace IDs or Security Tokens) through every thread hop in the pipeline.
+
+## 4. Non-Blocking Enforcement: BlockHound
+
+The **Event Loop** threads (Netty, Parallel) must never be blocked. A single `Thread.sleep()` or blocking I/O call can freeze the entire application.
+
+**BlockHound** is a Java agent that:
+- Instruments the standard Java library (e.g., `Thread.sleep`, blocking I/O).
+- Detects if these calls are made on threads marked with the `NonBlocking` marker interface.
+- Throws a `BlockingOperationError` immediately, failing the test and pointing to the offending line.

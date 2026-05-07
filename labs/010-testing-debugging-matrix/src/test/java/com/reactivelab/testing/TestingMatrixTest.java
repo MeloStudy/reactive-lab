@@ -1,6 +1,5 @@
 package com.reactivelab.testing;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import reactor.blockhound.BlockHound;
@@ -11,80 +10,90 @@ import reactor.core.publisher.Hooks;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 import reactor.test.publisher.PublisherProbe;
-import reactor.test.scheduler.VirtualTimeScheduler;
 import reactor.util.context.Context;
-
 import java.time.Duration;
 
 public class TestingMatrixTest {
 
     @BeforeAll
     static void setup() {
-        // BlockHound must be installed before the tests start
+        // Install BlockHound to detect blocking calls on non-blocking threads
         BlockHound.install();
+        // Enable assembly-time stack trace capturing
         Hooks.onOperatorDebug();
     }
 
-    @AfterEach
-    void tearDown() {
-        // Ensure virtual time is reset after each test
-        VirtualTimeScheduler.reset();
+    @Test
+    void scenario1_idiomaticVirtualTime() {
+        // Use withVirtualTime with a Supplier to ensure operators see the virtual clock
+        StepVerifier.withVirtualTime(() -> 
+            Flux.interval(Duration.ofDays(1)).take(365)
+        )
+        .expectSubscription()
+        .expectNoEvent(Duration.ofDays(1)) // Verify nothing happens before 1 day
+        .thenAwait(Duration.ofDays(365))  // Warp 1 year
+        .expectNextCount(365)
+        .verifyComplete();
     }
 
     @Test
-    void scenario1_virtualTime() {
-        VirtualTimeScheduler vts = VirtualTimeScheduler.getOrSet();
-        Flux<Long> hourlyFlux = Flux.interval(Duration.ofHours(1), vts).take(5);
-
-        StepVerifier.create(hourlyFlux)
-                .then(() -> vts.advanceTimeBy(Duration.ofHours(5)))
-                .expectNextCount(5)
-                .verifyComplete();
-    }
-
-    @Test
-    void scenario2_publisherProbe() {
+    void scenario2_publisherProbeBranching() {
         Mono<String> primary = Mono.empty();
-        PublisherProbe<String> probe = PublisherProbe.of(Mono.just("fallback"));
+        PublisherProbe<String> probe = PublisherProbe.of(Mono.just("fallback-data"));
 
-        Mono<String> result = primary.switchIfEmpty(probe.mono());
+        // Verify that the fallback branch is actually subscribed to
+        Mono<String> pipeline = primary.switchIfEmpty(probe.mono());
 
-        StepVerifier.create(result)
-                .expectNext("fallback")
+        StepVerifier.create(pipeline)
+                .expectNext("fallback-data")
                 .verifyComplete();
 
         probe.assertWasSubscribed();
     }
 
     @Test
-    void scenario3_contextPropagation() {
+    void scenario3_multiThreadedContext() {
         BuggyService service = new BuggyService();
+        ContextualTracer tracer = new ContextualTracer();
 
-        Mono<String> pipeline = service.processWithContext("data")
-                .contextWrite(Context.of("correlation-id", "TX-12345"));
+        // Pipeline with multiple thread hops
+        Flux<String> pipeline = service.processWithContext("InputData")
+                .publishOn(Schedulers.parallel())
+                .flatMapMany(s -> tracer.getContextualData("correlation-id"))
+                .contextWrite(Context.of("correlation-id", "TX-999"));
 
         StepVerifier.create(pipeline)
-                .expectNext("Processed [data] with ID: TX-12345")
+                .expectNext("Value: TX-999")
                 .verifyComplete();
     }
 
     @Test
-    void scenario4_blockHoundDetection() {
-        // We use a thread pool that BlockHound monitors
-        Flux<Integer> flux = Flux.just(1)
-                .subscribeOn(Schedulers.parallel())
-                .map(i -> {
-                    // This is a blocking call that BlockHound SHOULD detect
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                    return i;
-                });
+    void scenario4_blockHoundEnforcement() {
+        BuggyService service = new BuggyService();
+        
+        // This pipeline contains a Thread.sleep() on a parallel thread
+        Flux<Integer> blockingFlux = service.blockingPipeline(Flux.just(1))
+                .subscribeOn(Schedulers.parallel());
 
-        StepVerifier.create(flux)
+        StepVerifier.create(blockingFlux)
                 .expectError(BlockingOperationError.class)
                 .verify(Duration.ofSeconds(5));
+    }
+
+    @Test
+    void scenario5_checkpointLabeling() {
+        BuggyService service = new BuggyService();
+
+        // The input "FAIL" will trigger a manual exception in the labeled pipeline
+        Flux<String> pipeline = service.labeledPipeline(Flux.just("ok", "FAIL"));
+
+        StepVerifier.create(pipeline)
+                .expectNext("OK")
+                .expectErrorMatches(throwable -> {
+                    // In real logs, you would see "STAGE_2_UPPER" in the stack trace
+                    // because the error happens after the upper mapping
+                    return throwable.getMessage().contains("Manual failure");
+                })
+                .verify();
     }
 }

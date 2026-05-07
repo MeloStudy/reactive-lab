@@ -1,13 +1,14 @@
-# LAB-008: Programmatic Stream Generation 🛠️📈
+# LAB-008: Programmatic Streams & Hot/Cold 🛠️🔥
 
-Welcome to Lab 008! In this module, you will learn how to create your own reactive sources. You will bridge the gap between imperative code (listeners, callbacks) and the reactive world of Project Reactor.
+Welcome to Lab 008! In this module, you will learn how to create your own reactive sources. You will bridge the gap between imperative code (listeners, callbacks) and the reactive world of Project Reactor, while mastering the lifecycle of shared streams.
 
 ## 🎯 Learning Objectives
-- LO-001: Generate synchronous sequences with `Flux.generate`.
-- LO-002: Bridge push-based callback APIs with `Flux.create`.
-- LO-003: Understand the push vs. pull emission models.
-- LO-004: Implement event buses using `Sinks`.
-- LO-005: Handle memory safety in push bridges using `OverflowStrategy`.
+- LO-001: Generate synchronous sequences with `Flux.generate` (Pull model).
+- LO-002: Bridge push-based callback APIs with `Flux.create` (Push model).
+- LO-003: Distinguish between **Cold** (lazy) and **Hot** (live) publishers.
+- LO-004: Implement event buses using the modern `Sinks` API.
+- LO-005: Control the connection lifecycle with `share()`, `autoConnect()`, and `refCount()`.
+- LO-006: Optimize resource sharing with `cache(n)`.
 
 ## 🛠️ Scenario Walkthrough
 
@@ -15,13 +16,16 @@ Welcome to Lab 008! In this module, you will learn how to create your own reacti
 Use `Flux.generate` to implement the Fibonacci sequence. You will manage the state (the previous two numbers) within the generator itself, ensuring thread-safe, synchronous emission.
 
 ### 2. The Chat Bridge
-Wrap a mock `ChatListener` into a `Flux`. You will learn how to register the listener on subscription and, most importantly, how to **unregister** it when the subscriber cancels to avoid memory leaks.
+Wrap a mock `ChatListener` into a `Flux`. You will learn how to register the listener on subscription and, most importantly, how to **unregister** it when the subscriber cancels using `onDispose` to avoid memory leaks.
 
-### 3. The Overflow Teaser
-Simulate a fast producer and a slow consumer. You will experiment with `OverflowStrategy.DROP` to see how Reactor handles situations where the producer is pushing more data than requested.
+### 3. The Radio Broadcaster (Hot vs Cold)
+Observe the fundamental difference between a movie (Cold) and a live concert (Hot). You will transform a standard Flux into a "Hot" publisher using `publish().autoConnect()` and verify that late subscribers miss data.
 
-### 4. The Notification Bus
-Implement a centralized notification system using `Sinks.Many`. You will verify that multiple subscribers can listen to the same stream of events simultaneously.
+### 4. The On-Demand Resource
+Use `refCount(n)` to manage an expensive upstream source. The resource should only start when the second subscriber joins and stop immediately when the last one leaves, preventing wasted CPU/Memory.
+
+### 5. The Result Cache
+Implement a scenario where an expensive calculation is shared among multiple consumers. Use `cache(n)` to ensure that late subscribers don't trigger a re-calculation but still get the last `n` results instantly.
 
 ## 🚀 Execution Guide
 
@@ -38,30 +42,45 @@ mvn test -pl labs/008-programmatic-streams
 - **Nature**: Pull-based. Driven by subscriber demand.
 
 ### `Flux.create(sink -> { ... }, strategy)`
-- **Flexibility**: Multiple `sink.next()` calls allowed.
-- **Nature**: Push-based. The producer dictates the speed.
+- **Flexibility**: Multiple `sink.next()` calls allowed; asynchronous production.
+- **Cleanup**: Always use `sink.onDispose()` to release external resources.
 
-### `Sinks.many().multicast()`
-- **Usage**: Perfect for internal app event buses.
+### `publish().autoConnect(n)`
+- **Behavior**: Converts Cold to Hot. Starts when `n` subscribers arrive.
+- **Persistence**: Stay connected even if all subscribers leave.
+
+### `publish().refCount(n)`
+- **Behavior**: Smart lifecycle management.
+- **Cleanup**: Automatically cancels upstream when subscriber count drops to 0.
+
+### `cache(n)`
+- **Behavior**: Shares the upstream AND replays the last `n` items to new subscribers.
+- **Effect**: Turns a Cold source into a "Warm" source (Hot with a memory).
 
 ## 📝 Generation Check (Self-Assessment)
 
-1. **Pull vs Push**: I am wrapping a WebSocket listener that receives messages at random intervals. Should I use `generate` or `create`?
+1. **The Choice**: I am wrapping a database cursor that I need to read row by row. Which operator is more efficient: `generate` or `create`?
    <details>
    <summary>💡 View Answer</summary>
-   **`create`**. Since the messages arrive asynchronously and the producer (WebSocket) pushes them, `create` is the correct bridge. `generate` is strictly for synchronous, demand-driven data.
+   **`generate`**. Since reading from a cursor is typically a synchronous, demand-driven process (pull), `generate` maps perfectly to this model and avoids the need for complex overflow strategies.
    </details>
 
-2. **The 1-Emission Rule**: What happens if I call `sink.next()` twice inside a single `Flux.generate` block?
+2. **The Connection**: I have a stream of sensor data that I want to start only when at least 3 dashboards are active, and stop as soon as the last dashboard is closed. What should I use?
    <details>
    <summary>💡 View Answer</summary>
-   Reactor will throw an **`IllegalStateException`**. The `generate` contract strictly enforces 1 emission per iteration to maintain the synchronous pull model.
+   **`publish().refCount(3)`**. This ensures the upstream sensor subscription is only active when the demand threshold (3) is met and is disposed of immediately when demand drops to zero.
    </details>
 
-3. **Memory Leaks**: Why is `sink.onDispose()` crucial when using `Flux.create` to wrap an external listener?
+3. **Late Joiners**: A subscriber joins a `share()` stream while it is already running. Will they see the items that were emitted 10 seconds ago?
    <details>
    <summary>💡 View Answer</summary>
-   If you don't unregister the listener on dispose, the external service will keep a reference to your bridge object even after the Flux is cancelled. This prevents the object from being Garbage Collected, leading to a memory leak.
+   **No**. `share()` (which is `refCount(1)`) does not replay data. Late joiners only see items emitted after their subscription time. To see past data, you would need `cache(n)` or `replay()`.
+   </details>
+
+4. **Sinks Safety**: Why should I prefer `Sinks.many().multicast().onBackpressureBuffer()` over the deprecated `TopicProcessor`?
+   <details>
+   <summary>💡 View Answer</summary>
+   Modern `Sinks` provide a much safer API for concurrent emissions (`tryEmitNext`) and follow the Reactive Streams specification more strictly, avoiding common pitfalls related to internal state corruption in high-concurrency scenarios.
    </details>
 
 ---

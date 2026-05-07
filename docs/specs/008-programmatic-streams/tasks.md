@@ -1,28 +1,27 @@
-# Tasks: LAB-008: Programmatic Stream Generation
+# Tasks: LAB-008: Programmatic Stream Generation & Hot/Cold
 
 ## Phase 1: Infrastructure
-- [ ] T001 Initialize Maven `pom.xml` and package structure.
-- [ ] T002 Verify project compiles.
+- [x] T001 Initialize Maven `pom.xml` and package structure.
 
-## Phase 2: Pull-Based Generation
-- [ ] T003 Implement Fibonacci generator using `Flux.generate`.
-- [ ] T004 Test stateful sequence generation.
+## Phase 2: Generation & Bridging
+- [x] T003 Implement Fibonacci generator (`Flux.generate`).
+- [x] T005 Implement `ChatBridge` (`Flux.create`).
 
-## Phase 3: Push-Based Bridging
-- [ ] T005 Implement `ChatBridge` using `Flux.create`.
-- [ ] T006 Implement resource cleanup via `onDispose`.
-- [ ] T007 Implement the Overflow Scenario (`LATEST`/`DROP`).
+## Phase 3: Hot vs Cold Mechanics
+- [x] T006 Implement `Broadcaster` scenario.
+- [x] T007 Implement `OnDemandResource` (`refCount`).
+- [x] T008 Write tests for Hot vs Cold comparison using VirtualTime.
 
-## Phase 4: Standalone Publishers (Sinks)
-- [ ] T008 Implement `NotificationBus` using `Sinks.Many`.
-- [ ] T009 Implement `OneShotSignal` using `Sinks.One`.
-- [ ] T010 Test multi-subscriber support (Multicast).
+## Phase 4: Sinks & Caching
+- [x] T009 Implement `NotificationBus` (`Sinks.Many`).
+- [x] T010 Implement `ResultCache` (`cache`).
 
-## Phase 5: Educational Content
-- [ ] T011 Write `CONCEPT.md` (Push vs Pull and Sink types).
-- [ ] T012 Write `README.md` with "Knowledge Check" quiz.
-- [ ] T013 Add Command Dissection for `Sinks` and `Flux.create`.
+## Phase 5: Refinement (Engineering Rigor)
+- [x] T011 Expand `CONCEPT.md` with deep pull/push mechanics and Sinks safety.
+- [x] T012 Add `@Slf4j` and logging to all implementation classes.
+- [x] T013 Update `README.md` with `cache()` dissection and advanced quiz.
+- [x] T014 Refine `OnDemandResourceTest` for lifecycle validation.
 
 ## Phase 6: Final Audit
-- [ ] T014 Verify all tests pass.
-- [ ] T015 Final pedagogical certification.
+- [x] T015 Verify all tests pass (`mvn test`).
+- [x] T016 Set status to `AUDITED` in `spec.md`.

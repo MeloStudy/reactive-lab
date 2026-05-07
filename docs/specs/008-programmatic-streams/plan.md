@@ -1,35 +1,47 @@
-# Implementation Plan: LAB-008: Programmatic Stream Generation
+# Implementation Plan: LAB-008: Programmatic Stream Generation & Hot/Cold
 
 **Branch**: `008-programmatic-streams` | **Date**: 2026-05-03
 **Input**: Specification from `/docs/specs/008-programmatic-streams/spec.md`
 
 ## Phase 1: Project Setup
 1. Create `labs/008-programmatic-streams`.
-2. Configure `pom.xml` (Java 21, Reactor).
-3. Package: `com.reactivelab.generation`.
+2. Package: `com.reactivelab.generation`.
 
-## Phase 2: Generating Sequences (Pull Model)
-1. **Scenario 1 (generate)**: Implement `SequenceGenerator`. Focus on `Flux.generate(stateSupplier, generator)`.
-2. **Testing**: Verify precision of sequences (e.g., first N numbers).
+## Phase 2: Generating & Bridging
+1. **Scenario 1 (generate)**: Implement `SequenceGenerator` (Fibonacci).
+2. **Scenario 2 (create)**: Implement `ChatBridge` (Callback wrap).
 
-## Phase 3: Bridging APIs (Push Model)
-1. **Scenario 2 (create)**: Implement `ChatBridge`. Wrap a mock `ChatService` callback.
-2. **Scenario 3 (overflow)**: Add a test case that pushes 1000 items into a `create` sink with a slow subscriber and `LATEST` strategy.
-3. **Resource Cleanup**: Ensure `sink.onDispose` is used to "disconnect" the mock service.
+## Phase 3: Hot vs Cold Mechanics (New)
+1. **Scenario 3 (Hot/Cold)**: Implement `Broadcaster`.
+2. **Comparison**:
+   - Create a Cold `Flux.interval`.
+   - Create a Hot `Flux` using `publish().autoConnect()`.
+3. **Test**: Use `VirtualTime` and two subscribers with a delay to prove data loss in Hot Flux and data restart in Cold Flux.
 
-## Phase 4: Sinks (Event Buses)
-1. **Scenario 4 (Sinks.Many)**: Implement `NotificationService`. 
-2. **Scenario 5 (Sinks.One)**: Implement `AsyncSignal` for one-shot notifications.
-3. **Testing**: Use multiple subscribers on a multicast sink.
+## Phase 4: Connection Lifecycle Management (New)
+1. **Scenario 4 (refCount)**: Implement `OnDemandResource`.
+2. **Implementation**: Use `publish().refCount(2)` to require two subscribers.
+3. **Test**: Verify the source only starts when the second subscriber arrives.
 
-## Phase 5: Documentation & Assessment
-1. **CONCEPT.md**: Compare Generate (Synchronous/Pull) vs Create (Asynchronous/Push).
+## Phase 5: Sinks & Caching
+1. **Scenario 5 (Sinks)**: Implement `NotificationBus`.
+2. **Scenario 6 (Cache)**: Implement `ResultCache`.
+
+## Phase 6: Documentation & Assessment
+1. **CONCEPT.md**: Explain the "Movie vs Concert" analogy for Cold/Hot.
 2. **README.md**: 
-   - **Interactive Knowledge Check** (Quiz).
-   - Command Dissection for `Sinks` and `Flux.create`.
+   - Command Dissection for `publish`, `refCount`, and `Sinks`.
+   - Updated **Knowledge Check** section.
+
+## Phase 7: Refinement (Constitution Audit)
+1. **Logging**: Add `@Slf4j` and use `.log()` for signal visibility.
+2. **Deep Theory**: Expand `CONCEPT.md` to avoid over-simplification of pull vs push mechanics.
+3. **Lifecycle Validation**: Enhance tests for `OnDemandResource` to verify cleanup logic.
+4. **Final Audit**: Move status to `AUDITED`.
 
 ## Constitution Compliance Check
 - [x] Java 21+ syntax.
-- [x] No side-effects in generators (except state management).
 - [x] `StepVerifier` for everything.
 - [x] Self-Assessment quiz included.
+- [x] SLF4J Logging implemented.
+- [x] No over-simplified concepts in documentation.

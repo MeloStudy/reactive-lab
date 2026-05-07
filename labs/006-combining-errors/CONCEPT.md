@@ -31,16 +31,33 @@ The **Sequential** operator.
 Reactive streams are often stateless, but sometimes you need to carry state forward or summarize data.
 
 ### `scan(initial, (acc, next) -> ...)`
-The **Accumulator**. It applies a function to each item and emits the **intermediate result** at every step.
-- **Use Case**: Running totals, live balances, or cumulative logs.
-- **Emission**: If source emits 10 items, `scan` emits 10 items.
+The **Intermediate Accumulator**. It applies a function to each item and emits the **cumulative state** at every step.
+- **Emission Timing**: It emits an item as soon as the upstream emits. If the source emits 10 items, `scan` emits 10 items (plus the initial seed if configured).
+- **Type**: It always returns a `Flux`.
+- **Use Case**: Real-time dashboards, running balances, or UI progress bars.
 
 ### `reduce(initial, (acc, next) -> ...)`
-The **Summarizer**. It applies a function to each item but **only emits the final result** once the source stream completes.
-- **Use Case**: Final sums, averages, or max values.
-- **Emission**: Always emits exactly **one** item (as a `Mono`).
+The **Terminal Aggregator**. It applies a function to each item but **buffers the state** and only emits the final value when the source completes.
+- **Emission Timing**: It is a "quiet" operator until `onComplete`. If the source emits 1,000,000 items, `reduce` is silent for all of them and only emits **once** at the end.
+- **Type**: It always returns a `Mono`.
+- **Use Case**: Calculating a final grand total, an average of a fixed set, or a hash of a file.
 
-## 3. Batching & Windowing: Grouping for Efficiency
+## 4. Resource Safety: Discard Support
+
+In high-performance systems, simply "dropping" data isn't enough; we must clean up resources (like pooled byte buffers or open file handles) associated with that data. Project Reactor provides **Discard Support** to prevent memory leaks in asynchronous pipelines.
+
+### `doOnDiscard(Class<T>, Consumer<T>)`
+This operator acts as a "trash collector" hook. It is triggered when an element is "discarded" by an upstream or internal operator before it can reach the final subscriber.
+
+**Common "Discard" Scenarios**:
+1.  **Filtering**: If `filter(n -> n > 10)` rejects the number `5`, that number is "discarded".
+2.  **Cancellation**: If a subscriber cancels while a `buffer(5)` is partially full (e.g., holding 3 items), those 3 items are "discarded" because they will never be emitted.
+3.  **Errors**: If an error occurs mid-stream, any buffered or currently processed items that haven't been emitted yet are "discarded".
+
+> [!TIP]
+> Always use `doOnDiscard` when working with `buffer`, `window`, or any operator that holds state in memory, especially if the data objects require manual lifecycle management.
+
+## 5. Batching & Windowing: Grouping for Efficiency
 
 Processing items one-by-one is not always optimal. Sometimes you need to group items to perform bulk operations (e.g., batch database inserts) or time-based analysis.
 

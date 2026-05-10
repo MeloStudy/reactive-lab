@@ -22,6 +22,11 @@
 1. Use `groupBy` or `collect` patterns for Star counting and Language ranking.
    - **Language Ranking**: Count occurrences of languages found in `PullRequestEvent` payloads.
 
+## Phase 4.5: Data Enrichment (Multi-Source Aggregation)
+1.  **Security Database**: Implement a secondary reactive source that reads `security-database.json`.
+2.  **Lookup Logic**: Use `zip` or `flatMap` to enrich the Top 5 Repositories with their security vulnerability count.
+3.  **Result Model**: Create a `SecurityProfile` to hold the merged data.
+
 ## Phase 5: Delivery & Reporting
 1. Implement `SummaryReporter`: Collects total count, error count, and top 5 list.
 2. Formulate the "Executive Summary" console output.

@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -19,8 +20,11 @@ public class Main {
         }
 
         String filePath = args[0];
+        String securityDbPath = args.length > 1 ? args[1] : "src/test/resources/security-database.json";
+        
         InsightsEngine engine = new InsightsEngine();
         AnalyticsService analytics = new AnalyticsService();
+        SecurityService securityService = new SecurityService(securityDbPath);
 
         log.info("🚀 Starting Reactive GitHub Insights Engine...");
         Instant start = Instant.now();
@@ -30,11 +34,15 @@ public class Main {
 
         // Calculate metrics
         Mono<Long> totalCount = eventStream.count();
-        Mono<Map<String, Long>> topRepos = analytics.getTopRepositories(eventStream, 5);
+        Mono<Map<String, Long>> topReposMap = analytics.getTopRepositories(eventStream, 5);
         Mono<Map<String, Long>> topLangs = analytics.getTopLanguages(eventStream, 5);
+        
+        // Enrich Top Repos with Security Data
+        Mono<List<AnalyticsService.RepoReport>> enrichedRepos = 
+            analytics.enrichTopRepositories(topReposMap, securityService);
 
         // Zip all metrics together
-        Mono.zip(totalCount, topRepos, topLangs)
+        Mono.zip(totalCount, enrichedRepos, topLangs)
             .doOnNext(tuple -> {
                 Duration duration = Duration.between(start, Instant.now());
                 printSummary(tuple.getT1(), engine.getErrorCount(), duration, tuple.getT2(), tuple.getT3());
@@ -46,7 +54,7 @@ public class Main {
     }
 
     private static void printSummary(long total, long errors, Duration duration, 
-                                     Map<String, Long> repos, Map<String, Long> langs) {
+                                     List<AnalyticsService.RepoReport> repos, Map<String, Long> langs) {
         String nl = System.lineSeparator();
         StringBuilder sb = new StringBuilder();
         sb.append(nl).append("========================================").append(nl);
@@ -56,8 +64,10 @@ public class Main {
         sb.append(String.format("Malformed Lines Skipped: %d%n", errors));
         sb.append(String.format("Total Time: %d ms%n", duration.toMillis()));
         sb.append("----------------------------------------").append(nl);
-        sb.append("🏆 TOP 5 REPOSITORIES (Stars)").append(nl);
-        repos.forEach((name, count) -> sb.append(String.format("- %s: %d stars%n", name, count)));
+        sb.append("🏆 TOP 5 REPOSITORIES & SECURITY AUDIT").append(nl);
+        repos.forEach(report -> 
+            sb.append(String.format("- %s: %d stars | Vulnerabilities: %d%n", 
+                report.name(), report.stars(), report.vulnerabilities())));
         sb.append("----------------------------------------").append(nl);
         sb.append("🌍 TOP 5 LANGUAGES (PR Activity)").append(nl);
         langs.forEach((name, count) -> sb.append(String.format("- %s: %d PRs%n", name, count)));

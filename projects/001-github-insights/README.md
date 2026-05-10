@@ -17,7 +17,10 @@ You must implement a reactive pipeline that performs the following tasks on a tr
 4.  **Trend Analysis**:
     - Identify the **Top 5 Repositories** with the most stars in the dataset.
     - Identify the **Top 5 Programming Languages**: Aggregate the occurrences of languages in `PullRequestEvent` records and find the most active ones.
-5.  **Resilience**:
+5.  **Security Enrichment (Aggregation)**:
+    - Cross-reference the Top 5 repositories with a secondary security database (JSON file).
+    - Report the number of known vulnerabilities for each top repository.
+6.  **Resilience**:
     - If a JSON object is malformed, log the error and continue.
     - The pipeline must not stop due to individual record errors.
 
@@ -32,6 +35,7 @@ Upon completion, the program must print an "Executive Summary":
 2.  Total processing time (ms).
 3.  Top 5 repositories list.
 4.  Top 5 programming languages list.
+5.  **Security Audit**: Vulnerability count for each top repository.
 
 **Validation**: Pass a stress test processing at least 50,000 events in under 5 seconds.
 

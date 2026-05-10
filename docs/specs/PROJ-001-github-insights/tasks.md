@@ -19,6 +19,12 @@
 - [ ] T012 Calculate final execution metrics (Total events, duration).
 - [ ] T013 Implement the "Executive Summary" console output.
 
+## Phase 4: Security Enrichment (Aggregation)
+- [ ] T017 Create `security-database.json` mock file.
+- [ ] T018 Implement `SecurityService` for reactive data lookup.
+- [ ] T019 Implement enrichment flow using multi-source operators (zip/flatMap).
+- [ ] T020 Update reporter to include security insights.
+
 ## Phase 5: Verification & Audit
 - [ ] T014 Run stress test (50,000 events).
 - [ ] T015 Verify memory constraints (Heap < 128MB).

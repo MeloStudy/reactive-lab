@@ -32,7 +32,10 @@ An open-source analytics firm needs to identify trending repositories and active
 4.  **Analytics**:
     - Identify the **Top 5 Repositories** by Star count (WatchEvent) in the dataset.
     - Identify the **Top 5 Programming Languages**: Aggregate the occurrences of languages in `PullRequestEvent` and find the most active ones.
-5.  **Resilience**: Skip malformed JSON lines and log the error count without stopping the pipeline.
+5.  **Enrichment (Aggregation)**:
+    - Cross-reference the identified Top 5 Repositories with a secondary **Security Database** (external JSON file).
+    - Enrich each repository profile with its current vulnerability count.
+6.  **Resilience**: Skip malformed JSON lines and log the error count without stopping the pipeline.
 
 ## Technical Constraints *(mandatory)*
 
@@ -47,6 +50,7 @@ An open-source analytics firm needs to identify trending repositories and active
 - **EX-001**: **The FlatMap vs. ConcatMap dilemma**: Choosing the right operator for parallel JSON parsing.
 - **EX-002**: **Resource Management**: Handling `AutoCloseable` resources in a reactive flow.
 - **EX-003**: **Error Recovery**: Using `onErrorContinue` vs. `onErrorResume` for data cleaning.
+- **EX-004**: **Multiple Source Aggregation**: Using `zip` or `flatMap` to enrich an existing stream with data from a secondary publisher.
 
 ## Success Criteria
 - **SC-001**: Successful execution of the full pipeline on a 100k-line file within 128MB Heap.

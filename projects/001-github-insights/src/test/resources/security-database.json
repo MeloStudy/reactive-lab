@@ -1,0 +1,5 @@
+{
+  "repo/a": {"vulnerabilities": 2, "last_scan": "2024-05-10"},
+  "repo/b": {"vulnerabilities": 0, "last_scan": "2024-05-09"},
+  "repo/c": {"vulnerabilities": 5, "last_scan": "2024-05-08"}
+}

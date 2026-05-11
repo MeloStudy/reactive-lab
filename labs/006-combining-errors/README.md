@@ -1,6 +1,6 @@
 # LAB-006: Combining & Aggregation Operators 🧩📊
 
-Welcome to Lab 006! In this module, you will learn to orchestrate multiple reactive streams into a single result and implement basic resilience strategies to handle failures gracefully.
+Welcome to Lab 006! In this module, you will learn to orchestrate multiple reactive streams, aggregate data into complex structures, and implement advanced resilience and resource safety patterns.
 
 ## 🎯 Learning Objectives
 - LO-001: Combine streams eagerly with `merge` (interleaving).
@@ -10,37 +10,61 @@ Welcome to Lab 006! In this module, you will learn to orchestrate multiple react
 - LO-005: **Reduce** a stream into a single final value with `reduce`.
 - LO-006: **Batch items** into collections using `buffer`.
 - LO-007: **Partition items** into sub-streams using `window`.
-- LO-008: Handle errors and recovery using `onErrorResume` and `retry`.
+- LO-008: Handle errors and recovery using `onErrorResume`, `onErrorReturn`, and `retry`.
+- LO-009: Implement **Resource Safety** and handle dropped elements with `doOnDiscard`.
+- LO-010: Group elements into sub-streams by a key using `groupBy`.
 
 ## 🛠️ Scenario Walkthrough
 
-### 1. The Dashboard Aggregator [[Code]](src/main/java/com/reactivelab/orchestration/DashboardService.java)
-Build a user header by zipping together a User Profile and their Friends count. You will observe how `zip` ensures data integrity by waiting for all pieces to arrive.
+### I. Stream Orchestration
+Coordination of multiple asynchronous sources.
 
-### 2. The Social Feed Aggregator [[Code]](src/main/java/com/reactivelab/orchestration/SocialFeedService.java)
-Explore the difference between eager and lazy combination. Use `merge` to fetch multiple feeds simultaneously (interleaving) or `concat` to ensure a strict sequence (e.g., Cache first, then Remote).
+1.  **The Dashboard Aggregator** [[Code]](src/main/java/com/reactivelab/orchestration/DashboardService.java) [[Test]](src/test/java/com/reactivelab/orchestration/DashboardServiceTest.java)
+    Pair a User Profile (`Mono`) with their Friends count (`Mono`) using `zip`.
+2.  **The Social Feed Aggregator** [[Code]](src/main/java/com/reactivelab/orchestration/SocialFeedService.java) [[Test]](src/test/java/com/reactivelab/orchestration/SocialFeedServiceTest.java)
+    Fetch multiple feeds simultaneously using `merge` or sequentially using `concat`.
 
-### 3. The Running Balance [[Code]](src/main/java/com/reactivelab/orchestration/TransactionTracker.java)
-Calculate the cumulative sum of transactions as they happen. You will use `scan` to emit the updated balance every time a new transaction occurs.
+### II. Data Aggregation & State
+Summarizing streams into single values or accumulating state.
 
-### 4. The Final Total [[Code]](src/main/java/com/reactivelab/orchestration/TotalCalculator.java)
-Use `reduce` to aggregate all emissions into a single final value once the stream completes.
+3.  **The Running Balance** [[Code]](src/main/java/com/reactivelab/orchestration/TransactionTracker.java) [[Test]](src/test/java/com/reactivelab/orchestration/TransactionTrackerTest.java)
+    Calculate the cumulative sum of transactions as they happen using `scan`.
+4.  **The Final Total** [[Code]](src/main/java/com/reactivelab/orchestration/TotalCalculator.java) [[Test]](src/test/java/com/reactivelab/orchestration/TotalCalculatorTest.java)
+    Aggregate all emissions into a single final value once the stream completes using `reduce`.
 
-### 5. The Batch Processor [[Code]](src/main/java/com/reactivelab/orchestration/BatchProcessor.java)
-Group high-frequency data into `List` batches using `buffer`. This is essential for bulk operations like database inserts.
+### III. Batching & Windowing
+Reorganizing high-frequency data for efficiency.
 
-### 6. The Windowed Stream [[Code]](src/main/java/com/reactivelab/orchestration/WindowProcessor.java)
-Similar to batching, but instead of Lists, `window` produces sub-streams (`Flux<Flux<T>>`). This allows for concurrent processing of windows without waiting for the full batch to be collected.
+5.  **The Batch Processor** [[Code]](src/main/java/com/reactivelab/orchestration/BatchProcessor.java) [[Test]](src/test/java/com/reactivelab/orchestration/BatchProcessorTest.java)
+    Group items into `List` batches using `buffer` for bulk operations.
+6.  **The Windowed Stream** [[Code]](src/main/java/com/reactivelab/orchestration/WindowProcessor.java) [[Test]](src/test/java/com/reactivelab/orchestration/WindowProcessorTest.java)
+    Split a stream into sub-fluxes using `window` for concurrent window processing.
 
-### 7. The Resilient Client [[Code]](src/main/java/com/reactivelab/orchestration/ResilientClient.java)
-Implement a "Recovery Ladder" for a flaky service:
-1. Log the failure with `doOnError`.
-2. Translate technical exceptions with `onErrorMap`.
-3. Provide a safe default value with `onErrorReturn` or failover with `onErrorResume`.
+### IV. Resilience & Error Recovery
+Building pipelines that survive and recover from failures.
+
+7.  **The Resilient Client** [[Code]](src/main/java/com/reactivelab/orchestration/ResilientClient.java) [[Test]](src/test/java/com/reactivelab/orchestration/ResilientClientTest.java)
+    Implement a "Recovery Ladder": `doOnError` (log) -> `onErrorMap` (translate) -> `onErrorReturn` (fallback value) -> `onErrorResume` (failover publisher).
+8.  **The Reliable Service** [[Code]](src/main/java/com/reactivelab/orchestration/ReliableService.java) [[Test]](src/test/java/com/reactivelab/orchestration/ReliableServiceTest.java)
+    Implement transient error recovery with `retry`.
+
+### V. Advanced Collections & Grouping
+Transforming streams into complex Java structures or keyed sub-streams.
+
+9.  **The Advanced Analytics** [[Code]](src/main/java/com/reactivelab/orchestration/CollectionProcessor.java) [[Test]](src/test/java/com/reactivelab/orchestration/CollectionProcessorTest.java)
+    Aggregate a stream into lookups using `collectMap` or sorted results with `collectSortedList`.
+10. **The Event Grouper** [[Code]](src/main/java/com/reactivelab/orchestration/EventGrouper.java) [[Test]](src/test/java/com/reactivelab/orchestration/EventGrouperTest.java)
+    Group a stream of diverse events by their type using `groupBy`.
+
+### VI. Resource Safety
+Ensuring no leaks in complex stateful pipelines.
+
+11. **Resource Safety** [[Code]](src/main/java/com/reactivelab/orchestration/ResourceSafetyService.java) [[Test]](src/test/java/com/reactivelab/orchestration/ResourceSafetyTest.java)
+    Use `doOnDiscard` to clean up resources when items are filtered or subscriptions are cancelled.
 
 ## 🚀 Execution Guide
 
-Run the validation suite:
+Run the full validation suite:
 
 ```powershell
 mvn test -pl labs/006-combining-errors
@@ -49,51 +73,43 @@ mvn test -pl labs/006-combining-errors
 ## 🔍 Command Dissection
 
 ### `zip(mono1, mono2)`
-Creates a `Tuple` of results. 
 - **Wait Policy**: Waits for all sources.
 - **Cardinality**: Completes when any source completes (shortest-source rule).
 
-### `merge(flux1, flux2)`
-Combines multiple streams eagerly.
-- **Subscription**: Subscribes to all sources at once.
-- **Interleaving**: Items appear as they arrive, regardless of source order.
+### `groupBy(T -> K)`
+- **Nature**: Clustering.
+- **Output**: `Flux<GroupedFlux<K, T>>`. Each inner flux is a stream for a specific key.
 
-### `scan(initial, (acc, val) -> ...)`
-- **Nature**: Stateful and intermediate.
-- **Output**: Emits the current state after each item.
+### `collectMap(keyExtractor)`
+- **Nature**: Terminal Aggregator.
+- **Output**: `Mono<Map<K, T>>`. Emits only after source completion.
 
-### `reduce(initial, (acc, val) -> ...)`
-- **Nature**: Terminal.
-- **Output**: Emits a single `Mono` only when the source completes.
+### `doOnDiscard(Class, Consumer)`
+- **Nature**: Lifecycle Hook.
+- **Trigger**: When an item is "dropped" (filter, take, cancel, error). Essential for memory management.
 
-### `buffer(n)`
-- **Nature**: Grouping.
-- **Output**: Converts `Flux<T>` to `Flux<List<T>>`.
+### `retry(n)`
+- **Nature**: Terminal Recovery.
+- **Action**: Re-subscribes to the upstream if an error occurs.
 
-### `onErrorResume(e -> backupPublisher)`
-The ultimate safety net. 
-- It intercepts the error signal.
-- It cancels the original failed subscription.
-- It starts a new subscription to the `backupPublisher`.
-
-## 📝 Resilience Check (Self-Assessment)
+## 📝 Concept Check (Self-Assessment)
 
 1. **The Zip Trap**: You zip `Flux.range(1, 10)` with `Flux.range(1, 5)`. How many items will the resulting stream emit?
    <details>
    <summary>💡 View Answer</summary>
-   **5 items**. `zip` follows the "shortest source" rule. Once the second flux completes at 5, zip has no more pairs to produce and completes.
+   **5 items**. `zip` follows the "shortest source" rule.
    </details>
 
-2. **Eager vs Lazy**: If you use `concat` to join a fast source and a slow source, does the fast source start immediately?
+2. **Window vs Buffer**: If you have a high-volume stream and want to start processing as soon as the first item of a group arrives, which one should you use?
    <details>
    <summary>💡 View Answer</summary>
-   **Only if it is the FIRST source**. If the slow source is first, `concat` will wait for it to complete before even subscribing to the fast one. If you want both to run in parallel, use `merge`.
+   **`window`**. Unlike `buffer` which waits for the `List` to be full, `window` emits an inner `Flux` immediately.
    </details>
 
-3. **Logging vs Handling**: Does `doOnError` stop the error from reaching the final subscriber?
+3. **Discard Support**: Why is `doOnDiscard` important when using `buffer`?
    <details>
    <summary>💡 View Answer</summary>
-   **No**. `doOnError` is for side-effects only (logging, metrics). The error signal will continue to move downstream until it is handled by a recovery operator or terminates the subscription.
+   If the stream is cancelled or errors while a buffer is partially full, the items currently in the buffer would be lost without processing. `doOnDiscard` allows you to clean up or release those items.
    </details>
 
 ---

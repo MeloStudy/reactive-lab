@@ -16,7 +16,7 @@ class WindowProcessorTest {
 
         // Using flatMap + collectList to simplify the assertion of inner Fluxes
         Flux<List<Integer>> windowedLists = processor.splitIntoWindows(source, windowSize)
-                .flatMap(window -> window.collectList());
+                .flatMap(Flux::collectList);
 
         StepVerifier.create(windowedLists)
                 .expectNext(List.of(1, 2, 3))

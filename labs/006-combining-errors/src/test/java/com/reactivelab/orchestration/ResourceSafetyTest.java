@@ -4,20 +4,25 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.test.StepVerifier;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ResourceSafetyTest {
+class ResourceSafetyTest {
+
+    private final ResourceSafetyService service = new ResourceSafetyService();
 
     @Test
     void testDiscardSupportOnFilter() {
         List<Integer> discardedItems = new ArrayList<>();
 
-        Flux<Integer> flux = Flux.just(1, 2, 3, 10, 20)
-                .filter(i -> i > 5)
-                .doOnDiscard(Integer.class, discardedItems::add);
+        Flux<Integer> flux = service.filterWithCleanup(
+                Flux.just(1, 2, 3, 10, 20),
+                i -> i > 5,
+                discardedItems::add
+        );
 
         StepVerifier.create(flux)
                 .expectNext(10, 20)
@@ -34,6 +39,7 @@ public class ResourceSafetyTest {
         // We use a sink to manually control emission and trigger cancellation while buffering
         Sinks.Many<Integer> sink = Sinks.many().unicast().onBackpressureBuffer();
 
+        // Note: buffer() also has internal discard support that we can trigger
         Flux<List<Integer>> flux = sink.asFlux()
                 .buffer(5)
                 .doOnDiscard(Integer.class, discardedItems::add);

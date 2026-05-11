@@ -13,7 +13,7 @@ class ResilientClientTest {
     @Test
     void shouldReturnDefaultValueOnError() {
         Mono<String> failingCall = Mono.error(new RuntimeException("Boom!"));
-        
+
         StepVerifier.create(client.callWithFallback(failingCall, "Static Default"))
                 .expectNext("Static Default")
                 .verifyComplete();

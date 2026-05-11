@@ -10,7 +10,7 @@ class TransactionTrackerTest {
     void testRunningBalance() {
         TransactionTracker tracker = new TransactionTracker();
         Flux<Double> transactions = Flux.just(100.0, -50.0, 30.0);
-        
+
         Flux<Double> result = tracker.calculateRunningBalance(10.0, transactions);
 
         StepVerifier.create(result)

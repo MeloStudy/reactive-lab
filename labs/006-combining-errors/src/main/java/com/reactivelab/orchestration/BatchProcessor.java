@@ -5,7 +5,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 /**
- * Scenario 4: The Batch Processor
+ * Scenario 5: The Batch Processor
  * Uses 'buffer' to group items for bulk processing.
  */
 public class BatchProcessor {

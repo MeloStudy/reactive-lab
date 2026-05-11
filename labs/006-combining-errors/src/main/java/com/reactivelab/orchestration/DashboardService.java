@@ -11,12 +11,12 @@ public class DashboardService {
 
     /**
      * Combines User data and Friends count into a single Header string.
-     * 
+     * <p>
      * [PEDAGOGICAL NOTE]:
      * Mono.zip (or Flux.zip) waits for ALL sources to emit a signal before
      * producing a combined result. If one source is empty or delayed, the
      * whole zip operation is delayed or results in an empty stream.
-     * 
+     * <p>
      * Cardinality Rule: The resulting stream is limited by the shortest source.
      */
     public Mono<String> buildHeader(Mono<String> userMono, Mono<Long> friendsMono) {

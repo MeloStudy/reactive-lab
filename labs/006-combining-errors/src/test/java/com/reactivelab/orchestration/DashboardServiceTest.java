@@ -24,6 +24,6 @@ class DashboardServiceTest {
         Mono<Long> emptyFriends = Mono.empty();
 
         StepVerifier.create(service.buildHeader(user, emptyFriends))
-                .verifyComplete(); 
+                .verifyComplete();
     }
 }

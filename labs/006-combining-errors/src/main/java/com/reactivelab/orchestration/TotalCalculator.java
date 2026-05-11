@@ -4,7 +4,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Scenario 3: The Final Total (Reduction)
+ * Scenario 4: The Final Total (Reduction)
  * Uses 'reduce' to summarize a stream.
  */
 public class TotalCalculator {

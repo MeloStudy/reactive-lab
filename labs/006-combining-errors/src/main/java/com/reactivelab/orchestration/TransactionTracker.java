@@ -3,7 +3,7 @@ package com.reactivelab.orchestration;
 import reactor.core.publisher.Flux;
 
 /**
- * Scenario 2: The Running Balance (Accumulation)
+ * Scenario 3: The Running Balance (Accumulation)
  * Uses 'scan' to calculate intermediate state.
  */
 public class TransactionTracker {

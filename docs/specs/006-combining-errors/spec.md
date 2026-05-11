@@ -2,6 +2,7 @@
 
 **Feature Branch**: `006-combining-errors`
 **Created**: 2026-05-03
+**Last Updated**: 2026-05-11
 **Status**: AUDITED
 **Syllabus Section**: Level 1: Foundations (Project Reactor)
 
@@ -17,33 +18,46 @@
   - LO-005: **Reduce** a stream into a single final value with `reduce`.
   - LO-006: **Batch items** into collections using `buffer`.
   - LO-007: **Partition items** into sub-streams using `window`.
-  - LO-008: Handle errors and recovery using `onErrorResume` and `retry`.
+  - LO-008: Handle errors and recovery using `onErrorResume`, `onErrorReturn`, and `retry`.
+  - LO-009: Implement **Resource Safety** and handle dropped elements with `doOnDiscard`.
+  - LO-010: Group elements into sub-streams by a key using `groupBy`.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
-### Scenario 1 - The Dashboard Aggregator (Priority: P1)
-Combine a User profile (`Mono`) with their Friends count (`Mono`) using `zip`.
-**Validation**: Verify consolidated header string.
+### Scenario 1 - The Dashboard Aggregator (P1)
+Combine User profile (`Mono`) with Friends count (`Mono`) using `zip`.
 
-### Scenario 2 - The Running Balance (Accumulation) (Priority: P1)
-Given a stream of transaction amounts, calculate the **running balance** after each transaction using `scan`.
-**Validation**: Verify each intermediate balance emission.
+### Scenario 2 - The Social Feed Aggregator (P1)
+Fetch multiple feeds simultaneously using `merge` vs sequentially using `concat`.
 
-### Scenario 3 - The Final Total (Reduction) (Priority: P1)
-Calculate the **total sum** of a completed stream of numbers using `reduce`.
-**Validation**: Verify the final `Mono<Integer>` result.
+### Scenario 3 - The Running Balance (P1)
+Calculate the cumulative sum of transactions using `scan`.
 
-### Scenario 4 - The Batch Processor (Priority: P1)
-Group a stream of items into batches of 5 for bulk processing using `buffer(5)`.
-**Validation**: Verify that each emitted item is a `List` of size 5.
+### Scenario 4 - The Final Total (P1)
+Calculate the grand total of a completed stream using `reduce`.
 
-### Scenario 5 - The Windowed Stream (Priority: P2)
-Split a high-frequency stream into "windows" based on count or time using `window`.
-**Validation**: Verify that it emits `Flux<Flux<T>>` and each inner flux has the expected size.
+### Scenario 5 - The Batch Processor (P1)
+Group high-frequency items into `List` batches using `buffer`.
 
-### Scenario 6 - Basic Resilience (Priority: P1)
-Implement a fallback using `onErrorResume` when a combination source fails.
-**Validation**: Verify switch to fallback source.
+### Scenario 6 - The Windowed Stream (P2)
+Split a stream into sub-fluxes using `window` for parallel window processing.
+
+### Scenario 7 - The Resilient Client (P1)
+Implement a recovery ladder using `onErrorReturn`, `onErrorMap`, and `onErrorResume`.
+
+### Scenario 8 - The Reliable Service (P2)
+Implement transient error recovery with `retry`.
+
+### Scenario 9 - The Advanced Analytics (P2)
+Aggregate a stream into lookups using `collectMap` and `collectSortedList`.
+[[Code]](src/main/java/com/reactivelab/orchestration/CollectionProcessor.java)
+
+### Scenario 10 - The Event Grouper (P2)
+Group a stream of diverse events by their type using `groupBy`.
+[[Code]](src/main/java/com/reactivelab/orchestration/EventGrouper.java)
+
+### Scenario 11 - Resource Safety (P3)
+Demonstrate `doOnDiscard` to prevent leaks when items are filtered or cancelled.
 
 ---
 
@@ -51,9 +65,10 @@ Implement a fallback using `onErrorResume` when a combination source fails.
 
 ### Concepts to Explain
 - **EX-001**: **Eager vs Lazy Combination**: `merge` vs `concat`.
-- **EX-002**: **Accumulation vs Reduction**: Why `scan` emits every step while `reduce` only emits the final result.
-- **EX-003**: **Batching vs Windowing**: The difference between `List` containers (`buffer`) and sub-streams (`window`).
-- **EX-004**: **Collecting into Structures**: `collectMap` and `collectSortedList`.
+- **EX-002**: **Accumulation vs Reduction**: `scan` (intermediates) vs `reduce` (terminal).
+- **EX-003**: **Batching vs Windowing vs Grouping**: `buffer` (Lists) vs `window` (Fluxes) vs `groupBy` (keyed Fluxes).
+- **EX-004**: **Collecting into Structures**: How `collectMap` and `collectSortedList` differ from simple list collection.
+- **EX-005**: **Resource Safety**: The importance of `doOnDiscard` in stateful or buffered pipelines.
 
 ### Technical Requirements
 - **TR-001**: Use Java 21 and Project Reactor.
@@ -61,7 +76,8 @@ Implement a fallback using `onErrorResume` when a combination source fails.
 - **TR-003**: README MUST include an **Interactive Self-Assessment**.
 
 ## Success Criteria
-- **SC-001**: Successful orchestration of multiple sources.
-- **SC-002**: Correct implementation of running totals (`scan`) and final totals (`reduce`).
-- **SC-003**: Efficient batching using `buffer`.
-- **SC-004**: All validation tests pass.
+- **SC-001**: Correct orchestration of multiple asynchronous sources.
+- **SC-002**: Accurate aggregation (running totals, final totals, collections).
+- **SC-003**: Robust error recovery and retry logic.
+- **SC-004**: Proper resource management and grouping.
+- **SC-005**: All 11 scenario tests pass.

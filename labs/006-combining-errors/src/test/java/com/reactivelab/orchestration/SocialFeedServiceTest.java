@@ -15,7 +15,7 @@ class SocialFeedServiceTest {
         // Source 1 emits at 100ms, 200ms
         Flux<String> twitter = Flux.just("Tweet 1", "Tweet 2")
                 .delayElements(Duration.ofMillis(100));
-        
+
         // Source 2 emits at 10ms, 20ms
         Flux<String> instagram = Flux.just("Insta 1", "Insta 2")
                 .delayElements(Duration.ofMillis(10));
@@ -34,7 +34,7 @@ class SocialFeedServiceTest {
         // Source 1 is SLOW (100ms)
         Flux<String> cache = Flux.just("Cache 1", "Cache 2")
                 .delayElements(Duration.ofMillis(100));
-        
+
         // Source 2 is FAST (10ms)
         Flux<String> remote = Flux.just("Remote 1", "Remote 2")
                 .delayElements(Duration.ofMillis(10));

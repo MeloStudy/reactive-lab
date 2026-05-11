@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
- * Scenario 3: Demonstrates the Recovery Ladder (Return -> Map -> Resume).
- * 
+ * Scenario 7: Demonstrates the Recovery Ladder (Return -> Map -> Resume).
+ * <p>
  * Reactive error handling is about catching the error signal before it
  * reaches the subscriber and terminates the subscription.
  */
@@ -14,7 +14,7 @@ public class ResilientClient {
 
     /**
      * Tries a call and returns a default value if it fails.
-     * 
+     * <p>
      * [PEDAGOGICAL NOTE]:
      * onErrorReturn is a STATIC fallback. It swallows the error and
      * emits a single value, then completes the stream.
@@ -27,7 +27,7 @@ public class ResilientClient {
 
     /**
      * Tries a call and translates any technical exception into a BusinessException.
-     * 
+     * <p>
      * [PEDAGOGICAL NOTE]:
      * onErrorMap is used for EXCEPTION TRANSLATION. It allows you to
      * wrap low-level errors (like SQL or Network exceptions) into
@@ -43,7 +43,7 @@ public class ResilientClient {
 
     /**
      * Tries Source A. If it fails, fails over to Source B.
-     * 
+     * <p>
      * [PEDAGOGICAL NOTE]:
      * onErrorResume is a DYNAMIC fallback. It allows you to switch to
      * an entirely different Publisher (e.g., a secondary API or a cache)

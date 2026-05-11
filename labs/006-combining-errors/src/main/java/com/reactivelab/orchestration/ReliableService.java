@@ -3,7 +3,7 @@ package com.reactivelab.orchestration;
 import reactor.core.publisher.Mono;
 
 /**
- * Scenario 4: Demonstrates basic transient error recovery with retry.
+ * Scenario 8: Demonstrates basic transient error recovery with retry.
  */
 public class ReliableService {
 

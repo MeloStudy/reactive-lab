@@ -14,7 +14,7 @@ class BatchProcessorTest {
     void testProcessInBatches() {
         BatchProcessor processor = new BatchProcessor();
         Flux<Integer> source = Flux.range(1, 7); // 1, 2, 3, 4, 5, 6, 7
-        
+
         Flux<List<Integer>> result = processor.processInBatches(source, 3);
 
         StepVerifier.create(result)

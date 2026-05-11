@@ -1,36 +1,41 @@
-# Implementation Plan: LAB-006: Combining & Aggregation Operators
+# Implementation Plan: LAB-006 Refinement
 
-**Branch**: `006-combining-errors` | **Date**: 2026-05-03
-**Input**: Specification from `/docs/specs/006-combining-errors/spec.md`
+This plan details the steps to align LAB-006 with the latest syllabus, including advanced aggregation, grouping, and resource safety.
 
-## Phase 1: Project Setup
-1. Create `labs/006-combining-errors`.
-2. Package: `com.reactivelab.orchestration`.
+## 1. Refactor Existing Components
+- Fix scenario numbering in Javadocs for:
+  - `DashboardService` (Scenario 1)
+  - `SocialFeedService` (Scenario 2)
+  - `TransactionTracker` (Scenario 3)
+  - `TotalCalculator` (Scenario 4)
+  - `BatchProcessor` (Scenario 5)
+  - `WindowProcessor` (Scenario 6)
+  - `ResilientClient` (Scenario 7)
+  - `ReliableService` (Scenario 8)
 
-## Phase 2: Combination Operators
-1. **Scenario 1 (Zip)**: Implement `DashboardService`. 
-2. **Scenario 2 (Merge/Concat)**: Implement `SocialFeedService`. 
+## 2. New Feature Implementation
+- **AnalyticsProcessor.java**:
+  - Implement `collectMap` (e.g., mapping user ID to Profile).
+  - Implement `collectSortedList` (e.g., sorting transactions by value).
+  - Implement `groupBy` (Scenario 10: Grouping events by category).
+- **ResourceSafetyService.java**:
+  - Implement logic demonstrating `doOnDiscard` when items are filtered out or subscription is cancelled (Scenario 11).
 
-## Phase 3: Accumulation & Reduction (New)
-1. **Scenario 3 (Scan)**: Implement `TransactionTracker` to calculate running balances.
-2. **Scenario 4 (Reduce)**: Implement `TotalCalculator` for final sums.
-3. **Test**: Verify intermediate values for `scan` and terminal values for `reduce`.
+## 3. Documentation Upgrade
+- **README.md**:
+  - Categorize scenarios into: **Orchestration**, **Aggregation**, **Batching & Windowing**, **Resilience**, and **Advanced Control**.
+  - Add missing scenarios (8-11).
+  - Update Command Dissection.
+- **CONCEPT.md**:
+  - Fix numbering issues.
+  - Add sections for `groupBy`, `collectMap/SortedList`, and `doOnDiscard`.
+  - Deepen the explanation of `retry`.
 
-## Phase 4: Batching & Windowing (New)
-1. **Scenario 5 (Buffer)**: Implement `BatchProcessor` for list-based batching.
-2. **Scenario 6 (Window)**: Implement `WindowProcessor` for stream-based partitioning.
-3. **Test**: Verify container types (`List` vs `Flux`).
+## 4. Test Suite Alignment
+- Update `ResourceSafetyTest` to use the new service.
+- Create `AnalyticsProcessorTest` for Scenarios 9 and 10.
+- Verify all 11 scenarios with `StepVerifier`.
 
-## Phase 5: Resilience & Error Handling
-1. **Scenario 7 (Resilience)**: Implement `ResilientClient` using `onErrorResume` and `retry`.
-
-## Phase 6: Documentation & Assessment
-1. **CONCEPT.md**: Explain the difference between `scan` (Stateful) and `reduce` (Terminal).
-2. **README.md**: 
-   - Command Dissection for `scan`, `buffer`, and `zip`.
-   - Updated **Knowledge Check** section.
-
-## Constitution Compliance Check
-- [x] Java 21+ syntax.
-- [x] `StepVerifier` for everything.
-- [x] Self-Assessment quiz included.
+## 5. Final Audit
+- Run all tests.
+- Verify pedagogical links and consistency.

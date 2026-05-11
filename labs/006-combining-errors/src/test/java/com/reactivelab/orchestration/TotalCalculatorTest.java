@@ -11,7 +11,7 @@ class TotalCalculatorTest {
     void testCalculateTotal() {
         TotalCalculator calculator = new TotalCalculator();
         Flux<Integer> numbers = Flux.just(1, 2, 3, 4, 5);
-        
+
         Mono<Integer> result = calculator.calculateTotal(numbers);
 
         StepVerifier.create(result)

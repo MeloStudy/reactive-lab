@@ -1,5 +1,7 @@
-package com.reactivelab.web;
+package com.reactivelab.web.controller;
 
+import com.reactivelab.web.model.StockQuote;
+import com.reactivelab.web.service.StockService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -10,7 +12,7 @@ import reactor.test.StepVerifier;
 
 @WebFluxTest(controllers = StockController.class)
 @Import(StockService.class)
-public class AnnotatedControllerTest {
+class AnnotatedControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;

@@ -43,3 +43,25 @@ Use **Functional Endpoints** for more programmatic control, better performance (
 WebFlux makes streaming incredibly easy via:
 1. **Server-Sent Events (SSE)**: `text/event-stream`. Perfect for push notifications or live updates (one-way).
 2. **NDJSON**: `application/x-ndjson`. Best for bulk data transfers where each JSON object is separated by a newline, allowing the client to process elements one by one without waiting for the whole array.
+
+## Backpressure in the Web Layer
+
+How does a web server handle a slow client? In WebFlux, backpressure is propagated from the **HTTP Response Buffer** down to the **Publisher**:
+1. When the TCP/IP stack buffer is full, Netty signals that the channel is **not writable**.
+2. The WebFlux runtime receives this signal and **stops requesting elements** from the upstream Publisher (Flux).
+3. Once the client consumes data and the buffer clears, Netty signals `isWritable=true`, and the flow resumes.
+
+This ensures the server never overflows its memory trying to push data to a client that can't keep up.
+
+## Modern Context: Assimilating Virtual Threads (Loom)
+
+With **Java 21**, Virtual Threads (Project Loom) provide a way to write blocking code that is as scalable as reactive code. So why use WebFlux?
+
+| Perspective | Spring WebFlux (Event Loop) | Project Loom (Virtual Threads) |
+| :--- | :--- | :--- |
+| **Resource Usage** | Extremely low. Fixed thread pool. | Low per thread, but context switching exists. |
+| **Programming Model** | Functional / Declarative (Pipelines). | Imperative (Standard Java). |
+| **Flow Control** | Native Backpressure Support. | No native backpressure (needs manual sync). |
+| **Ecosystem** | Mature support for R2DBC, Kafka, SSE. | Evolving; many libs still rely on `synchronized`. |
+
+**Conclusion**: WebFlux is not just about concurrency; it's about **data flow orchestration**. While Loom simplifies standard CRUD, WebFlux excels in complex streaming, orchestration of multiple services, and scenarios where explicit flow control is critical.

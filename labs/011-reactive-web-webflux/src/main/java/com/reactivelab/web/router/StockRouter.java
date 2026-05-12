@@ -1,5 +1,7 @@
-package com.reactivelab.web;
+package com.reactivelab.web.router;
 
+import com.reactivelab.web.handler.StockHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -10,6 +12,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
+@Slf4j
 @Configuration
 public class StockRouter {
 
@@ -21,9 +24,11 @@ public class StockRouter {
                     long start = System.currentTimeMillis();
                     return next.handle(request).doOnNext(res -> {
                         long duration = System.currentTimeMillis() - start;
+                        log.info("Functional route [{}] executed in {}ms", request.path(), duration);
                         request.exchange().getResponse().getHeaders().add("X-Execution-Time", duration + "ms");
                         request.exchange().getResponse().getHeaders().add("X-Security-Header", "Active");
                     });
                 });
+
     }
 }

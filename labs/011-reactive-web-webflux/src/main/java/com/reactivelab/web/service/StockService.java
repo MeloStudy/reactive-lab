@@ -1,5 +1,8 @@
-package com.reactivelab.web;
+package com.reactivelab.web.service;
 
+import com.reactivelab.web.exception.StockNotFoundException;
+import com.reactivelab.web.model.StockQuote;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -8,6 +11,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 public class StockService {
 
@@ -20,6 +24,7 @@ public class StockService {
     }
 
     public Mono<StockQuote> getQuote(String symbol) {
+        log.debug("Service call: getQuote for {}", symbol);
         return Mono.justOrEmpty(prices.get(symbol))
                 .map(price -> new StockQuote(symbol, price, Instant.now()))
                 .delayElement(Duration.ofMillis(50)) // Simulate network latency
@@ -27,6 +32,7 @@ public class StockService {
     }
 
     public Flux<StockQuote> getPriceStream(String symbol) {
+        log.debug("Service call: getPriceStream for {}", symbol);
         return Flux.interval(Duration.ofSeconds(1))
                 .map(i -> {
                     double price = prices.getOrDefault(symbol, 100.0) + (Math.random() * 5 - 2.5);
@@ -37,6 +43,7 @@ public class StockService {
     }
 
     public Flux<StockQuote> getAllQuotes(int count) {
+        log.debug("Service call: getAllQuotes with count {}", count);
         return Flux.range(1, count)
                 .delayElements(Duration.ofMillis(10))
                 .map(i -> new StockQuote("STK-" + i, 100.0 + i, Instant.now()));

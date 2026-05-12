@@ -1,8 +1,8 @@
-# Lab Specification: LAB-011: Reactive Web with Spring WebFlux [READY]
+# Lab Specification: LAB-011: Reactive Web with Spring WebFlux [AUDITED]
 
 **Feature Branch**: `011-reactive-web-webflux`
 **Created**: 2026-05-04
-**Status**: Ready
+**Status**: Audited
 **Syllabus Section**: Level 3: Enterprise Reactive Services (Spring WebFlux)
 
 ## Syllabus Alignment *(mandatory)*
@@ -12,11 +12,11 @@
 - **Learning Objectives**:
   - LO-001: Build reactive REST APIs using the annotation-based model (`@RestController`).
   - LO-002: Build functional APIs using `RouterFunction` and `HandlerFunction`.
-  - LO-003: Implement real-time data streaming using Server-Sent Events (SSE).
-  - LO-004: Stream large datasets efficiently using NDJSON (`application/x-ndjson`).
-  - LO-005: Apply cross-cutting concerns using functional **Filters** (`HandlerFilterFunction`).
-  - LO-006: Implement global reactive error handling strategies.
-  - LO-007: Understand the Netty-based event loop architecture vs. Servlet containers.
+  - LO-003: Implement real-time data streaming using SSE and NDJSON.
+  - LO-004: Apply cross-cutting concerns using functional **Filters**.
+  - LO-005: Implement global reactive error handling strategies.
+  - LO-006: Understand the Netty-based event loop architecture vs. Servlet containers.
+  - LO-007: Evaluate WebFlux in the context of modern JVM features (Assimilation of Loom).
 
 ## Interactive Scenarios & Validation *(mandatory)*
 

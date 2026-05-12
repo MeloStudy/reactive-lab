@@ -1,4 +1,4 @@
-package com.reactivelab.web;
+package com.reactivelab.web.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

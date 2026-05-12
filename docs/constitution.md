@@ -17,8 +17,10 @@ Theoretical depth is MANDATORY. Documenting operators is not enough; each lab mu
 ### V. Backpressure & Resilience by Design
 Reactive programming without backpressure is just asynchronous callback hell. Every advanced lab MUST include a scenario where flow control is tested (e.g., slow consumers vs. fast producers). Resilience patterns (Retry, Timeout, Fallback, Circuit Breaker) are core requirements.
 
-### VI. The Modern Context (Virtual Threads)
-With Java 21+ as the baseline, the curriculum MUST address Project Loom (Virtual Threads). The trade-offs between Virtual Threads and Reactive Streams must be explicitly compared to provide a complete, modern perspective.
+### VI. Modern Technology Assimilation & Evolution
+As the JVM evolves (Java 21+), the laboratory SHOULD evaluate how reactive programming integrates with or is challenged by new platform features. This includes assessing the impact of **Virtual Threads (Project Loom)**, **Structured Concurrency**, and **Scoped Values** on the reactive paradigm. The objective is to understand how to assimilate these technologies to build superior systems, ensuring the curriculum remains at the engineering frontier.
+
+
 
 ## Lab Design Standards
 

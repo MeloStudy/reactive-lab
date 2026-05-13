@@ -33,6 +33,33 @@ This laboratory demonstrates the transition from core Reactor concepts to buildi
 - **Concept**: Translating reactive errors (`StockNotFoundException`) into HTTP status codes (`404 Not Found`).
 - **Example**: `curl -v http://localhost:8080/stocks/UNKNOWN`
 
+## 🛠️ Implementation Classes
+
+| Scenario | Primary Class | Role |
+| :--- | :--- | :--- |
+| **Annotated REST** | [StockController](src/main/java/com/reactivelab/web/controller/StockController.java) | Handles standard Spring MVC-style annotations. |
+| **Functional API** | [StockRouter](src/main/java/com/reactivelab/web/router/StockRouter.java) | Defines programmatic routes and filters. |
+| **Business Logic** | [StockService](src/main/java/com/reactivelab/web/service/StockService.java) | Manages stock data and stream generation logic. |
+| **Streaming Logic** | [StockHandler](src/main/java/com/reactivelab/web/handler/StockHandler.java) | Logic for functional endpoints (HandlerFunction). |
+| **Error Handling** | [GlobalExceptionHandler](src/main/java/com/reactivelab/web/exception/GlobalExceptionHandler.java) | Maps reactive errors to HTTP responses. |
+
+## 🔍 Command Dissections
+
+### Streaming with `curl -N`
+When testing SSE or NDJSON, use the `-N` (or `--no-buffer`) flag:
+```bash
+curl -N http://localhost:8080/stocks/AAPL/stream
+```
+*   **Why?** By default, `curl` buffers output. For an infinite stream, you wouldn't see any data until the buffer fills or the connection closes. `-N` ensures every chunk is displayed immediately.
+
+### Inspecting Headers with `curl -v`
+To verify content types (like `application/x-ndjson`) or custom headers (like `X-Execution-Time`):
+```bash
+curl -v http://localhost:8080/functional/stocks/AAPL
+```
+*   **Key check**: Look for `< HTTP/1.1 200 OK` and `< X-Execution-Time: ...`.
+
+
 ## How to Run
 ```bash
 mvn spring-boot:run

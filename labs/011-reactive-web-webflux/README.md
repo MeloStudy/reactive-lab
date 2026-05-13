@@ -28,10 +28,13 @@ This laboratory demonstrates the transition from core Reactor concepts to buildi
 - **Concept**: Streaming large JSON datasets one element at a time (Newline Delimited JSON).
 - **Example**: `curl -v http://localhost:8080/stocks/bulk?count=5`
 
-### 5. Global Error Handling
+### 5. Dual-Track Global Error Handling
 - **Scenario**: Requesting a non-existent stock symbol.
-- **Concept**: Translating reactive errors (`StockNotFoundException`) into HTTP status codes (`404 Not Found`).
-- **Example**: `curl -v http://localhost:8080/stocks/UNKNOWN`
+- **Concept**: WebFlux offers two ways to handle errors globally:
+    1. **@ControllerAdvice (Option 1)**: Traditional annotation-based handling for `@RestController`.
+    2. **ErrorWebExceptionHandler (Option 2)**: Low-level, unified handling that captures errors from both Controllers and Functional Routers.
+- **Example (Annotation)**: `curl -i http://localhost:8080/stocks/UNKNOWN`
+- **Example (Functional)**: `curl -i http://localhost:8080/functional/stocks/UNKNOWN`
 
 ## 🛠️ Implementation Classes
 
@@ -41,7 +44,8 @@ This laboratory demonstrates the transition from core Reactor concepts to buildi
 | **Functional API** | [StockRouter](src/main/java/com/reactivelab/web/router/StockRouter.java) | Defines programmatic routes and filters. |
 | **Business Logic** | [StockService](src/main/java/com/reactivelab/web/service/StockService.java) | Manages stock data and stream generation logic. |
 | **Streaming Logic** | [StockHandler](src/main/java/com/reactivelab/web/handler/StockHandler.java) | Logic for functional endpoints (HandlerFunction). |
-| **Error Handling** | [GlobalExceptionHandler](src/main/java/com/reactivelab/web/exception/GlobalExceptionHandler.java) | Maps reactive errors to HTTP responses. |
+| **Error Handling (Ann)** | [GlobalExceptionHandler](src/main/java/com/reactivelab/web/exception/GlobalExceptionHandler.java) | Option 1: For @RestController. |
+| **Error Handling (Func)**| [GlobalErrorExceptionHandler](src/main/java/com/reactivelab/web/exception/GlobalErrorExceptionHandler.java) | Option 2: Unified WebExceptionHandler. |
 
 ## 🔍 Command Dissections
 

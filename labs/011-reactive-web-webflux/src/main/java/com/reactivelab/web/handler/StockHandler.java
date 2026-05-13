@@ -1,6 +1,5 @@
 package com.reactivelab.web.handler;
 
-import com.reactivelab.web.exception.StockNotFoundException;
 import com.reactivelab.web.model.StockQuote;
 import com.reactivelab.web.service.StockService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +25,7 @@ public class StockHandler {
         return stockService.getQuote(symbol)
                 .flatMap(quote -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(quote))
-                .onErrorResume(StockNotFoundException.class, e -> {
-                    log.warn("Stock not found in functional handler: {}", symbol);
-                    return ServerResponse.notFound().build();
-                });
+                        .bodyValue(quote));
     }
 
     public Mono<ServerResponse> getStream(ServerRequest request) {

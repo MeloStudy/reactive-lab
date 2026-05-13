@@ -1,60 +1,51 @@
 # Concept: WebClient & Reactive Orchestration
 
-In a microservices architecture, services rarely work in isolation. They need to communicate with each other. Traditionally, Java developers used `RestTemplate`, which is synchronous and blocking. In the reactive world, we use **WebClient**.
+In a microservices architecture, services must communicate without blocking threads. Traditionally, Java developers used `RestTemplate`, which is synchronous and blocking. In the reactive world, we use **WebClient**.
 
-## 1. Why WebClient?
+## 1. Under the Hood: Netty & The Event Loop
 
-`RestTemplate` uses the "Thread-per-Request" model. When you make an HTTP call, the calling thread blocks until the response arrives. If the downstream service is slow, your thread is held hostage, leading to thread exhaustion.
+`WebClient` is built on top of **Project Reactor Netty**. Unlike `RestTemplate`, which uses a "Thread-per-Request" model, `WebClient` uses a small number of **Event Loop threads** (typically equal to the number of CPU cores).
 
-**WebClient** is:
-- **Non-blocking**: It initiates the request and frees the thread immediately. The response is handled via callbacks (signals) when it arrives.
-- **Reactive**: It returns `Mono` or `Flux`, allowing for easy composition with other reactive streams.
-- **Efficient**: It uses an underlying Event Loop (usually Netty) to handle thousands of concurrent connections with very few threads.
+- **The Cycle**: When you initiate a request, `WebClient` registers the request with the OS (using epoll/kqueue) and immediately releases the thread.
+- **The Signal**: When the response data arrives, the OS notifies the Event Loop, which then executes the reactive pipeline (mapping, filtering, etc.).
+- **The Golden Rule**: You must **never block** inside a `WebClient` pipeline. Blocking an Event Loop thread stops it from handling hundreds of other concurrent requests, leading to severe performance degradation.
 
-## 2. Key APIs: retrieve() vs exchange()
+## 2. retrieve() vs exchangeToMono()
 
-When making a call, you have two main ways to handle the response:
+Handling response bodies correctly is critical for resource management.
 
-### A. retrieve()
-The easiest way to get the body. It automatically handles error status codes (4xx, 5xx) if you provide `.onStatus()` handlers.
+### A. retrieve() (The Safe Default)
+`retrieve()` is the easiest and safest way to fetch a response body. It handles the consumption of the body automatically. Even if you don't use the body (e.g., `.toBodilessEntity()`), `WebClient` ensures the connection is released back to the pool.
+
 ```java
 webClient.get().uri("/...").retrieve().bodyToMono(User.class);
 ```
 
-### B. exchangeToMono() / exchangeToFlux()
-Provides full control over the `ClientResponse` (headers, cookies, status). 
-**WARNING**: You are responsible for consuming the response body or closing it. If you don't, you will leak memory and connection pool slots.
+### B. exchangeToMono() / exchangeToFlux() (The Expert Choice)
+`exchangeToMono` gives you full access to the `ClientResponse` (headers, cookies, status code).
+**IMPORTANT**: You are responsible for consuming the body. If you don't call `.bodyToMono()`, `.bodyToFlux()`, or `.releaseBody()`, you will **leak memory** and the connection will not return to the pool.
+
 ```java
 webClient.get().uri("/...")
   .exchangeToMono(response -> {
-      if (response.statusCode().equals(HttpStatus.OK)) {
+      if (response.statusCode().is2xxSuccessful()) {
           return response.bodyToMono(User.class);
       } else {
-          return response.createException().flatMap(Mono::error);
+          // Manual release if we don't want the body
+          return response.releaseBody().then(Mono.error(new RuntimeException("Error")));
       }
   });
 ```
 
-## 3. Orchestration Patterns
+## 3. Connection Pooling & Backpressure
 
-### Parallel Calls (zip)
-When you need data from multiple independent services, don't call them one by one. Use `Mono.zip`.
-- **Imperative**: `Time = T1 + T2 + T3`
-- **Reactive**: `Time = Max(T1, T2, T3)`
+`WebClient` uses a `ConnectionProvider` to manage a pool of persistent connections (Keep-Alive).
+- **Backpressure**: While `WebClient` itself doesn't "block" when the pool is full, the reactive stream will propagate backpressure to the producer if the downstream service is slow and all connections are busy.
+- **Resource Management**: Properly closing streams and consuming bodies ensures that connections are recycled, preventing `PoolAcquireTimeoutException`.
 
-### Sequential Calls (flatMap)
-When the second call depends on the result of the first call.
-```java
-getUser(id).flatMap(user -> getPreferences(user.getPrefId()));
-```
+## 4. Resilience Patterns
 
-## 4. Resilience: The Reactive Way
-
-Reactive streams provide built-in operators for common resilience patterns:
-- **Timeout**: `timeout(Duration.ofSeconds(2))` triggers an error if the service is too slow.
-- **Retry**: `retryWhen(Retry.backoff(...))` allows for sophisticated retry strategies (exponential, jitter).
-- **Fallback**: `onErrorReturn` or `onErrorResume` provides a graceful way to recover from failures.
-
-## 5. Threading Model
-
-WebClient uses the **Event Loop**. When a request is sent, the task is delegated to the OS kernel. When the data returns, the Event Loop thread is notified, and it resumes the pipeline execution. This is why you should **never block** inside a WebClient pipeline, as you would block the Event Loop that is potentially handling hundreds of other requests.
+Reactive orchestration is not just about combining streams; it's about surviving failures.
+- **Timeouts**: `timeout(Duration)` protects you from "zombie" services that never respond.
+- **Retries**: `retryWhen(Retry)` allows for intelligent recovery strategies like Exponential Backoff with Jitter.
+- **Fallbacks**: `onErrorResume` provides a way to return default data or call a secondary service when the primary one fails.

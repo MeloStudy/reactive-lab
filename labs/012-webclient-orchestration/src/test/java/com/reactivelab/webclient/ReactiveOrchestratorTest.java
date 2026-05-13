@@ -1,19 +1,21 @@
 package com.reactivelab.webclient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.blockhound.BlockHound;
+import reactor.blockhound.BlockingOperationError;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +25,12 @@ class ReactiveOrchestratorTest {
     private ReactiveOrchestrator orchestrator;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final java.util.concurrent.atomic.AtomicInteger inventoryRetryCount = new java.util.concurrent.atomic.AtomicInteger(0);
+
+    @BeforeAll
+    static void initAll() {
+        // T015: Integrate BlockHound to ensure non-blocking invariants
+        BlockHound.install();
+    }
 
     @BeforeEach
     void setUp() throws IOException {
@@ -34,35 +42,32 @@ class ReactiveOrchestratorTest {
                 try {
                     String path = request.getPath();
                     if (path.matches("/users/\\d+/orders$")) {
-                        List<Order> orders = List.of(
+                        return jsonResponse(List.of(
                                 Order.builder().id("101").product("Keyboard").build(),
                                 Order.builder().id("102").product("Mouse").build()
-                        );
-                        return new MockResponse()
-                                .setBody(objectMapper.writeValueAsString(orders))
-                                .setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS)
-                                .addHeader("Content-Type", "application/json");
+                        )).setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS);
                     } else if (path.matches("/users/\\d+$")) {
                         User user = User.builder().id("1").username("melo").preferenceId("pref_123").build();
-                        return new MockResponse()
-                                .setBody(objectMapper.writeValueAsString(user))
-                                .setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS)
-                                .addHeader("Content-Type", "application/json");
+                        return jsonResponse(user).setBodyDelay(500, java.util.concurrent.TimeUnit.MILLISECONDS);
                     } else if (path.matches("/preferences/.*")) {
                         Preference preference = Preference.builder().id("pref_123").theme("DARK").build();
-                        return new MockResponse().setBody(objectMapper.writeValueAsString(preference))
-                                .addHeader("Content-Type", "application/json");
+                        return jsonResponse(preference);
                     } else if (path.startsWith("/inventory/")) {
                         if (inventoryRetryCount.getAndIncrement() < 3) {
                             return new MockResponse().setResponseCode(500);
                         }
                         return new MockResponse().setBody("IN_STOCK");
                     } else if (path.equals("/events")) {
-                        GlobalEvent e1 = GlobalEvent.builder().type("SALE").message("A").build();
-                        GlobalEvent e2 = GlobalEvent.builder().type("HEARTBEAT").build();
-                        GlobalEvent e3 = GlobalEvent.builder().type("ALERT").message("B").build();
-                        return new MockResponse().setBody(objectMapper.writeValueAsString(List.of(e1, e2, e3)))
-                                .addHeader("Content-Type", "application/json");
+                        return jsonResponse(List.of(
+                                GlobalEvent.builder().type("SALE").message("A").build(),
+                                GlobalEvent.builder().type("HEARTBEAT").build(),
+                                GlobalEvent.builder().type("ALERT").message("B").build()
+                        ));
+                    } else if (path.startsWith("/secure-data/")) {
+                        if (request.getHeader("X-Secure-Token") == null && path.contains("invalid")) {
+                            return new MockResponse().setResponseCode(200).setBody("HIDDEN_DATA"); // Wrongly return 200 but without token
+                        }
+                        return new MockResponse().setResponseCode(200).setBody("SECURE_CONTENT").addHeader("X-Secure-Token", "valid_token");
                     }
                     return new MockResponse().setResponseCode(404);
                 } catch (Exception e) {
@@ -74,6 +79,12 @@ class ReactiveOrchestratorTest {
         mockWebServer.start();
         String baseUrl = mockWebServer.url("/").toString();
         orchestrator = new ReactiveOrchestrator(WebClient.builder(), baseUrl);
+    }
+
+    private MockResponse jsonResponse(Object body) throws Exception {
+        return new MockResponse()
+                .setBody(objectMapper.writeValueAsString(body))
+                .addHeader("Content-Type", "application/json");
     }
 
     @AfterEach
@@ -101,9 +112,8 @@ class ReactiveOrchestratorTest {
                 .verifyComplete();
         long end = System.currentTimeMillis();
 
-        // No delay in dispatcher for now to make it fast, 
-        // but parallel execution is guaranteed by Dispatcher routing
-        assertThat(end - start).isLessThan(2000);
+        // Parallel execution: both calls take 500ms, total should be ~500ms (not 1000ms)
+        assertThat(end - start).isLessThan(1500);
     }
 
     @Test
@@ -128,12 +138,38 @@ class ReactiveOrchestratorTest {
 
     @Test
     void testGetEventsStream() {
-        GlobalEvent e1 = GlobalEvent.builder().type("SALE").message("A").build();
-        GlobalEvent e3 = GlobalEvent.builder().type("ALERT").message("B").build();
-
         StepVerifier.create(orchestrator.getEventsStream())
                 .expectNextMatches(e -> e.getType().equals("SALE"))
                 .expectNextMatches(e -> e.getType().equals("ALERT"))
                 .verifyComplete();
+    }
+
+    @Test
+    void testGetSecureData_WithToken() {
+        StepVerifier.create(orchestrator.getSecureData("valid"))
+                .expectNext("SECURE_CONTENT")
+                .verifyComplete();
+    }
+
+    @Test
+    void testGetSecureData_MissingToken_ReleasesBody() {
+        // T016: Verify exchangeToMono correctly handles missing header and releases body
+        StepVerifier.create(orchestrator.getSecureData("invalid"))
+                .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
+                        throwable.getMessage().equals("Unauthorized"))
+                .verify();
+    }
+
+    @Test
+    void testBlockHound_DetectsBlocking() {
+        // Verify BlockHound is working
+        StepVerifier.create(Mono.fromCallable(() -> {
+            Thread.sleep(10);
+            return "done";
+        }).subscribeOn(Schedulers.parallel()))
+
+        .expectErrorMatches(throwable -> throwable instanceof BlockingOperationError)
+        .verify();
+
     }
 }

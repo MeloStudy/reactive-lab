@@ -105,4 +105,21 @@ public class ReactiveOrchestrator {
                 .filter(event -> !"HEARTBEAT".equals(event.getType()))
                 .log("EventStream");
     }
+
+    /**
+     * Scenario 6: Advanced Body Control (Manual Consumption)
+     * Demonstrates using exchangeToMono to inspect headers and manually handle the body.
+     */
+    public Mono<String> getSecureData(String id) {
+        return webClient.get()
+                .uri("/secure-data/{id}", id)
+                .exchangeToMono(response -> {
+                    if (response.headers().header("X-Secure-Token").isEmpty()) {
+                        log.warn("Missing secure token for ID: {}, releasing body", id);
+                        return response.releaseBody().then(Mono.error(new RuntimeException("Unauthorized")));
+                    }
+                    return response.bodyToMono(String.class);
+                });
+    }
 }
+

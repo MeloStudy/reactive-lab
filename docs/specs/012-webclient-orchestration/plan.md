@@ -30,6 +30,14 @@ The learner will implement a reactive gateway service that orchestrates multiple
 1. **CONCEPT.md**: Explain the underlying architecture of `WebClient` (based on Netty), the importance of body consumption in `exchange()`, and the threading model.
 2. **README.md**: Educational walkthrough with "Command Dissection" for `WebClient.builder()`, `retrieve()`, and `onStatus()`.
 
+## Phase 5: BlockHound & Manual Control
+1. **Instructional Path**:
+   - Integrating BlockHound into JUnit 5.
+   - Using `exchangeToMono` for precise response handling.
+   - Managing resource cleanup (connection release).
+2. **Validation**: Tests that attempt to block (e.g., `Thread.sleep`) and verify that BlockHound throws an exception.
+
+
 ## Constitution Compliance Check
 - [ ] No `.sh` wrapper scripts.
 - [ ] Code comments explicitly describe what every test line validates.

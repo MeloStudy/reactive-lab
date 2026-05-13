@@ -22,7 +22,14 @@
 - [x] T010 Create `README.md` with step-by-step instructions and Command Dissections for `onStatus`, `retrieve`, and `zip`.
 - [x] T011 Add code comments explaining the "Reactive" reason behind every test assertion.
 
-## Phase 4: Final Certification
+## Phase 4: Refinement & Constitution Compliance
+- [x] T015 Integrate **BlockHound** into `ReactiveOrchestratorTest`.
+- [x] T016 Implement Scenario 6 (exchangeToMono) and its validation.
+- [x] T017 Deepen `CONCEPT.md` with Netty Event Loop and Memory safety details.
+- [x] T018 Add "Troubleshooting" and "Native Execution" to `README.md`.
+
+## Phase 5: Final Certification
 - [x] T012 Verify all tests pass with `mvn test`.
 - [x] T013 Verify compliance with the Constitution (No `.sh` files, English only, valid metadata).
 - [x] T014 Update `docs/syllabus.md` status to `AUDITED`.
+

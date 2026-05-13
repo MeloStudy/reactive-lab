@@ -52,6 +52,14 @@ Connect to a remote SSE (Server-Sent Events) endpoint that streams "Global Event
 
 **Validation (Automated Test)**: Verify that the `WebClient` can handle long-running streams without buffer overflows.
 
+---
+
+### Scenario 6 - Advanced Body Control (P2)
+Use `exchangeToMono` to fetch a resource where you need to check specific headers before decided how to consume the body. This scenario emphasizes the responsibility of manual body consumption to prevent memory leaks.
+
+**Validation (Automated Test)**: Verify that the response body is correctly consumed or discarded based on header values.
+
+
 ## Educational Requirements *(mandatory)*
 
 ### Concepts to Explain
@@ -62,7 +70,7 @@ Connect to a remote SSE (Server-Sent Events) endpoint that streams "Global Event
 ### Technical Requirements
 - **TR-001**: Use `spring-boot-starter-webflux`.
 - **TR-002**: Use `okhttp3.mockwebserver` for testing external calls.
-- **TR-003**: No blocking calls allowed (checked via BlockHound).
+- **TR-003**: No blocking calls allowed. This MUST be enforced using **BlockHound** in the test suite.
 
 ## Success Criteria *(measurable outcomes)*
 - **SC-001**: Learner successfully orchestrates 3 parallel calls and combines them in under the time of the slowest call.

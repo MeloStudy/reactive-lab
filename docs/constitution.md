@@ -24,7 +24,7 @@ As the JVM evolves (Java 21+), the laboratory SHOULD evaluate how reactive progr
 
 ## Lab Design Standards
 
-- **Spec Planning**: Mandatory `spec.md`, `plan.md`, and `tasks.md` before coding.
+- **Spec Planning**: Mandatory `spec.md`, `plan.md`, and `tasks.md` before coding. These artifacts MUST reside in `docs/specs/{lab-slug}/` to keep the `labs/` directory focused on code and student-facing documentation.
 - **Naming Convention**: `XXX-slug-name` (e.g., `001-flux-foundations`).
 - **Native Execution**: Guide students to run `mvn test` directly in the README.
 - **Interactive Self-Assessment**: Every laboratory README MUST include a "Self-Assessment" or "Knowledge Check" section using collapsible `<details>` blocks to provide immediate pedagogical feedback.
@@ -61,4 +61,4 @@ To ensure security, consistency, and maintainability across the laboratory ecosy
 - **`IMPLEMENTED`**: Code and docs complete.
 - **`AUDITED`**: Pedagogical audit passed.
 
-**Version**: 0.2.4 | **Ratified**: 2026-05-04
+**Version**: 0.2.5 | **Ratified**: 2026-05-13

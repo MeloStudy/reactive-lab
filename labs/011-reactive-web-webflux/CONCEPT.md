@@ -65,3 +65,28 @@ With **Java 21**, Virtual Threads (Project Loom) provide a way to write blocking
 | **Ecosystem** | Mature support for R2DBC, Kafka, SSE. | Evolving; many libs still rely on `synchronized`. |
 
 **Conclusion**: WebFlux is not just about concurrency; it's about **data flow orchestration**. While Loom simplifies standard CRUD, WebFlux excels in complex streaming, orchestration of multiple services, and scenarios where explicit flow control is critical.
+
+---
+
+## 🔬 Architecture Deep Dive: Under the Hood
+
+### 1. The Core Engine (Dispatchers)
+*   **Spring MVC (`DispatcherServlet`)**: Built on the **Thread-per-Request** model. Each request is assigned a dedicated thread from a large pool (e.g., Tomcat). If the thread blocks on I/O, it remains occupied and idle.
+*   **Spring WebFlux (`DispatcherHandler`)**: Built on the **Event Loop** model (e.g., Netty). A small, fixed number of threads handle thousands of concurrent requests by never blocking; they register callbacks and move to the next task.
+
+### 2. Request/Response Contracts
+*   **Servlet API (`HttpServletRequest/Response`)**: Rely on `InputStream` and `OutputStream`. These are **blocking** by nature; reading a large request body or writing a large response can freeze the execution thread.
+*   **Reactive API (`ServerWebExchange`)**: Exposes the body as a **`Flux<DataBuffer>`**. Data is processed as an asynchronous stream. Jackson serializes objects into "chunks" as they become available, enabling efficient memory usage.
+
+### 3. The Handling Pipeline
+To process a request, the Dispatcher relies on two key collaborators:
+*   **`HandlerMapping`**: The "Map". It identifies which Controller and method should handle the incoming URL. In WebFlux, this lookup is non-blocking.
+*   **`HandlerAdapter`**: The "Bridge". It invokes the selected handler. Crucially, in WebFlux, it understands reactive return types (`Mono`/`Flux`) and ensures the result is correctly subscribed to by the framework.
+
+### 4. The Flow Control Engine (Response Buffer)
+The **HTTP Response Buffer** acts as the system's "pressure sensor":
+1.  **Network Congestion**: If the client is slow, the TCP/IP response buffer fills up.
+2.  **Writability Signal**: Netty marks the channel as "not writable".
+3.  **Backpressure**: WebFlux detects this and stops requesting data from the `Publisher` (e.g., Database).
+4.  **Efficiency**: This ensures the server only produces data as fast as the network can consume it, preventing memory overflow.
+

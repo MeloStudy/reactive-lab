@@ -36,6 +36,12 @@ This lab focuses on solving the problem of metadata propagation in non-blocking 
    - Step-by-step guide to fixing "Empty Logs" in reactive pipelines.
    - **Command Dissection**: `.contextWrite()`, `.deferContextual()`, `MDC.put()`.
 
+## Phase 5: Constitution v0.2.7 Refinement
+1. **Instructional Path**:
+   - Add Traceable Implementation links to `README.md` scenarios.
+   - Update `CONCEPT.md` with Scoped Values vs Reactor Context (Modern Technology Assimilation).
+2. **Validation**: Verify that relative links point to valid Java source files and tests.
+
 ## Constitution Compliance Check
 - [ ] No `.sh` wrapper scripts.
 - [ ] Code comments explicitly describe what every test line validates.

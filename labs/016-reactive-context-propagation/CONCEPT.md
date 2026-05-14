@@ -1,14 +1,17 @@
 # Concept: Reactive Context & Tracing Propagation
 
-## The ThreadLocal Problem
+## The ThreadLocal Problem & Scoped Values
 
 In traditional imperative programming (e.g., Spring MVC with Tomcat), a single thread handles a request from start to finish. This allows us to use `ThreadLocal` storage to hold metadata like the current user, security tokens, or correlation IDs. Logging frameworks like SLF4J leverage this via **MDC (Mapped Diagnostic Context)**.
 
-In **Reactive Programming** (Project Reactor / WebFlux), this model breaks:
+### Java 21+ Scoped Values (Project Loom)
+With the introduction of Virtual Threads, Java 21+ offers **Scoped Values** (`ScopedValue<T>`) as a modern, immutable, and lightweight replacement for `ThreadLocal`. Scoped Values are fantastic for sharing immutable data across a *synchronous* call graph executing within a single Virtual Thread.
+
+However, in **Reactive Programming** (Project Reactor / WebFlux), both `ThreadLocal` and `ScopedValue` fall short because the execution model is fundamentally different:
 1. **One thread handles many requests**: A single Event Loop thread might process interleaved signals from hundreds of concurrent streams.
 2. **One request spans many threads**: A single pipeline might start on an HTTP NIO thread, move to a `parallel` scheduler for processing, and end on a different NIO thread for the response.
 
-If we use `ThreadLocal` in a reactive pipeline, metadata will either "leak" to unrelated requests or be "lost" when the execution jumps to a different thread.
+If we rely on thread-bound constructs (like `ThreadLocal` or `ScopedValue`) in a reactive pipeline, metadata will either "leak" to unrelated requests or be "lost" when the execution jumps across the asynchronous boundaries of the Event Loop.
 
 ## The Solution: Reactor Context
 

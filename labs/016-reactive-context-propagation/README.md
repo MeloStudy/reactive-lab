@@ -11,6 +11,7 @@ In this lab, you will master the art of metadata propagation in non-blocking env
 ## Scenario 1: The Correlation ID Journey
 
 In this scenario, you will implement a manual bridge between the Reactor `Context` and the SLF4J `MDC`. This is the fundamental pattern for ensuring that logs emitted from different threads during a single request share the same correlation ID.
+🔗 **Traceable Implementation**: [ContextPropagationTest.java](src/test/java/com/reactivelab/context/ContextPropagationTest.java)
 
 ### Step 1: Examine the Pipeline
 Open `src/test/java/com/reactivelab/context/ContextPropagationTest.java`. Note how the pipeline uses `publishOn(Schedulers.parallel())`. This forces a thread switch.
@@ -44,6 +45,7 @@ mvn test -Dtest=ContextPropagationTest#shouldPropagateCorrelationIdAcrossSchedul
 ## Scenario 2: Propagating Security State
 
 Metadata isn't just for strings. You can store complex objects. In this scenario, we use a custom `User` record to simulate security context propagation.
+🔗 **Traceable Implementation**: [ContextPropagationTest.java](src/test/java/com/reactivelab/context/ContextPropagationTest.java)
 
 ### Code Pattern
 ```java

@@ -26,3 +26,9 @@
 - [x] T012 Verify `mvn clean test` passes for the new module.
 - [x] T013 Update `syllabus.md` status for LAB-016 to `AUDITED`.
 - [x] T014 Perform end-to-end "Learner Journey" walkthrough.
+
+## Phase 5: Constitution v0.2.7 Refinement
+- [x] T015 Update `spec.md` and `plan.md` with Scoped Values and Traceability goals.
+- [x] T016 Add Scoped Values (Project Loom) conceptual comparison to `CONCEPT.md`.
+- [x] T017 Add Traceable Implementation relative links to all scenarios in `README.md`.
+- [x] T018 Execute `mvn test` to ensure stability post-refinement.

@@ -14,6 +14,7 @@
   - LO-002: Master `contextWrite` and `deferContextual` operators for metadata management.
   - LO-003: Implement MDC (Mapped Diagnostic Context) propagation for distributed tracing.
   - LO-004: Understand the immutable and "upward" propagation characteristics of Context.
+  - LO-005: Evaluate architectural trade-offs between Java 21+ Scoped Values and Reactor Context.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -59,6 +60,7 @@ Learners will simulate a security filter that injects a `User` object into the R
 
 - **SC-001**: Learner successfully propagates a custom key through a pipeline spanning multiple `Schedulers`.
 - **SC-002**: All validation tests pass, confirming MDC integration works without leaking state between threads.
+- **SC-003**: Learner provides Traceable Implementation links for all scenarios to connect theory directly to the Java implementation.
 
 ## Assumptions
 

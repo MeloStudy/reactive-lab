@@ -90,3 +90,7 @@ The **HTTP Response Buffer** acts as the system's "pressure sensor":
 3.  **Backpressure**: WebFlux detects this and stops requesting data from the `Publisher` (e.g., Database).
 4.  **Efficiency**: This ensures the server only produces data as fast as the network can consume it, preventing memory overflow.
 
+### 5. Deep Dive: Request-Response Journey
+For a comprehensive technical analysis of the end-to-end request lifecycle, including Event Loop internals, Subscription phases, and Transport-level backpressure (Netty vs. Tomcat), refer to the:
+👉 **[Deep Dive: The Reactive Request-Response Journey](./DEEP-DIVE-REQUEST-LIFECYCLE.md)**
+

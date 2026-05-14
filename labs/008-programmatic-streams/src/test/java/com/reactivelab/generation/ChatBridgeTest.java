@@ -5,7 +5,10 @@ import reactor.core.publisher.FluxSink;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ChatBridgeTest {
 
@@ -53,5 +56,30 @@ class ChatBridgeTest {
                 .expectNoEvent(Duration.ofMillis(500)) // Nothing should arrive
                 .thenCancel()
                 .verify();
+    }
+
+    @Test
+    void shouldUnregisterOnCancellation() {
+        AtomicBoolean unregisterCalled = new AtomicBoolean(false);
+        ChatBridge.ExternalChatService mockService = new ChatBridge.ExternalChatService() {
+            @Override
+            public void register(ChatBridge.ChatListener listener) {
+                // Do nothing
+            }
+
+            @Override
+            public void unregister(ChatBridge.ChatListener listener) {
+                unregisterCalled.set(true);
+            }
+        };
+
+        ChatBridge bridge = new ChatBridge();
+
+        StepVerifier.create(bridge.bridge(mockService, FluxSink.OverflowStrategy.BUFFER))
+                .expectSubscription()
+                .thenCancel()
+                .verify();
+
+        assertThat(unregisterCalled.get()).isTrue();
     }
 }

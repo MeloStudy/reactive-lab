@@ -33,11 +33,16 @@
    - Command Dissection for `publish`, `refCount`, and `Sinks`.
    - Updated **Knowledge Check** section.
 
-## Phase 7: Refinement (Constitution Audit)
+## Phase 7: Refinement (Constitution Audit v0.2.7)
 1. **Logging**: Add `@Slf4j` and use `.log()` for signal visibility.
-2. **Deep Theory**: Expand `CONCEPT.md` to avoid over-simplification of pull vs push mechanics.
-3. **Lifecycle Validation**: Enhance tests for `OnDemandResource` to verify cleanup logic.
-4. **Final Audit**: Move status to `AUDITED`.
+2. **Deep Theory**: Expand `CONCEPT.md` to cover Virtual Threads and Sinks thread-safety.
+3. **Traceable Implementation**: Update `README.md` with relative links (from root) to:
+    - [SequenceGenerator.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/SequenceGenerator.java) / [SequenceGeneratorTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/SequenceGeneratorTest.java)
+    - [ChatBridge.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/ChatBridge.java) / [ChatBridgeTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/ChatBridgeTest.java)
+    - [Broadcaster.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/Broadcaster.java) / [BroadcasterTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/BroadcasterTest.java)
+4. **Lifecycle Validation**: Enhance tests for `ChatBridge` to verify `unregister` logic.
+5. **Advanced Sinks**: Implement `SinksDeepDiveTest.java` to explore multicasting race conditions.
+6. **Final Audit**: Move status to `AUDITED`.
 
 ## Constitution Compliance Check
 - [x] Java 21+ syntax.

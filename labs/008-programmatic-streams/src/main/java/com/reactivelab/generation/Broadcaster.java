@@ -2,6 +2,7 @@ package com.reactivelab.generation;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
 
@@ -32,5 +33,16 @@ public class Broadcaster {
         return coldSource
                 .doOnNext(item -> log.debug("Hot Stream Broadcasting: {}", item))
                 .share();
+    }
+
+    /**
+     * Scenario 6: The Modern Sinks API (Manual Push)
+     * Demonstrates a multicast sink with replay capabilities.
+     * This allows us to manually push events into a stream from anywhere.
+     */
+    public Sinks.Many<String> createNotificationSink() {
+        log.info("Creating a multicast Sink with replay(1) strategy.");
+        // Replay(1) ensures late subscribers get the last notification instantly
+        return Sinks.many().replay().limit(1);
     }
 }

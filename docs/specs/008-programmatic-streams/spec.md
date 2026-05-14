@@ -16,6 +16,7 @@
   - LO-004: Multicast a stream to multiple subscribers using `share()`.
   - LO-005: Control the connection lifecycle with `publish().connect()`, `autoConnect()`, and `refCount()`.
   - LO-006: Implement replay strategies using `cache()`.
+  - LO-007: Analyze thread-safety and race conditions in `Sinks`.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -52,8 +53,9 @@ Use `cache(n)` to share a resource-intensive stream and replay the last `n` item
 
 ### Technical Requirements
 - **TR-001**: Use Java 21 and Project Reactor.
-- **TR-002**: Use `StepVerifier` for all validations.
-- **TR-003**: README MUST include an **Interactive Self-Assessment**.
+- TR-002: Use `StepVerifier` for all validations.
+- TR-003: README MUST include an **Interactive Self-Assessment**.
+- TR-004: **Traceable Implementation**: README MUST include relative links (from the project root) to Java classes and tests for each scenario.
 
 ## Success Criteria
 - SC-001: Successful bridge of a callback API.

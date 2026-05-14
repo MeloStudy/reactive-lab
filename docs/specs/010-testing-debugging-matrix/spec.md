@@ -15,6 +15,7 @@
   - LO-003: Understand and use **Reactor Context** for cross-cutting concerns (Trace IDs).
   - LO-004: Debug asynchronous stack traces using `Hooks.onOperatorDebug()` and `checkpoint()`.
   - LO-005: Integrate **BlockHound** to enforce non-blocking execution.
+  - LO-006: Use the `Scannable` API to inspect pipeline state at runtime.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -52,6 +53,7 @@ Use `checkpoint("my-custom-step")` to label a pipeline segment and identify wher
 - **TR-001**: Use Java 21 and Project Reactor.
 - **TR-002**: Use `StepVerifier` for all validations.
 - **TR-003**: Include BlockHound dependency in `pom.xml`.
+- **TR-004**: **Traceable Implementation**: README MUST include relative links (from the project root) to Java classes and tests for each scenario.
 
 ## Success Criteria
 - SC-001: Successful verification of long-duration streams via Virtual Time.

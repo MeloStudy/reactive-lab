@@ -28,7 +28,14 @@
    - Command Dissection for `withVirtualTime`, `PublisherProbe`, and `Hooks`.
    - Updated **Knowledge Check** section.
 
+## Phase 6: Refinement (Constitution Audit v0.2.7)
+1. **JUnit 5**: Remove `public` from test classes.
+2. **Pedagogy**: Expand `CONCEPT.md` with Virtual Threads context.
+3. **Traceability**: Add root-relative links to `README.md`.
+4. **Scannable**: Implement Scenario 6 in tests and documentation.
+
 ## Constitution Compliance Check
 - [x] Java 21+ syntax.
 - [x] `StepVerifier` for everything.
 - [x] BlockHound integration included.
+- [x] Relative links for traceability.

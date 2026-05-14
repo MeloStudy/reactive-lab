@@ -8,12 +8,15 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Hooks;
 import reactor.core.scheduler.Schedulers;
+import reactor.core.Scannable;
 import reactor.test.StepVerifier;
 import reactor.test.publisher.PublisherProbe;
 import reactor.util.context.Context;
 import java.time.Duration;
 
-public class TestingMatrixTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class TestingMatrixTest {
 
     @BeforeAll
     static void setup() {
@@ -95,5 +98,23 @@ public class TestingMatrixTest {
                     return throwable.getMessage().contains("Manual failure");
                 })
                 .verify();
+    }
+
+    @Test
+    void scenario6_scannableInspection() {
+        Flux<Integer> flux = Flux.range(1, 10)
+                .name("my-range")
+                .tag("category", "testing")
+                .filter(i -> i % 2 == 0);
+
+        Scannable scannable = Scannable.from(flux);
+
+        // Verify metadata tags via Scannable
+        assertThat(scannable.name()).isEqualTo("my-range");
+        assertThat(scannable.tags().collect(java.util.stream.Collectors.toMap(t -> t.getT1(), t -> t.getT2())))
+                .containsEntry("category", "testing");
+
+        // Verify that it's NOT terminated yet
+        assertThat(scannable.scan(Scannable.Attr.TERMINATED)).isFalse();
     }
 }

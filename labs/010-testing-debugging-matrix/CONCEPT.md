@@ -39,3 +39,19 @@ The **Event Loop** threads (Netty, Parallel) must never be blocked. A single `Th
 - Instruments the standard Java library (e.g., `Thread.sleep`, blocking I/O).
 - Detects if these calls are made on threads marked with the `NonBlocking` marker interface.
 - Throws a `BlockingOperationError` immediately, failing the test and pointing to the offending line.
+
+## 5. Debugging in the Virtual Thread Era
+
+With the introduction of **Virtual Threads** (Java 21), some debugging challenges change:
+- **Simplified Stacks**: Virtual threads can produce cleaner stack traces for blocking code compared to deeply nested reactive callbacks.
+- **Context is still King**: Even with Virtual Threads, **Reactive Context** remains essential when using reactive libraries. It ensures that metadata (like Trace IDs) survives the hop between the reactive event loop and virtual thread executors.
+- **BlockHound & Loom**: BlockHound is primarily designed to protect "Event Loop" threads (which must never block). Virtual Threads, by design, are meant to be blocked. You shouldn't (and usually can't) use BlockHound to prevent blocking on a Virtual Thread.
+
+## 6. The Scannable API: Runtime Inspection
+
+Sometimes you need to inspect a pipeline's state while it's running (or stalled). The `Scannable` interface allows you to:
+- **Find Parents/Children**: Traverse the operator chain.
+- **Inspect Capacity**: Check buffer sizes or current demand (`REQUESTED_FROM_UPSTREAM`).
+- **Scan for Tags**: Find custom metadata tags attached to operators.
+
+Usage: `Scannable.from(flux).scan(Scannable.Attr.TERMINATED)` returns a boolean indicating if the stream has finished.

@@ -47,7 +47,7 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
   - Concepts: Reactive Streams with NoSQL, Tailable Cursors, Change Streams, GridFS.
 - [x] (AUDITED) **LAB-016: Reactive Context & Tracing Propagation**
   - Concepts: `Reactor Context`, Propagating MDC (Logging) and context state across reactive threads.
-- [ ] **LAB-017: Reactive Security & Identity (OAuth2/JWT)**
+- [x] (AUDITED) **LAB-017: Reactive Security & Identity (OAuth2/JWT)**
   - Concepts: `SecurityWebFilterChain`, `ReactiveSecurityContextHolder`, Non-blocking Authentication & Authorization.
 - [ ] **LAB-017-B: Reactive Contract Testing**
   - Concepts: Spring Cloud Contract (Reactive), Verifying WebClient interactions.

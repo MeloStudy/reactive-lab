@@ -33,6 +33,7 @@ As the JVM evolves (Java 21+), the laboratory SHOULD evaluate how reactive progr
     - Test classes and methods MUST NOT use the `public` access modifier.
     - **AssertJ** assertions MUST use dedicated methods for better readability and error messages (e.g., use `assertThat(map).containsEntry(key, value)` instead of `assertThat(map.get(key)).isEqualTo(value)`).
 - **Logging Standard**: Direct use of `System.out.println` or `System.err.println` is PROHIBITED. All logging MUST use **SLF4J** via the **Lombok `@Slf4j`** annotation to reduce boilerplate. In reactive pipelines, the `.log()` operator SHOULD be used for debugging stream signals.
+- **Traceable Implementation**: Every scenario described in the laboratory `README.md` MUST include relative links (from the project root) to the corresponding Java implementation files and their unit tests. This ensures students can easily navigate between theory and code across different environments.
 - **Git Hygiene**: A global `.gitignore` MUST be maintained at the root. Individual labs SHOULD NOT have local `.gitignore` files unless they have unique, non-standard dependencies.
 
 
@@ -61,4 +62,4 @@ To ensure security, consistency, and maintainability across the laboratory ecosy
 - **`IMPLEMENTED`**: Code and docs complete.
 - **`AUDITED`**: Pedagogical audit passed.
 
-**Version**: 0.2.5 | **Ratified**: 2026-05-13
+**Version**: 0.2.7 | **Ratified**: 2026-05-14

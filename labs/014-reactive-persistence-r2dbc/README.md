@@ -17,18 +17,23 @@ In this laboratory, you will break the "Blocking DB" barrier. You will implement
 
 1.  **Scenario 1: The Infrastructure**
     Observe `PersistenceIntegrationTest.java`. Note how `PostgreSQLContainer` is used to spin up a real database for the tests.
+    🔗 **Traceable Implementation**: [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
     
 2.  **Scenario 2: JSONB Documents**
     Look at the `Product` entity. It contains a `Json` metadata field. In the tests, observe how we persist and retrieve JSON data from PostgreSQL.
+    🔗 **Traceable Implementation**: [PersistenceModels.java](src/main/java/com/reactivelab/r2dbc/PersistenceModels.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
 3.  **Scenario 3: Custom SQL**
     Check `ProductService.findExpensiveProducts`. Instead of a repository method, we use `DatabaseClient` to execute a manual query and map the results to the entity.
+    🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/r2dbc/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
 4.  **Scenario 4: Transactional Rollback**
     Review `ProductService.purchaseProduct`. The method is marked with `@Transactional`. The test `scenario4_transactionalRollback` verifies that if an error occurs during the order creation, the stock decrement is rolled back.
+    🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/r2dbc/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
 5.  **Scenario 5: SQL Auditing**
     Examine `R2dbcConfiguration`. We wrap the `ConnectionFactory` with `ProxyConnectionFactory`. Check the logs during test execution to see the intercepted SQL queries.
+    🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/r2dbc/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
 ## Command Dissections
 
@@ -49,6 +54,22 @@ databaseClient.sql("SELECT ...").bind("id", id).map(...).all()
 ### 3. `@Transactional` (Reactive)
 - **What**: Annotation to mark transactional boundaries.
 - **Why**: In WebFlux, it works by propagating the transaction state through the Reactor Context instead of `ThreadLocal`.
+
+## 🧠 Self-Assessment
+<details>
+<summary>1. How does R2DBC differ from JDBC in handling concurrent requests?</summary>
+JDBC blocks an OS thread while waiting for the database response, requiring large thread pools. R2DBC uses asynchronous I/O and an Event Loop, allowing a single thread to handle thousands of concurrent queries without blocking.
+</details>
+
+<details>
+<summary>2. How does <code>@Transactional</code> work in a reactive WebFlux environment?</summary>
+Instead of using <code>ThreadLocal</code> (which breaks across asynchronous boundaries), Spring relies on the Reactor <code>Context</code> to propagate the transaction state through the reactive pipeline.
+</details>
+
+<details>
+<summary>3. Why might you use <code>DatabaseClient</code> instead of a standard repository?</summary>
+<code>DatabaseClient</code> is a fluent API for executing custom, complex SQL (like aggregations, joins, or database-specific features like PostgreSQL JSONB queries) that are difficult to express via standard repository abstractions.
+</details>
 
 ## Running Locally (Development)
 

@@ -17,6 +17,7 @@
   - LO-005: Handle PostgreSQL-specific features like `JSONB` reactively.
   - LO-006: Integrate `r2dbc-proxy` for advanced query observability and auditing.
   - LO-007: Manage schema migrations using a reactive-compatible approach.
+  - LO-008: Evaluate architectural trade-offs between R2DBC and JDBC + Virtual Threads (Project Loom).
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -78,6 +79,8 @@ Configure `r2dbc-proxy` to wrap the connection factory and log all executed SQL 
 ## Success Criteria *(measurable outcomes)*
 - **SC-001**: Learner persists data without any blocking `Thread.sleep()` or JDBC calls.
 - **SC-002**: Learner successfully rolls back a multi-step database operation.
+- **SC-003**: Learner provides Traceable Implementation links for all scenarios to connect theory directly to the Java implementation.
+- **SC-004**: "Self-Assessment" section utilizes collapsible UI blocks for immediate feedback.
 
 ## Assumptions
 - In-memory H2 database is sufficient for the lab.

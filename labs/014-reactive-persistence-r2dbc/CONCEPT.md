@@ -25,3 +25,9 @@ One of the advantages of using PostgreSQL with R2DBC is the ability to handle **
 
 ## 6. Observability with R2DBC Proxy
 Since we don't have the traditional JDBC interceptors, we use `r2dbc-proxy`. This allows us to wrap the `ConnectionFactory` and listen to query execution events, providing visibility into the generated SQL and execution times without introducing blocking calls.
+
+## 7. Evolution: R2DBC vs. JDBC + Virtual Threads (Java 21+)
+With the introduction of **Project Loom (Virtual Threads)**, the debate around non-blocking database access has evolved. Since Virtual Threads make blocking calls extremely cheap (millions of threads can exist simultaneously without consuming significant RAM), many argue that standard JDBC over Virtual Threads is sufficient.
+
+- **JDBC + Virtual Threads**: Excellent for simple request-response flows. The virtual thread blocks during the DB call, but the underlying OS carrier thread is freed. It drastically simplifies code readability.
+- **When to use R2DBC**: R2DBC remains the superior choice for **streaming large datasets** directly from the database to the client via WebFlux (SSE or NDJSON). R2DBC inherently supports reactive backpressure, meaning if the HTTP client reads data slowly, R2DBC will automatically slow down the database retrieval, preventing memory `OutOfMemoryError`s. JDBC, even with Virtual Threads, pulls the entire result set into memory or blocks unpredictably during cursor iterations.

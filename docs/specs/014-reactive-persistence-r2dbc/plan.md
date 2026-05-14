@@ -31,6 +31,13 @@ The learner will transition from web-layer reactivity to full end-to-end reactiv
 1. **CONCEPT.md**: Compare JDBC vs R2DBC thread models. Explain the "Subscription" role in DB execution.
 2. **README.md**: Command Dissections for `ReactiveCrudRepository`, `DatabaseClient.sql()`, and `r2dbc-pool` configuration.
 
+## Phase 5: Constitution v0.2.7 Refinement
+1. **Instructional Path**:
+   - Add Traceable Implementation links to `README.md` scenarios.
+   - Inject the missing "Self-Assessment" section with collapsible `<details>` blocks.
+   - Update `CONCEPT.md` with R2DBC vs JDBC + Virtual Threads (Modern Technology Assimilation).
+2. **Validation**: Verify that relative links point to valid Java source files and tests.
+
 ## Constitution Compliance Check
 - [ ] No `.sh` wrapper scripts.
 - [ ] Code comments explicitly describe reactive DB signal flow.

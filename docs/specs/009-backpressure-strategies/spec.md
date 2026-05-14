@@ -48,6 +48,7 @@ Stop the stream after exactly `N` items have been requested, regardless of sourc
 - **TR-001**: Use Java 21 and Project Reactor.
 - **TR-002**: Use `StepVerifier` with `request(n)` assertions.
 - **TR-003**: Use `PublisherProbe` to verify upstream request signals.
+- **TR-004**: **Traceable Implementation**: README MUST include relative links (from the project root) to Java classes and tests for each scenario.
 
 ## Success Criteria
 - SC-001: Successful handling of high-throughput stream without crashing.

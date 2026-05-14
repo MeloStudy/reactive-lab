@@ -7,7 +7,9 @@ import reactor.test.StepVerifier;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BackpressureTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class BackpressureTest {
 
     @Test
     void scenario1_bufferOperator() {
@@ -49,9 +51,7 @@ public class BackpressureTest {
                 .then(() -> sink.tryEmitNext(3)) // Should be captured
                 .expectNext(3)
                 .then(() -> {
-                    if (droppedCount.get() < 2) {
-                         throw new AssertionError("Expected 2 dropped elements, got " + droppedCount.get());
-                    }
+                    assertThat(droppedCount.get()).as("Dropped elements count").isGreaterThanOrEqualTo(2);
                 })
                 .thenCancel()
                 .verify();

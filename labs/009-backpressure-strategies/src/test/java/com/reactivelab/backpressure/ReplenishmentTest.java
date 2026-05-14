@@ -3,38 +3,43 @@ package com.reactivelab.backpressure;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-import reactor.test.publisher.PublisherProbe;
 
-/**
- * Visualizes the 75% replenishment rule of the limitRate operator.
- */
-public class ReplenishmentTest {
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class ReplenishmentTest {
 
     @Test
-    void testLimitRateReplenishment() {
-        // We use a probe to track exact request signals sent upstream
-        PublisherProbe<Integer> probe = PublisherProbe.of(Flux.range(1, 100));
+    void shouldVisualize75PercentReplenishment() {
+        List<Long> requests = new CopyOnWriteArrayList<>();
         
-        // Limit rate to 10. Initial request will be 10.
-        // Replenishment threshold is 75% of 10 = 7.5 -> usually 8 in Reactor.
-        Flux<Integer> throttled = probe.flux().limitRate(10).log("replenish");
+        // High tide = 10, default low tide (75% replenishment threshold)
+        // Reactor pre-fetches 10, then requests 8 more once 8 are consumed (2 left).
+        
+        Flux<Integer> throttled = Flux.range(1, 100)
+                .doOnRequest(requests::add)
+                .limitRate(10);
 
         StepVerifier.create(throttled, 0)
-                .thenRequest(5) // Consume 5
-                .expectNext(1, 2, 3, 4, 5)
+                .thenRequest(1)
+                .expectNext(1)
                 .then(() -> {
-                    // Upstream was requested for 10 (initial prefetch)
-                    // We have consumed 5, so 5 items are remaining in operator buffer.
-                    // Replenishment (at 7.5/8) has NOT triggered yet.
-                    probe.assertWasRequested();
+                    // Initial prefetch
+                    assertThat(requests).containsExactly(10L);
                 })
-                .thenRequest(3) // Consume 3 more. Total consumed: 8.
-                .expectNext(6, 7, 8)
+                .thenRequest(6) // Total consumed: 7 (70%)
+                .expectNextCount(6)
                 .then(() -> {
-                    // Total consumed is 8 (80% of 10).
-                    // This is >= 75% threshold, so limitRate should have sent a new request upstream
-                    // for the items it just delivered to the downstream.
-                    // The request signal should be request(8).
+                    // Threshold of 75% (8 items) not yet reached
+                    assertThat(requests).containsExactly(10L);
+                })
+                .thenRequest(1) // Total consumed: 8 (80%)
+                .expectNextCount(1)
+                .then(() -> {
+                    // Threshold reached (8 >= 8), triggers replenishment of 8
+                    assertThat(requests).containsExactly(10L, 8L);
                 })
                 .thenCancel()
                 .verify();

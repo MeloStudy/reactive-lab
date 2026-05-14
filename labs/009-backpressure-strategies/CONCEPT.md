@@ -37,9 +37,9 @@ Keeps only the very last item emitted, overwriting any previous buffered item.
 
 ### `limitRate(highRequest, lowRequest)`
 Sets the maximum number of items the operator will request from upstream at once.
-- **The 75% Rule**: If only `highRequest` is provided, Reactor uses a "replenishment threshold". It requests `highRequest` items, and only when the subscriber has consumed **75%** of them, it requests the next batch to refill the buffer.
-- **Why?**: This prevents "Request Storms" and ensures a steady, predictable flow of data.
-- **Use Case**: Protecting an external API that has a strict rate limit of 100 requests per second.
+- **The 75% Rule**: If only `highRequest` is provided, Reactor uses a "replenishment threshold". It requests `highRequest` items, and only when the subscriber has consumed **75%** of them (leaving 25% in the buffer), it requests the next batch to refill.
+- **Low Tide**: You can explicitly set the `lowRequest` (low tide) to adjust when replenishment happens. For example, `limitRate(100, 10)` will only request more when only 10 items are left.
+- **Why?**: This prevents "Request Storms" and ensures a steady, predictable flow of data, protecting external resources from bursty demand.
 
 ### `limitRequest(n)`
 Enforces a hard limit on the **total** number of items that can be requested. Once the limit is reached, the stream emits a `onComplete` signal, effectively severing the connection.
@@ -58,3 +58,13 @@ Backpressure works because the `request(n)` signal travels **upstream**. Conside
 
 > [!CAUTION]
 > Operators like `publishOn` have a default internal buffer of **256**. If your downstream processing is slower than the upstream emission, this buffer will fill up, and the operator will stop requesting items from the upstream, triggering backpressure naturally.
+
+- **Context Switching**: Reactive operators are highly optimized for minimal context switching. In high-density pipelines, the overhead of virtual thread management can still exceed the efficiency of a well-tuned event loop.
+
+## 6. Backpressure vs. Virtual Threads (Project Loom)
+
+A common misconception is that **Virtual Threads** eliminate the need for reactive programming and backpressure. This is false.
+
+- **Resource Protection**: Even if you can have millions of virtual threads, your database or external API cannot handle millions of concurrent requests. Backpressure remains the essential tool for **throttling** and protecting these downstream systems.
+- **Memory Pressure**: If a producer sends 1 million items to a slow consumer running on a virtual thread, and there's no backpressure, those 1 million items will sit in memory, potentially causing an `OutOfMemoryError`.
+- **Hybrid Approach**: Virtual threads are excellent for handling **blocking I/O** within a reactive pipeline (e.g., using `publishOn` with a virtual thread executor), while reactive operators provide the **orchestration and flow control** layer.

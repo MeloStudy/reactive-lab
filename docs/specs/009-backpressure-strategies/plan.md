@@ -21,12 +21,19 @@
 1. **Scenario 5 (buffer/window)**: Integrate batching scenarios from LAB-006 as a solution for backpressure (processing in groups).
 
 ## Phase 5: Documentation & Assessment
-1. **CONCEPT.md**: Explain the "Demand Propagation" chain.
+1. **CONCEPT.md**: Explain the "Demand Propagation" chain and Virtual Threads impact.
 2. **README.md**: 
    - Command Dissection for `limitRate` and `onBackpressureBuffer`.
-   - Updated **Knowledge Check** section.
+   - **Traceable Implementation**: Relative links to classes/tests.
+   - Collapsible **Knowledge Check** section.
+
+## Phase 6: Refinement (Constitution Audit v0.2.7)
+1. **JUnit 5**: Remove `public` from test classes.
+2. **AssertJ**: Use dedicated assertion methods.
+3. **Advanced Tests**: Implement `ReplenishmentTest.java` to visualize the 75% rule.
 
 ## Constitution Compliance Check
 - [x] Java 21+ syntax.
 - [x] `StepVerifier` for everything.
-- [x] Self-Assessment quiz included.
+- [x] Self-Assessment quiz (collapsible) included.
+- [x] Relative links for traceability.

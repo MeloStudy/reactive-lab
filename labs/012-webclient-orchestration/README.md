@@ -25,21 +25,27 @@ mvn test -pl labs/012-webclient-orchestration
 
 ### Scenario 1: The Simple Fetcher
 Fetch a user profile from a remote service using `.retrieve()`.
+🔗 **Traceable Implementation**: [ReactiveOrchestrator.java](src/main/java/com/reactivelab/webclient/ReactiveOrchestrator.java) | [Test Suite](src/test/java/com/reactivelab/webclient/ReactiveOrchestratorTest.java)
 
 ### Scenario 2: Parallel Orchestration
 Use `Mono.zip` to fetch User data and Order data simultaneously. Observe that the total time is equal to the slowest call.
+🔗 **Traceable Implementation**: [ReactiveOrchestrator.java](src/main/java/com/reactivelab/webclient/ReactiveOrchestrator.java) | [Test Suite](src/test/java/com/reactivelab/webclient/ReactiveOrchestratorTest.java)
 
 ### Scenario 3: Dependent Calls
 Use `flatMap` to chain calls where the second request depends on the result of the first.
+🔗 **Traceable Implementation**: [ReactiveOrchestrator.java](src/main/java/com/reactivelab/webclient/ReactiveOrchestrator.java) | [Test Suite](src/test/java/com/reactivelab/webclient/ReactiveOrchestratorTest.java)
 
 ### Scenario 4: The Resilient Client
 Implement a 2-second timeout and an exponential backoff retry strategy for unreliable services.
+🔗 **Traceable Implementation**: [ReactiveOrchestrator.java](src/main/java/com/reactivelab/webclient/ReactiveOrchestrator.java) | [Test Suite](src/test/java/com/reactivelab/webclient/ReactiveOrchestratorTest.java)
 
 ### Scenario 5: Consuming the Stream
 Handle a streaming endpoint and filter events on the fly.
+🔗 **Traceable Implementation**: [ReactiveOrchestrator.java](src/main/java/com/reactivelab/webclient/ReactiveOrchestrator.java) | [Test Suite](src/test/java/com/reactivelab/webclient/ReactiveOrchestratorTest.java)
 
 ### Scenario 6: Advanced Body Control
 Use `exchangeToMono` to inspect headers and manually manage body consumption to prevent memory leaks.
+🔗 **Traceable Implementation**: [ReactiveOrchestrator.java](src/main/java/com/reactivelab/webclient/ReactiveOrchestrator.java) | [Test Suite](src/test/java/com/reactivelab/webclient/ReactiveOrchestratorTest.java)
 
 > **Command Dissection: exchangeToMono()**
 > - `exchangeToMono(response -> ...)`: Provides access to the full `ClientResponse`.

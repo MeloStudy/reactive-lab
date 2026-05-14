@@ -16,6 +16,7 @@
   - LO-004: Orchestrate parallel calls using `zip` and sequential dependencies using `flatMap`.
   - LO-005: Implement robust error handling with `onStatus()` and `onErrorResume()`.
   - LO-006: Apply resilience patterns: `timeout()` and `retry()`.
+  - LO-007: Compare WebClient's Event Loop with Java 21+ Virtual Threads (Modern Technology Assimilation).
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -75,6 +76,7 @@ Use `exchangeToMono` to fetch a resource where you need to check specific header
 ## Success Criteria *(measurable outcomes)*
 - **SC-001**: Learner successfully orchestrates 3 parallel calls and combines them in under the time of the slowest call.
 - **SC-002**: Learner identifies and fixes a memory leak caused by not consuming a response body in an `exchange` call.
+- **SC-003**: Learner provides Traceable Implementation links for all scenarios to connect theory directly to the Java implementation.
 
 ## Assumptions
 - Spring Boot 3.2+ and Java 21+ are used.

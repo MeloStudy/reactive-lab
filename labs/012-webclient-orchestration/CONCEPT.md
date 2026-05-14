@@ -49,3 +49,10 @@ Reactive orchestration is not just about combining streams; it's about surviving
 - **Timeouts**: `timeout(Duration)` protects you from "zombie" services that never respond.
 - **Retries**: `retryWhen(Retry)` allows for intelligent recovery strategies like Exponential Backoff with Jitter.
 - **Fallbacks**: `onErrorResume` provides a way to return default data or call a secondary service when the primary one fails.
+
+## 5. Evolution: WebClient vs. Virtual Threads (Project Loom)
+
+With the introduction of **Virtual Threads** in Java 21+ (Project Loom), the JVM now supports millions of lightweight threads. This challenges the necessity of the reactive Event Loop for simple I/O. 
+
+- **Virtual Threads (`RestClient`)**: Allows you to write synchronous, blocking code that is highly scalable. The underlying OS thread is freed when a Virtual Thread blocks on I/O.
+- **When to use WebClient**: `WebClient` and the reactive model remain superior when you have complex orchestration (like `zip` or `flatMapMany`), streaming data (SSE), or advanced backpressure requirements. While Virtual Threads simplify concurrency, they do not inherently provide the rich declarative composition and resilience operators (like `.timeout()`, `.retryWhen()`, and `.onErrorResume()`) that Project Reactor offers out-of-the-box.

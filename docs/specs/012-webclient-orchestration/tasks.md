@@ -33,3 +33,9 @@
 - [x] T013 Verify compliance with the Constitution (No `.sh` files, English only, valid metadata).
 - [x] T014 Update `docs/syllabus.md` status to `AUDITED`.
 
+## Phase 6: Constitution v0.2.7 Refinement
+- [x] T019 Update `spec.md` and `plan.md` with Virtual Threads and Traceable Implementation goals.
+- [x] T020 Add Virtual Threads (Project Loom) conceptual comparison to `CONCEPT.md`.
+- [x] T021 Add Traceable Implementation relative links to all scenarios in `README.md`.
+- [x] T022 Execute `mvn test` to ensure stability post-refinement.
+

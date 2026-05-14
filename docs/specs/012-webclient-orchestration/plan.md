@@ -35,7 +35,14 @@ The learner will implement a reactive gateway service that orchestrates multiple
    - Integrating BlockHound into JUnit 5.
    - Using `exchangeToMono` for precise response handling.
    - Managing resource cleanup (connection release).
+   - Validating thread safety.
 2. **Validation**: Tests that attempt to block (e.g., `Thread.sleep`) and verify that BlockHound throws an exception.
+
+## Phase 6: Constitution v0.2.7 Refinement
+1. **Instructional Path**:
+   - Add Traceable Implementation links to `README.md`.
+   - Update `CONCEPT.md` with Virtual Threads vs. WebClient (Modern Technology Assimilation).
+2. **Validation**: Verify that relative links point to valid Java source files and tests.
 
 
 ## Constitution Compliance Check

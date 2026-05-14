@@ -16,6 +16,7 @@
   - LO-004: Implement event-driven triggers using **Change Streams**.
   - LO-005: Handle binary data streams using **GridFS** reactively.
   - LO-006: Execute complex document aggregations in a non-blocking way.
+  - LO-007: Evaluate architectural trade-offs between Reactive MongoDB push-streams vs Virtual Thread polling.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -60,3 +61,5 @@ Perform a 3-stage aggregation (match, group, sort) on a `Sales` collection to fi
 ## Success Criteria *(measurable outcomes)*
 - **SC-001**: Student creates an "infinite" HTTP stream from a database cursor.
 - **SC-002**: Student successfully handles file binary streams without memory overflows.
+- **SC-003**: Learner provides Traceable Implementation links for all scenarios to connect theory directly to the Java implementation.
+- **SC-004**: "Self-Assessment" section utilizes collapsible UI blocks for immediate feedback.

@@ -26,3 +26,10 @@
 - [x] T012 Verify all tests pass with `mvn test`.
 - [x] T013 Verify compliance with the Constitution.
 - [x] T014 Update `docs/syllabus.md` status to `AUDITED`.
+
+## Phase 5: Constitution v0.2.7 Refinement
+- [x] T015 Update `spec.md` and `plan.md` with Virtual Threads and Traceability goals.
+- [x] T016 Add Virtual Threads (Project Loom) conceptual comparison to `CONCEPT.md`.
+- [x] T017 Add Traceable Implementation relative links to all scenarios in `README.md`.
+- [x] T018 Add the missing Self-Assessment block using collapsible `<details>` tags in `README.md`.
+- [x] T019 Execute `mvn test` to ensure stability post-refinement.

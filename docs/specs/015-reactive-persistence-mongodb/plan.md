@@ -32,6 +32,13 @@ This lab focuses on the unique "Streaming" capabilities of NoSQL databases. Unli
 2. **README.md**: Command Dissections for `@Tailable`, `watch()`, and GridFS operations.
 3. **Docker**: Provide `docker-compose.yml` for local MongoDB Replica Set (required for Change Streams).
 
+## Phase 5: Constitution v0.2.7 Refinement
+1. **Instructional Path**:
+   - Add Traceable Implementation links to `README.md` scenarios.
+   - Inject the missing "Self-Assessment" section with collapsible `<details>` blocks.
+   - Update `CONCEPT.md` with Reactive MongoDB vs Virtual Threads (Modern Technology Assimilation).
+2. **Validation**: Verify that relative links point to valid Java source files and tests.
+
 ## Decisions
 - **Initialization**: We will use **Programmatic Initialization** via `ReactiveMongoTemplate` and `ApplicationRunner` to show explicit signal handling for Capped Collection creation. Mongock will be mentioned in `CONCEPT.md` as a production alternative.
 - **Scope**: The lab will remain focused exclusively on **MongoDB** to master its advanced streaming capabilities (*Tailable Cursors*, *Change Streams*, *GridFS*).

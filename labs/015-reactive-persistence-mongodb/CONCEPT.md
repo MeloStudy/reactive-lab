@@ -41,6 +41,12 @@ mongo.execInContainer("mongosh", "--eval", "rs.initiate()");
 String url = "mongodb://host:port/test?replicaSet=rs0&directConnection=true";
 ```
 
+## 4. Evolution: Tailable Cursors vs. Virtual Thread Polling (Java 21+)
+With the rise of **Project Loom (Virtual Threads)**, the JVM can now handle millions of blocking threads cheaply. However, Virtual Threads **do not** replace the need for Reactive MongoDB when dealing with infinite streams or events.
+
+- **The Virtual Thread limitations**: If you use a blocking MongoDB driver with a Virtual Thread to wait for a new log or event, you are forced to write a `while(true) { Thread.sleep(...) }` polling loop. Even though sleeping a Virtual Thread is cheap, polling is fundamentally inefficient and increases database load.
+- **The Reactive Push Model**: Reactive MongoDB's `@Tailable` and Change Streams operate on a true **push** mechanism. When a document is inserted, the database actively pushes the byte stream over the persistent TCP connection, triggering the Reactor pipeline instantly. Virtual Threads cannot natively replicate this database-level push notification without adopting a reactive driver. Thus, for event-driven NoSQL architectures, Project Reactor remains superior.
+
 ## Exercises
 1. **Scenario 1**: Implement a log stream using `@Tailable` in a capped collection.
 2. **Scenario 2**: Implement real-time product notifications using Change Streams.

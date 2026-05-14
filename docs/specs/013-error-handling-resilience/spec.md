@@ -18,6 +18,7 @@
   - LO-006: Orchestrate resilient retries using `retryWhen`.
   - LO-007: Handle errors in functional `HandlerFilterFunction`.
   - LO-008: Customize `DefaultErrorAttributes` for consistent API error contracts.
+  - LO-009: Evaluate Reactor Context against modern Java 21+ Scoped Values for implicit data propagation.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -83,6 +84,8 @@ Implement a `HandlerFilterFunction` that validates a header. If missing, throw a
 ## Success Criteria *(measurable outcomes)*
 - **SC-001**: Learner successfully unifies all application errors into a single JSON format.
 - **SC-002**: Learner differentiates between a "Business Error" (handled locally) and a "System Error" (handled globally).
+- **SC-003**: Learner provides Traceable Implementation links for all scenarios to connect theory directly to the Java implementation.
+- **SC-004**: "Self-Assessment" section utilizes collapsible UI blocks for immediate feedback.
 
 ## Assumptions
 - Spring Boot 3.2+ and Java 21+ are used.

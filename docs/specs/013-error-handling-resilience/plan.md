@@ -30,6 +30,13 @@ The learner will build a resilient WebFlux application that handles errors at mu
 1. **CONCEPT.md**: Explain the signal-based nature of errors (`onError`), the reactive stack trace challenge, and the order of precedence in Spring's error handling.
 2. **README.md**: Step-by-step guide with Command Dissections for `@RestControllerAdvice`, `AbstractErrorWebExceptionHandler`, and `retryWhen`.
 
+## Phase 5: Constitution v0.2.7 Refinement
+1. **Instructional Path**:
+   - Add Traceable Implementation links to `README.md` scenarios.
+   - Format "Self-Assessment" with collapsible `<details>` blocks.
+   - Update `CONCEPT.md` with Scoped Values vs. Reactor Context (Modern Technology Assimilation).
+2. **Validation**: Verify that relative links point to valid Java source files and tests.
+
 ## Constitution Compliance Check
 - [ ] No `.sh` wrapper scripts.
 - [ ] Code comments explicitly describe what every test line validates.

@@ -40,5 +40,11 @@ Modern Spring Boot applications use **RFC 7807** to return standardized error re
 - **Controller (`@ExceptionHandler`)**: Handle business exceptions specific to a resource (e.g., `ProductNotFound`).
 - **Global (`WebExceptionHandler`)**: The last line of defense. Catch unhandled system errors and format them securely for the client.
 
-## 6. Context Propagation
+## 6. Context Propagation & Evolution
+
 Reactor's `Context` allows us to pass metadata (like a `trace-id`) through the pipeline without explicitly passing arguments. In this lab, we use it to ensure every error response includes a correlation ID for debugging.
+
+### Evolution: Reactor Context vs. Scoped Values (Java 21+)
+As the JVM evolves with **Project Loom**, Java 21+ introduces **Scoped Values** (`ScopedValue<T>`) as a modern, lightweight alternative to `ThreadLocal`. 
+- **In an Imperative/Virtual Thread model**: You would use `ScopedValue.where(TRACE_ID, "123").run(...)` to implicitly pass data down the call stack.
+- **In a Reactive model**: WebFlux and Project Reactor still heavily rely on the `Context` because a single reactive pipeline might hop across multiple physical and virtual threads via the Event Loop. While Scoped Values are powerful for blocking virtual threads, the Reactor `Context` remains the safest and most idiomatic way to propagate state across asynchronous, non-blocking boundaries in Spring WebFlux.

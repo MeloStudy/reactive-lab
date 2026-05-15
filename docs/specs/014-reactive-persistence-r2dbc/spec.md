@@ -18,6 +18,7 @@
   - LO-006: Integrate `r2dbc-proxy` for advanced query observability and auditing.
   - LO-007: Manage schema migrations using a reactive-compatible approach.
   - LO-008: Evaluate architectural trade-offs between R2DBC and JDBC + Virtual Threads (Project Loom).
+  - LO-009: Understand the incompatibility of JPA/Hibernate with the reactive model.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -66,9 +67,10 @@ Configure `r2dbc-proxy` to wrap the connection factory and log all executed SQL 
 ## Educational Requirements *(mandatory)*
 
 ### Concepts to Explain
-- **EX-001**: Why JDBC is blocking and why we need R2DBC.
-- **EX-002**: The role of `ConnectionFactory` vs `DataSource`.
+- **EX-001**: Why JDBC is blocking and why we need R2DBC (HikariCP vs. ConnectionFactory).
+- **EX-002**: The role of `ConnectionFactory` vs `DataSource` and the Netty/TCP mechanism.
 - **EX-003**: Reactive Transactions: How the Reactor Context propagates the transaction state.
+- **EX-004**: Incompatibility with JPA/Hibernate and the shift to basic ORM/DatabaseClient.
 
 ### Technical Requirements
 - **TR-001**: Use `spring-boot-starter-data-r2dbc`.

@@ -13,10 +13,13 @@
 
 ## Phase 2: Scenario Implementation (TDD)
 - [x] T004 Implement Scenario 1: Setup `PostgreSQLContainer` in test and verify connectivity.
-- [x] T005 Implement Scenario 2: Create `Product` entity with `JSONB` support and CRUD tests.
-- [x] T006 Implement Scenario 3: Custom search using `DatabaseClient` for JSONB fields.
-- [x] T007 Implement Scenario 4: Transactional rollback test using Testcontainers database.
-- [x] T008 Implement Scenario 5: Configure and verify `r2dbc-proxy` query logging.
+- [x] T005 Configure R2DBC connectivity for PostgreSQL using Testcontainers.
+- [x] Implement CRUD operations using `ReactiveCrudRepository`.
+- [x] Execute custom queries via `DatabaseClient`.
+- [x] Implement reactive transaction management using `@Transactional`.
+- [x] Handle PostgreSQL-specific features like `JSONB` reactively.
+- [x] Integrate `r2dbc-proxy` for advanced query observability and auditing.
+- [/] Refine pedagogical content: JDBC vs R2DBC (Netty/TCP) and JPA/Hibernate incompatibility.
 
 ## Phase 3: Documentation & Educational Content
 - [x] T009 Create `CONCEPT.md` detailing the R2DBC event-loop model.

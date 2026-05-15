@@ -57,18 +57,23 @@ databaseClient.sql("SELECT ...").bind("id", id).map(...).all()
 
 ## 🧠 Self-Assessment
 <details>
-<summary>1. How does R2DBC differ from JDBC in handling concurrent requests?</summary>
-JDBC blocks an OS thread while waiting for the database response, requiring large thread pools. R2DBC uses asynchronous I/O and an Event Loop, allowing a single thread to handle thousands of concurrent queries without blocking.
+<summary>1. How does R2DBC differ from JDBC in handling concurrent requests and threading?</summary>
+JDBC blocks one OS thread per connection while waiting for the database response, requiring large thread pools (like HikariCP) and incurring context-switching overhead. R2DBC uses an <b>Event Loop</b> and asynchronous <b>TCP sockets (via Netty)</b>, allowing a single thread to multiplex thousands of concurrent database operations without blocking.
 </details>
 
 <details>
-<summary>2. How does <code>@Transactional</code> work in a reactive WebFlux environment?</summary>
-Instead of using <code>ThreadLocal</code> (which breaks across asynchronous boundaries), Spring relies on the Reactor <code>Context</code> to propagate the transaction state through the reactive pipeline.
+<summary>2. Why are JPA and Hibernate incompatible with R2DBC?</summary>
+JPA and Hibernate are built on the JDBC specification, which is synchronous by design. They rely heavily on <b>ThreadLocal</b> for transaction state and <b>Blocking I/O</b> for features like Lazy Loading and Dirty Checking. In a reactive pipeline, blocking a thread to fetch a lazy relationship would crash the event loop.
 </details>
 
 <details>
-<summary>3. Why might you use <code>DatabaseClient</code> instead of a standard repository?</summary>
-<code>DatabaseClient</code> is a fluent API for executing custom, complex SQL (like aggregations, joins, or database-specific features like PostgreSQL JSONB queries) that are difficult to express via standard repository abstractions.
+<summary>3. What are the "Basic" alternatives to full ORMs in the Spring R2DBC stack?</summary>
+Instead of a full persistence context with magic features, Spring Data R2DBC provides <b>ReactiveCrudRepository</b> for simple POJO mapping and <b>DatabaseClient</b> for executing complex SQL manually. It lacks lazy loading and auto-dirty-checking, favoring transparency and non-blocking execution over complex abstraction.
+</details>
+
+<details>
+<summary>4. How does <code>@Transactional</code> work in a reactive WebFlux environment?</summary>
+Instead of using <code>ThreadLocal</code> (which breaks across asynchronous boundaries), Spring relies on the <b>Reactor Context</b> to propagate the transaction state through the reactive pipeline, ensuring consistency even when signals jump between different threads.
 </details>
 
 ## Running Locally (Development)

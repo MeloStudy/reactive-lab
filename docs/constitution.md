@@ -9,7 +9,7 @@ The laboratory is built on the foundation of the Reactive Manifesto. Every lab M
 To ensure maximum engineering rigor and professional relevance, the laboratory focuses exclusively on the **Java Ecosystem**. We use **Project Reactor** as the core reactive library and **Spring WebFlux** for enterprise integration. This eliminates context-switching and allows deep-dives into JVM internals (Threads, Memory, Schedulers) from the very first module.
 
 ### III. Reproducible & Infrastructure-Aware
-Reactive systems often depend on specific infrastructure (Message Brokers like Kafka, Reactive Databases like MongoDB/PostgreSQL). All external dependencies MUST be containerized via **Docker Compose**. Sizing and resource constraints (CPU/Memory) should be explored to see their impact on backpressure and throughput.
+Reactive systems often depend on specific infrastructure (Message Brokers like Kafka, Reactive Databases like MongoDB/PostgreSQL). All external dependencies MUST be containerized via **Docker Compose** or **Podman Compose**. Sizing and resource constraints (CPU/Memory) should be explored to see their impact on backpressure and throughput.
 
 ### IV. Educational Clarity & Theoretical Foundation
 Theoretical depth is MANDATORY. Documenting operators is not enough; each lab must explain the internal mechanics (e.g., how Schedulers manage thread context, how `onNext/onError/onComplete` signals propagate). Theory MUST reside in `CONCEPT.md`, while practice stays in `README.md`.
@@ -35,12 +35,13 @@ As the JVM evolves (Java 21+), the laboratory SHOULD evaluate how reactive progr
 - **Logging Standard**: Direct use of `System.out.println` or `System.err.println` is PROHIBITED. All logging MUST use **SLF4J** via the **Lombok `@Slf4j`** annotation to reduce boilerplate. In reactive pipelines, the `.log()` operator SHOULD be used for debugging stream signals.
 - **Traceable Implementation**: Every scenario described in the laboratory `README.md` MUST include relative links (from the project root) to the corresponding Java implementation files and their unit tests. This ensures students can easily navigate between theory and code across different environments.
 - **Git Hygiene**: A global `.gitignore` MUST be maintained at the root. Individual labs SHOULD NOT have local `.gitignore` files unless they have unique, non-standard dependencies.
+- **Infrastructure Parity**: Labs requiring external infrastructure MUST provide alternative instructions or aliases for **Podman** users (e.g., using `podman-compose` or `alias docker=podman`). This ensures the laboratory remains accessible to students in diverse container environments.
 
 
 ## Technical Stack & Standards
 
 - **Java**: JDK 21+ (Project Reactor, Spring WebFlux, Virtual Threads).
-- **Tooling**: Maven 3.9+, Docker, `curl`, `httpie`, Kafka.
+- **Tooling**: Maven 3.9+, Docker / Podman, `curl`, `httpie`, Kafka.
 - **Libraries**: Lombok (for boilerplate reduction).
 - **Language**: English.
 
@@ -62,4 +63,4 @@ To ensure security, consistency, and maintainability across the laboratory ecosy
 - **`IMPLEMENTED`**: Code and docs complete.
 - **`AUDITED`**: Pedagogical audit passed.
 
-**Version**: 0.2.7 | **Ratified**: 2026-05-14
+**Version**: 0.2.8 | **Ratified**: 2026-05-15

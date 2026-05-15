@@ -46,16 +46,24 @@ The collection must be configured as a <strong>Capped Collection</strong> (a fix
 ## Running Locally
 
 ### Prerequisites
-- Docker Desktop with active containers.
+- **Docker Desktop** or **Podman** with active container support.
 
 ### Deployment
 1. Start the MongoDB Replica Set:
    ```bash
+   # Using Docker
    docker-compose up -d mongodb
+
+   # Using Podman
+   podman-compose up -d mongodb
    ```
 2. Initialize the Replica Set (if not already done):
    ```bash
+   # Using Docker
    docker exec -it mongodb mongosh --eval "rs.initiate()"
+
+   # Using Podman
+   podman exec -it mongodb mongosh --eval "rs.initiate()"
    ```
 3. Run the application:
    ```bash

@@ -34,3 +34,8 @@
 - [x] T017 Add Traceable Implementation relative links to all scenarios in `README.md`.
 - [x] T018 Add the missing Self-Assessment block using collapsible `<details>` tags in `README.md`.
 - [x] T019 Execute `mvn test` to ensure stability post-refinement.
+
+## Phase 6: Constitution v0.2.8 Refinement (Podman Support)
+- [x] T020 Add Podman alternative commands to `README.md` for manual deployment and replica set initialization.
+- [x] T021 Update `README.md` prerequisites to include Podman.
+- [x] T022 Verify that Testcontainers works with Podman environment (if applicable).

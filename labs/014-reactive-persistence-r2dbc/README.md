@@ -11,7 +11,7 @@ In this laboratory, you will break the "Blocking DB" barrier. You will implement
 - Audit SQL execution using **R2DBC Proxy**.
 
 ## Prerequisites
-- Docker must be installed and running (for Testcontainers).
+- **Docker** or **Podman** must be installed and running (for Testcontainers and manual deployment).
 
 ## Instructions
 
@@ -73,10 +73,13 @@ Instead of using <code>ThreadLocal</code> (which breaks across asynchronous boun
 
 ## Running Locally (Development)
 
-### 1. Start the Database
 You can use the provided `docker-compose.yml` to start only the PostgreSQL instance:
 ```bash
+# Using Docker
 docker compose up postgres-lab -d
+
+# Using Podman
+podman-compose up postgres-lab -d
 ```
 
 ### 2. Run the Application
@@ -98,7 +101,11 @@ mvn clean package -pl labs/014-reactive-persistence-r2dbc -DskipTests
 
 ### 2. Start the Stack
 ```bash
+# Using Docker
 docker compose up --build
+
+# Using Podman
+podman-compose up --build
 ```
 This will:
 1. Start PostgreSQL and wait for it to be healthy.

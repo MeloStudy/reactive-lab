@@ -31,28 +31,28 @@ Tells the upstream exactly how many items it is allowed to send.
 A fast producer (`Sinks.Many`) pushes events regardless of consumer demand.
 - **Task**: Reproduce the `OverflowException` and fix it by adding a buffer.
 - **Key Operator**: `onBackpressureBuffer(10)`.
-- **Source**: [FastProducer.java](/labs/009-backpressure-strategies/src/main/java/com/reactivelab/backpressure/FastProducer.java)
-- **Test**: [BackpressureTest.java](/labs/009-backpressure-strategies/src/test/java/com/reactivelab/backpressure/BackpressureTest.java)
+- **Source**: [FastProducer.java](src/main/java/com/reactivelab/backpressure/FastProducer.java)
+- **Test**: [BackpressureTest.java](src/test/java/com/reactivelab/backpressure/BackpressureTest.java)
 
 ### Scenario 2: High-Priority Real-Time Data
 You are receiving sensor data where only the most recent value is useful for the dashboard.
 - **Task**: Discard stale data using `onBackpressureLatest()`.
 - **Key Operator**: `onBackpressureLatest()`.
-- **Test**: [BackpressureTest.java](/labs/009-backpressure-strategies/src/test/java/com/reactivelab/backpressure/BackpressureTest.java)
+- **Test**: [BackpressureTest.java](src/test/java/com/reactivelab/backpressure/BackpressureTest.java)
 
 ### Scenario 3: The API Quota (Rate Limiting)
 Your downstream service has a strict rate limit. You must regulate how much you request from your high-volume source.
 - **Task**: Implement `ThrottledRequester` using `limitRate(10)`.
 - **Key Operator**: `limitRate(10)`.
-- **Source**: [ThrottledRequester.java](/labs/009-backpressure-strategies/src/main/java/com/reactivelab/backpressure/ThrottledRequester.java)
-- **Test**: [ThrottledRequesterTest.java](/labs/009-backpressure-strategies/src/test/java/com/reactivelab/backpressure/ThrottledRequesterTest.java)
+- **Source**: [ThrottledRequester.java](src/main/java/com/reactivelab/backpressure/ThrottledRequester.java)
+- **Test**: [ThrottledRequesterTest.java](src/test/java/com/reactivelab/backpressure/ThrottledRequesterTest.java)
 
 ### Scenario 4: The Subscription Cap
 You want to allow a user to consume exactly `N` items from a stream and then terminate the connection.
 - **Task**: Implement `QuotaEnforcer` using `limitRequest(5)`.
 - **Key Operator**: `limitRequest(5)`.
-- **Source**: [QuotaEnforcer.java](/labs/009-backpressure-strategies/src/main/java/com/reactivelab/backpressure/QuotaEnforcer.java)
-- **Test**: [QuotaEnforcerTest.java](/labs/009-backpressure-strategies/src/test/java/com/reactivelab/backpressure/QuotaEnforcerTest.java)
+- **Source**: [QuotaEnforcer.java](src/main/java/com/reactivelab/backpressure/QuotaEnforcer.java)
+- **Test**: [QuotaEnforcerTest.java](src/test/java/com/reactivelab/backpressure/QuotaEnforcerTest.java)
 
 ---
 
@@ -121,3 +121,6 @@ mvn test -pl labs/009-backpressure-strategies
 ```bash
 mvn clean -pl labs/009-backpressure-strategies
 ```
+
+---
+**Next Lab**: [LAB-010: Testing & Debugging Matrix](../010-testing-debugging-matrix/README.md)

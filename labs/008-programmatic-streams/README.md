@@ -14,28 +14,28 @@ Welcome to Lab 008! In this module, you will learn how to create your own reacti
 
 ### 1. The Fibonacci Generator
 Use `Flux.generate` to implement the Fibonacci sequence. You will manage the state (the previous two numbers) within the generator itself, ensuring thread-safe, synchronous emission.
-- **Source**: [SequenceGenerator.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/SequenceGenerator.java)
-- **Test**: [SequenceGeneratorTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/SequenceGeneratorTest.java)
+- **Source**: [SequenceGenerator.java](src/main/java/com/reactivelab/generation/SequenceGenerator.java)
+- **Test**: [SequenceGeneratorTest.java](src/test/java/com/reactivelab/generation/SequenceGeneratorTest.java)
 
 ### 2. The Chat Bridge
 Wrap a mock `ChatListener` into a `Flux`. You will learn how to register the listener on subscription and, most importantly, how to **unregister** it when the subscriber cancels using `onDispose` to avoid memory leaks.
-- **Source**: [ChatBridge.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/ChatBridge.java)
-- **Test**: [ChatBridgeTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/ChatBridgeTest.java)
+- **Source**: [ChatBridge.java](src/main/java/com/reactivelab/generation/ChatBridge.java)
+- **Test**: [ChatBridgeTest.java](src/test/java/com/reactivelab/generation/ChatBridgeTest.java)
 
 ### 3. The Radio Broadcaster (Hot vs Cold)
 Observe the fundamental difference between a movie (Cold) and a live concert (Hot). You will transform a standard Flux into a "Hot" publisher using `publish().autoConnect()` and verify that late subscribers miss data.
-- **Source**: [Broadcaster.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/Broadcaster.java)
-- **Test**: [BroadcasterTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/BroadcasterTest.java)
+- **Source**: [Broadcaster.java](src/main/java/com/reactivelab/generation/Broadcaster.java)
+- **Test**: [BroadcasterTest.java](src/test/java/com/reactivelab/generation/BroadcasterTest.java)
 
 ### 4. The On-Demand Resource
 Use `refCount(n)` to manage an expensive upstream source. The resource should only start when the second subscriber joins and stop immediately when the last one leaves, preventing wasted CPU/Memory.
-- **Source**: [OnDemandResource.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/OnDemandResource.java)
-- **Test**: [OnDemandResourceTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/OnDemandResourceTest.java)
+- **Source**: [OnDemandResource.java](src/main/java/com/reactivelab/generation/OnDemandResource.java)
+- **Test**: [OnDemandResourceTest.java](src/test/java/com/reactivelab/generation/OnDemandResourceTest.java)
 
 ### 5. The Result Cache
 Implement a scenario where an expensive calculation is shared among multiple consumers. Use `cache(n)` to ensure that late subscribers don't trigger a re-calculation but still get the last `n` results instantly.
-- **Source**: [ResultCache.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/ResultCache.java)
-- **Test**: [ResultCacheTest.java](/labs/008-programmatic-streams/src/test/java/com/reactivelab/generation/ResultCacheTest.java)
+- **Source**: [ResultCache.java](src/main/java/com/reactivelab/generation/ResultCache.java)
+- **Test**: [ResultCacheTest.java](src/test/java/com/reactivelab/generation/ResultCacheTest.java)
 
 ## 🚀 Execution Guide
 
@@ -43,6 +43,14 @@ Run the validation suite:
 
 ```powershell
 mvn test -pl labs/008-programmatic-streams
+```
+
+## 🧹 Cleanup
+
+Run the cleanup command to remove build artifacts:
+
+```powershell
+mvn clean -pl labs/008-programmatic-streams
 ```
 
 ## 🔍 Command Dissection
@@ -71,7 +79,7 @@ mvn test -pl labs/008-programmatic-streams
 
 ### `OverflowException` in `create`
 If you encounter `OverflowException`, it means your producer is faster than your consumer.
-- **Solution**: Adjust the `OverflowStrategy` (e.g., `BUFFER(n)`, `DROP`, or `LATEST`). See [ChatBridge.java](/labs/008-programmatic-streams/src/main/java/com/reactivelab/generation/ChatBridge.java) for implementation details.
+- **Solution**: Adjust the `OverflowStrategy` (e.g., `BUFFER(n)`, `DROP`, or `LATEST`). See [ChatBridge.java](src/main/java/com/reactivelab/generation/ChatBridge.java) for implementation details.
 
 ### `Sinks` Emission Failures
 If `tryEmitNext` returns a failure code:
@@ -116,4 +124,4 @@ If external listeners are not being unregistered:
    </details>
 
 ---
-**Next Lab**: [LAB-009: Backpressure & Flow Control](../009-backpressure-flow/README.md)
+**Next Lab**: [LAB-009: Backpressure & Flow Control](../009-backpressure-strategies/README.md)

@@ -37,27 +37,27 @@ Creates a spy wrapper around a publisher.
 ### Scenario 1: The Time Traveler
 A stream emits data once per day for 365 days. Verify the entire year of data in milliseconds.
 - **Key Operator**: `withVirtualTime`.
-- **Test**: [TestingMatrixTest.java](/labs/010-testing-debugging-matrix/src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
+- **Test**: [TestingMatrixTest.java](src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
 
 ### Scenario 2: The Branch Spy
 Verify that a `switchIfEmpty` fallback is triggered when the primary source is empty.
 - **Key Operator**: `PublisherProbe`.
-- **Test**: [TestingMatrixTest.java](/labs/010-testing-debugging-matrix/src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
+- **Test**: [TestingMatrixTest.java](src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
 
 ### Scenario 3: The Correlation ID (Context)
 Pass a Trace ID through a pipeline that hops between `parallel` and `boundedElastic` schedulers.
 - **Key Operator**: `contextWrite`.
-- **Test**: [TestingMatrixTest.java](/labs/010-testing-debugging-matrix/src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
+- **Test**: [TestingMatrixTest.java](src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
 
 ### Scenario 4: The BlockHound Sentry
 Inject a blocking `Thread.sleep` and verify that the system detects it and fails the test.
 - **Key Operator**: `BlockHound.install()`.
-- **Test**: [TestingMatrixTest.java](/labs/010-testing-debugging-matrix/src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
+- **Test**: [TestingMatrixTest.java](src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
 
 ### Scenario 5: The Labeled Pipeline
 Inject a failure into a complex pipeline and use `checkpoint` to identify which segment failed.
 - **Key Operator**: `checkpoint`.
-- **Test**: [TestingMatrixTest.java](/labs/010-testing-debugging-matrix/src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
+- **Test**: [TestingMatrixTest.java](src/test/java/com/reactivelab/testing/TestingMatrixTest.java)
 
 ### Scenario 6: The Scannable Inspector
 Use the `Scannable` API to peek into the state of a running pipeline (e.g., checking demand).
@@ -116,3 +116,6 @@ mvn test -pl labs/010-testing-debugging-matrix
 ```bash
 mvn clean -pl labs/010-testing-debugging-matrix
 ```
+
+---
+**Next Lab**: [LAB-011: Reactive Web with Spring WebFlux](../011-reactive-web-webflux/README.md)

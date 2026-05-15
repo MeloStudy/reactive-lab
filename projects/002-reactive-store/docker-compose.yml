@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  reactive-mart-db:
+    image: docker.io/library/mongo:7.0
+    container_name: reactive-mart-db
+    ports:
+      - "27017:27017"
+    networks:
+      - reactive-net
+
+  inventory-service:
+    build: ./inventory-service
+    container_name: inventory-service
+    ports:
+      - "5000:5000"
+    networks:
+      - reactive-net
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://reactive-mart-db:27017/reactivelab
+      - SERVICES_INVENTORY_URL=http://inventory-service:5000
+    depends_on:
+      - reactive-mart-db
+      - inventory-service
+    networks:
+      - reactive-net
+
+networks:
+  reactive-net:
+    driver: bridge

@@ -52,8 +52,9 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
 - [ ] **LAB-017-B: Reactive Contract Testing**
   - Concepts: Spring Cloud Contract (Reactive), Verifying WebClient interactions.
   - Type: Deep Dive Alternative
-- [ ] **MINI-PROJECT-2: The Reactive Store Microservice**
-  - Objective: Building a complete microservice with WebFlux, WebClient orchestration, and Context propagation.
+- [x] (AUDITED) **MINI-PROJECT-2: The Polyglot Reactive Store**
+  - Objective: A distributed architecture orchestrating a **Spring WebFlux (Java)** order service with a **Legacy Flask (Python)** inventory.
+  - Concepts: Mixed Persistence (**MongoDB + R2DBC/SQLite + SQLite**), Distributed Tracing (**Reactor Context** propagation), Resilience (**WebClient Timeouts/Fallbacks**), Non-blocking Validation (**BlockHound**), and Full CRUD Lifecycle.
 
 ## Level 4: Resilient & Event-Driven Systems
 Focus: Production-grade patterns, observability, and integrating with streaming platforms.
@@ -80,4 +81,4 @@ Focus: Modern Java concurrency comparisons and consolidation in a real-world arc
   - Objective: Build a distributed system with WebFlux, R2DBC, and Kafka handling high throughput.
 
 ---
-**Version**: 0.7.5 | **Author**: MeloStudy
+**Version**: 0.7.6 | **Author**: MeloStudy

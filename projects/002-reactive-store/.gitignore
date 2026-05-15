@@ -1,0 +1,21 @@
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# SQLite databases
+*.db
+*.db-journal
+
+# Java/Maven
+target/
+.mvn/
+*.jar
+
+# Logs
+*.log

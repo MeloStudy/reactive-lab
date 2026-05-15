@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: order-service
+  
+  # R2DBC Configuration for H2
+  r2dbc:
+    url: r2dbc:h2:mem:///orders;DB_CLOSE_DELAY=-1
+  
+  # MongoDB Configuration
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/reactivemart}
+
+# External Service URLs
+services:
+  inventory:
+    url: ${INVENTORY_SERVICE_URL:http://localhost:5000}
+
+logging:
+  level:
+    com.reactivelab.store: DEBUG
+    org.springframework.r2dbc: DEBUG

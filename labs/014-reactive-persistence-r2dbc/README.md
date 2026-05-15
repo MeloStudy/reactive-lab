@@ -6,7 +6,8 @@ In this laboratory, you will break the "Blocking DB" barrier. You will implement
 ## Learning Objectives
 - Configure a PostgreSQL database using **Testcontainers**.
 - Implement reactive repositories with **JSONB** support.
-- Perform manual SQL operations using `DatabaseClient`.
+- Master the **Template Hierarchy**: `ReactiveCrudRepository`, `R2dbcEntityTemplate`, and `DatabaseClient`.
+- Understand the **Basic ORM** approach vs. traditional blocking ORMs.
 - Validate **Reactive Transactions** and rollbacks.
 - Audit SQL execution using **R2DBC Proxy**.
 
@@ -17,23 +18,25 @@ In this laboratory, you will break the "Blocking DB" barrier. You will implement
 
 1.  **Scenario 1: The Infrastructure**
     Observe `PersistenceIntegrationTest.java`. Note how `PostgreSQLContainer` is used to spin up a real database for the tests.
-    🔗 **Traceable Implementation**: [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
+    🔗 **Traceable Implementation**: [PersistenceIntegrationTest.java](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
     
 2.  **Scenario 2: JSONB Documents**
     Look at the `Product` entity. It contains a `Json` metadata field. In the tests, observe how we persist and retrieve JSON data from PostgreSQL.
-    🔗 **Traceable Implementation**: [PersistenceModels.java](src/main/java/com/reactivelab/r2dbc/PersistenceModels.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
+    🔗 **Traceable Implementation**: [Product.java](src/main/java/com/reactivelab/r2dbc/model/Product.java) | [PersistenceIntegrationTest.java](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
-3.  **Scenario 3: Custom SQL**
-    Check `ProductService.findExpensiveProducts`. Instead of a repository method, we use `DatabaseClient` to execute a manual query and map the results to the entity.
-    🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/r2dbc/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
+3.  **Scenario 3: Advanced Templates (Client vs Template)**
+    Check `ProductService`. 
+    - `searchByName` uses `DatabaseClient` for raw SQL flexibility.
+    - `searchByPriceRange` uses `R2dbcEntityTemplate` for type-safe programmatic criteria.
+    🔗 **Traceable Implementation**: [ProductService.java](src/main/java/com/reactivelab/r2dbc/service/ProductService.java) | [PersistenceIntegrationTest.java](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
 4.  **Scenario 4: Transactional Rollback**
     Review `ProductService.purchaseProduct`. The method is marked with `@Transactional`. The test `scenario4_transactionalRollback` verifies that if an error occurs during the order creation, the stock decrement is rolled back.
-    🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/r2dbc/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
+    🔗 **Traceable Implementation**: [ProductService.java](src/main/java/com/reactivelab/r2dbc/service/ProductService.java) | [PersistenceIntegrationTest.java](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
 5.  **Scenario 5: SQL Auditing**
     Examine `R2dbcConfiguration`. We wrap the `ConnectionFactory` with `ProxyConnectionFactory`. Check the logs during test execution to see the intercepted SQL queries.
-    🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/r2dbc/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
+    🔗 **Traceable Implementation**: [R2dbcConfiguration.java](src/main/java/com/reactivelab/r2dbc/config/R2dbcConfiguration.java) | [PersistenceIntegrationTest.java](src/test/java/com/reactivelab/r2dbc/PersistenceIntegrationTest.java)
 
 ## Command Dissections
 
@@ -44,14 +47,23 @@ public interface ProductRepository extends ReactiveCrudRepository<Product, Long>
 - **What**: The reactive counterpart to Spring Data JPA's `CrudRepository`.
 - **Why**: Allows CRUD operations without blocking threads.
 
-### 2. `DatabaseClient`
+### 2. `R2dbcEntityTemplate`
+```java
+entityTemplate.select(Product.class)
+    .matching(Query.query(Criteria.where("price").between(min, max)))
+    .all();
+```
+- **What**: A mid-level abstraction for programmatic query construction.
+- **Why**: Type-safe criteria search without writing raw SQL strings.
+
+### 3. `DatabaseClient`
 ```java
 databaseClient.sql("SELECT ...").bind("id", id).map(...).all()
 ```
-- **What**: A fluent API for executing SQL.
-- **Why**: Essential for complex queries, joins, or database-specific features not supported by the repository abstraction.
+- **What**: A fluent API for executing raw SQL.
+- **Why**: Essential for complex joins, PostgreSQL-specific features (JSONB operators), or high-performance bulk operations.
 
-### 3. `@Transactional` (Reactive)
+### 4. `@Transactional` (Reactive)
 - **What**: Annotation to mark transactional boundaries.
 - **Why**: In WebFlux, it works by propagating the transaction state through the Reactor Context instead of `ThreadLocal`.
 
@@ -67,13 +79,13 @@ JPA and Hibernate are built on the JDBC specification, which is synchronous by d
 </details>
 
 <details>
-<summary>3. What are the "Basic" alternatives to full ORMs in the Spring R2DBC stack?</summary>
-Instead of a full persistence context with magic features, Spring Data R2DBC provides <b>ReactiveCrudRepository</b> for simple POJO mapping and <b>DatabaseClient</b> for executing complex SQL manually. It lacks lazy loading and auto-dirty-checking, favoring transparency and non-blocking execution over complex abstraction.
+<summary>3. What is a "Basic ORM" and how does it compare to Hibernate?</summary>
+A "Basic ORM" like Spring Data R2DBC provides row-to-POJO mapping but lacks a persistence context. It has <b>no session</b> (no auto-dirty-checking), <b>no lazy loading</b>, and <b>no proxying</b>. You gain performance and predictability at the cost of the "automagic" features found in full ORMs.
 </details>
 
 <details>
-<summary>4. How does <code>@Transactional</code> work in a reactive WebFlux environment?</summary>
-Instead of using <code>ThreadLocal</code> (which breaks across asynchronous boundaries), Spring relies on the <b>Reactor Context</b> to propagate the transaction state through the reactive pipeline, ensuring consistency even when signals jump between different threads.
+<summary>4. When should I use R2dbcEntityTemplate instead of DatabaseClient?</summary>
+Use <b>R2dbcEntityTemplate</b> for dynamic, type-safe queries where you want to avoid raw SQL strings. Use <b>DatabaseClient</b> when you need the full power of SQL, such as complex joins, native functions, or specialized operators (like JSONB query operators) that aren't easily expressed in the Criteria API.
 </details>
 
 ## Running Locally (Development)

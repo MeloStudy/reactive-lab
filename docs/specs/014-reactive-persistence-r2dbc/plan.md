@@ -20,23 +20,29 @@ The learner will transition from web-layer reactivity to full end-to-end reactiv
    - Building a CRUD REST Controller.
 2. **Validation**: `WebTestClient` tests for end-to-end persistence flow.
 
-## Phase 3: Advanced Operations & Transactions
+## Phase 3: Advanced Operations & Templates
 1. **Instructional Path**:
-   - Using `DatabaseClient` for custom mapping.
+   - Using `DatabaseClient` for custom mapping and raw SQL.
+   - Using `R2dbcEntityTemplate` for programmatic criteria.
    - Applying `@Transactional` and understanding its non-blocking nature.
    - Implementing pagination logic.
-2. **Validation**: Test cases for rollback scenarios and paginated results.
+2. **Validation**: Test cases for template-based searches and rollback scenarios.
 
 ## Phase 4: Documentation & Dissection
-1. **CONCEPT.md**: Compare JDBC vs R2DBC thread models. Explain the "Subscription" role in DB execution.
-2. **README.md**: Command Dissections for `ReactiveCrudRepository`, `DatabaseClient.sql()`, and `r2dbc-pool` configuration.
+1. **CONCEPT.md**: Compare JDBC vs R2DBC. Explain "Basic ORM" concepts.
+2. **README.md**: Command Dissections for `ReactiveCrudRepository`, `DatabaseClient`, and `R2dbcEntityTemplate`.
 
 ## Phase 5: Constitution v0.2.7 Refinement
 1. **Instructional Path**:
-   - Add Traceable Implementation links to `README.md` scenarios.
-   - Inject the missing "Self-Assessment" section with collapsible `<details>` blocks.
-   - Update `CONCEPT.md` with R2DBC vs JDBC + Virtual Threads (Modern Technology Assimilation).
-2. **Validation**: Verify that relative links point to valid Java source files and tests.
+   - Add Traceable Implementation links.
+   - Inject the "Self-Assessment" section.
+2. **Validation**: Verify relative links.
+
+## Phase 6: Architectural Modularity (Refinement)
+1. **Instructional Path**:
+   - Refactor from flat package to modular packages (`controller`, `service`, `repository`, `model`, `config`).
+   - Move main class to the root package.
+2. **Validation**: `mvn test` to ensure stability post-restructuring.
 
 ## Constitution Compliance Check
 - [ ] No `.sh` wrapper scripts.

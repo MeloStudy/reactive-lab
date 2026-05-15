@@ -1,4 +1,4 @@
-# Lab Specification: LAB-014: Reactive Persistence with R2DBC [READY]
+# Lab Specification: LAB-014: Reactive Persistence with R2DBC [AUDITED]
 
 **Feature Branch**: `014-reactive-persistence-r2dbc`
 **Created**: 2026-05-04
@@ -19,6 +19,8 @@
   - LO-007: Manage schema migrations using a reactive-compatible approach.
   - LO-008: Evaluate architectural trade-offs between R2DBC and JDBC + Virtual Threads (Project Loom).
   - LO-009: Understand the incompatibility of JPA/Hibernate with the reactive model.
+  - LO-010: Master the use of `R2dbcEntityTemplate` for programmatic query construction.
+  - LO-011: Define and contrast the "Basic ORM" approach vs. traditional full-featured ORMs.
 
 ## Interactive Scenarios & Validation *(mandatory)*
 
@@ -38,10 +40,12 @@ Implement a `ProductRepository` extending `ReactiveCrudRepository<Product, Long>
 
 ---
 
-### Scenario 3 - Advanced Queries with DatabaseClient (P2)
-Implement a custom search method using `DatabaseClient` that performs a partial name search and price range filter.
+### Scenario 3 - Advanced Queries with DatabaseClient & R2dbcEntityTemplate (P2)
+Implement:
+1. A custom search method using `DatabaseClient` for raw SQL flexibility (partial name search).
+2. A custom search method using `R2dbcEntityTemplate` for type-safe programmatic criteria (price range filter).
 
-**Validation (Automated Test)**: Search for products within a price range and verify the resulting `Flux` contains only matching items.
+**Validation (Automated Test)**: Verify that both templates correctly retrieve matching items from the database.
 
 ---
 

@@ -1,5 +1,9 @@
 package com.reactivelab.r2dbc;
 
+import com.reactivelab.r2dbc.model.Product;
+import com.reactivelab.r2dbc.repository.OrderRepository;
+import com.reactivelab.r2dbc.repository.ProductRepository;
+import com.reactivelab.r2dbc.service.ProductService;
 import io.r2dbc.postgresql.codec.Json;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,24 +78,29 @@ class PersistenceIntegrationTest {
     }
 
     @Test
-    void scenario3_customSqlDatabaseClient() {
-        productRepository.save(Product.builder().name("Cheap").price(10.0).stock(5).build()).block();
-        productRepository.save(Product.builder().name("Expensive").price(200.0).stock(5).build()).block();
+    void scenario3_templateComparison() {
+        // Setup data
+        productRepository.deleteAll().block();
+        productRepository.save(Product.builder().name("Gaming Laptop").price(1200.0).stock(5).build()).block();
+        productRepository.save(Product.builder().name("Office Mouse").price(25.0).stock(50).build()).block();
 
-        StepVerifier.create(productService.findExpensiveProducts(100.0))
-                .assertNext(product -> assertThat(product.getName()).isEqualTo("Expensive"))
+        // 1. DatabaseClient search (by name)
+        StepVerifier.create(productService.searchByName("Gaming"))
+                .assertNext(product -> assertThat(product.getPrice()).isEqualTo(1200.0))
+                .verifyComplete();
+
+        // 2. R2dbcEntityTemplate search (by price range)
+        StepVerifier.create(productService.searchByPriceRange(10.0, 50.0))
+                .assertNext(product -> assertThat(product.getName()).isEqualTo("Office Mouse"))
                 .verifyComplete();
     }
 
     @Test
     void scenario4_transactionalRollback() {
+        orderRepository.deleteAll().block();
         Product p = productRepository.save(Product.builder().name("Stocked Product").price(50.0).stock(5).build()).block();
         Long productId = p.getId();
 
-        // This will fail in order creation if we simulate a failure
-        // We'll trigger an error by trying to purchase more than available, or we can mock a failure.
-        // Actually, let's trigger a RuntimeException in the service for a specific condition.
-        
         // Purchase 10 (more than 5) -> Should fail with "Insufficient stock"
         webTestClient.post()
                 .uri("/api/persistence/purchase?productId=" + productId + "&quantity=10")
@@ -105,7 +114,7 @@ class PersistenceIntegrationTest {
                 
         // Verify no order was created
         StepVerifier.create(orderRepository.count())
-                .expectNext(0L) // Assuming clean DB for this test
+                .expectNext(0L)
                 .verifyComplete();
     }
 }

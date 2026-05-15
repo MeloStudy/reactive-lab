@@ -17,20 +17,35 @@ Instead of blocking threads, R2DBC drivers (like `r2dbc-postgresql`) are built o
 - **Callbacks/Signals**: When the database response arrives, the Event Loop receives a signal and pushes the data into the reactive stream (`Flux` or `Mono`).
 - **ConnectionFactory**: Unlike a JDBC `DataSource`, the R2DBC `ConnectionFactory` provides a reactive entry point that doesn't rely on `ThreadLocal` or blocking pools.
 
-## 3. The Death of JPA & Hibernate in Reactive
+## 3. The Death of JPA & Hibernate (The Shift to Basic ORM)
 A common misconception is that you can use **JPA** or **Hibernate** with R2DBC. **You cannot.**
 - **Blocking by Design**: JPA is a blocking specification. Hibernate's core mechanisms (Lazy Loading, Dirty Checking, First-level Cache) rely heavily on `ThreadLocal` and synchronous execution.
 - **Lazy Loading**: If you access a lazy-loaded collection outside a transaction, Hibernate blocks to fetch it. This is impossible in a non-blocking pipeline where no thread can be held hostage.
-- **The Alternative**: **Spring Data R2DBC**. It is NOT a full ORM. It is a "Basic" mapping layer that provides:
-    - **ReactiveCrudRepository**: Simple mapping from rows to POJOs without the overhead of a persistence context.
-    - **No Lazy Loading**: All relationships must be handled explicitly (e.g., via joins in `DatabaseClient`).
+- **The Alternative: Basic ORM**: Spring Data R2DBC is a **Basic ORM**. Unlike a full-featured ORM, it is a "Mapping-only" layer.
+    - **No Session/Persistence Context**: There is no "Dirty Checking". You must explicitly save changes.
+    - **No Lazy Loading**: All relationships must be handled via explicit joins or separate queries.
+    - **No Proxying magic**: You work with real POJOs, not Hibernate proxies.
     - **Transparency over Magic**: You have more control over the SQL, but you lose the "automagic" features of Hibernate. This is a deliberate trade-off for high-performance, predictable reactive systems.
 
-## 4. Spring Data R2DBC
-Spring provides a familiar programming model with:
-- **ReactiveCrudRepository**: Provides standard CRUD methods returning `Mono` and `Flux`.
-- **DatabaseClient**: A non-blocking client for executing manual SQL queries.
-- **R2DBC Entity Template**: A lower-level API for programmatic database access.
+## 4. The Spring Data R2DBC Template Hierarchy
+Spring Data R2DBC provides three levels of abstraction for database access, each suited for different use cases:
+
+1. **ReactiveCrudRepository (High-level)**:
+    - Best for standard CRUD and simple derived queries (e.g., `findByEmail`).
+    - Minimizes boilerplate code.
+    - Uses `@Table` and `@Id` annotations for mapping.
+
+2. **R2dbcEntityTemplate (Mid-level)**:
+    - Provides a programmatic, fluent API for query construction.
+    - Best for dynamic queries where SQL strings are hard to maintain.
+    - Conceptually similar to the JPA Criteria API but non-blocking.
+    - **Example**: `template.select(Product.class).matching(query(where("price").lt(100))).all()`
+
+3. **DatabaseClient (Low-level)**:
+    - Provides maximum flexibility for raw SQL execution.
+    - Best for complex joins, PostgreSQL-specific features (like `JSONB` operators), or high-performance bulk operations.
+    - Requires manual row mapping (though it can use `BeanPropertyRowMapper` equivalents).
+    - **Example**: `client.sql("SELECT * FROM products WHERE name ILIKE :name").bind("name", "%prod%").fetch().all()`
 
 ## 5. Reactive Transactions
 Transactions in WebFlux are different. Since there is no `ThreadLocal` storage for the transaction state, Spring uses the **Reactor Context** to propagate the transaction across the pipeline. 

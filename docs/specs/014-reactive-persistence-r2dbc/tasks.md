@@ -39,6 +39,14 @@
 - [x] T019 Execute `mvn test` to ensure stability post-refinement.
 
 ## Phase 6: Constitution v0.2.8 Refinement (Podman Support)
-- [x] T020 Add Podman alternative commands to `README.md` for manual deployment and replica set initialization.
+- [x] T020 Add Podman alternative commands to `README.md`.
 - [x] T021 Update `README.md` prerequisites to include Podman.
-- [x] T022 Verify that Testcontainers works with Podman environment (if applicable).
+- [x] T022 Verify that Testcontainers works with Podman environment.
+
+## Phase 7: Architectural Refinement & Advanced Templates
+- [ ] T023 Refactor package structure to modular layout (`config`, `model`, `repository`, `service`, `controller`).
+- [ ] T024 Implement `R2dbcEntityTemplate` search logic in `ProductService`.
+- [ ] T025 Update `PersistenceIntegrationTest` to validate modular structure and `R2dbcEntityTemplate`.
+- [ ] T026 Update `CONCEPT.md` with "Basic ORM" and "Template Hierarchy" explanations.
+- [ ] T027 Final validation of all Traceable Implementation links in `README.md`.
+- [ ] T028 Run `mvn test` to ensure stability.

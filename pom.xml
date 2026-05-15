@@ -31,6 +31,7 @@
         <module>labs/016-reactive-context-propagation</module>
         <module>labs/017-reactive-security-jwt</module>
         <module>projects/001-github-insights</module>
+        <module>projects/002-reactive-store/order-service</module>
     </modules>
 
     <properties>

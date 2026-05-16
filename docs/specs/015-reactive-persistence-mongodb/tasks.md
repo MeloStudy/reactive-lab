@@ -13,14 +13,18 @@
 ## Phase 2: Scenario Implementation (TDD)
 - [x] T004 Implement Scenario 1: Programmatic setup of Capped Collection and Tailable Cursor log stream.
 - [x] T005 Implement Scenario 2: Setup Change Stream watcher for real-time notifications.
-- [x] T006 Implement Scenario 3: Reactive GridFS file upload/download service.
+- [x] T006 Implement Scenario 3: Reactive GridFS file upload AND download service with validation.
 - [x] T007 Implement Scenario 4: Aggregation pipeline for category analytics.
 - [x] T008 Configure `docker-compose.yml` with MongoDB Replica Set support.
+- [ ] T008.1 Refactor package structure into `config`, `controller`, `model`, `repository`, and `service`.
+- [ ] T008.2 Implement Scenario 5: Backpressure handling for native streams.
+- [ ] T008.3 Update AssertJ assertions to use dedicated methods like `containsEntry`.
 
 ## Phase 3: Documentation & Educational Content
 - [x] T009 Create `CONCEPT.md` detailing Capped Collections and Change Streams.
 - [x] T010 Create `README.md` with step-by-step instructions and Command Dissections.
 - [x] T011 Add code comments explaining the "infinite" nature of Tailable signals.
+- [ ] T011.1 Update `CONCEPT.md` to cover `ReactiveMongoClient` hierarchy and Backpressure.
 
 ## Phase 4: Final Certification
 - [x] T012 Verify all tests pass with `mvn test`.

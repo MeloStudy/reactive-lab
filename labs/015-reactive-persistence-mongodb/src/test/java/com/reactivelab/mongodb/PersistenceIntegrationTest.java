@@ -19,6 +19,14 @@ import reactor.test.StepVerifier;
 import java.time.Duration;
 import java.util.Map;
 
+import com.reactivelab.mongodb.model.LogEntry;
+import com.reactivelab.mongodb.model.Product;
+import com.reactivelab.mongodb.model.Sale;
+import com.reactivelab.mongodb.repository.ProductRepository;
+import com.reactivelab.mongodb.repository.SaleRepository;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.web.reactive.function.BodyInserters;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -119,7 +127,33 @@ class PersistenceIntegrationTest {
     }
 
     @Test
+    void scenario3_gridFsUploadAndDownload() {
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("file", "Hello GridFS".getBytes())
+                .header("Content-Disposition", "form-data; name=file; filename=test.txt");
+
+        String fileId = webTestClient.post()
+                .uri("/api/mongo/files/upload")
+                .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(String.class)
+                .getResponseBody()
+                .blockFirst();
+
+        assertThat(fileId).isNotBlank();
+
+        webTestClient.get()
+                .uri("/api/mongo/files/download/test.txt")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .value(body -> assertThat(body).isEqualTo("Hello GridFS"));
+    }
+
+    @Test
     void scenario4_aggregations() {
+        saleRepository.deleteAll().block();
         saleRepository.save(Sale.builder().category("Electronics").amount(500.0).quantity(1).build()).block(Duration.ofSeconds(10));
         saleRepository.save(Sale.builder().category("Electronics").amount(300.0).quantity(1).build()).block(Duration.ofSeconds(10));
 
@@ -129,9 +163,35 @@ class PersistenceIntegrationTest {
                 .expectStatus().isOk()
                 .expectBodyList(Map.class)
                 .consumeWith(result -> {
-                    Map first = (Map) result.getResponseBody().get(0);
-                    assertThat(first.get("_id")).isEqualTo("Electronics");
-                    assertThat(first.get("totalSales")).isEqualTo(800.0);
+                    Map<String, Object> first = (Map<String, Object>) result.getResponseBody().get(0);
+                    assertThat(first)
+                            .containsEntry("_id", "Electronics")
+                            .containsEntry("totalSales", 800.0);
                 });
+    }
+
+    @Test
+    void scenario5_backpressureHandling() {
+        Flux<LogEntry> backpressureStream = webTestClient.get()
+                .uri("/api/mongo/logs/stream-backpressure")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(LogEntry.class)
+                .getResponseBody()
+                .filter(entry -> !"SYSTEM".equals(entry.getLevel()))
+                .delayElements(Duration.ofMillis(500)); // Simulate slow consumer
+
+        StepVerifier.create(backpressureStream)
+                .thenAwait(Duration.ofSeconds(1))
+                .then(() -> {
+                    // Fast producer
+                    for (int i = 0; i < 10; i++) {
+                        webTestClient.post().uri("/api/mongo/logs").bodyValue(Map.of("message", "BP Log " + i, "level", "WARN")).exchange();
+                    }
+                })
+                .expectNextCount(1)
+                // We don't expect all 10 because the slow consumer with onBackpressureDrop will drop elements
+                .thenCancel()
+                .verify(Duration.ofSeconds(10));
     }
 }

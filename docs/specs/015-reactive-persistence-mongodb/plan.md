@@ -23,21 +23,23 @@ This lab focuses on the unique "Streaming" capabilities of NoSQL databases. Unli
 ## Phase 3: Change Streams & GridFS
 1. **Instructional Path**:
    - Setting up `ReactiveMongoTemplate` for Change Stream watching.
-   - Using `ReactiveGridFsTemplate` for non-blocking file I/O.
+   - Using `ReactiveGridFsTemplate` for non-blocking file I/O (both Upload and Download).
    - Implementing Aggregation pipelines.
-2. **Validation**: Tests for real-time price change notifications and file integrity.
+   - Simulating and handling Backpressure using `.onBackpressureDrop()`.
+2. **Validation**: Tests for real-time price change notifications, backpressure handling, and full file integrity (upload + download).
 
 ## Phase 4: Documentation & Dissection
-1. **CONCEPT.md**: Explain the "Push" vs "Pull" models in database streaming.
-2. **README.md**: Command Dissections for `@Tailable`, `watch()`, and GridFS operations.
+1. **CONCEPT.md**: Explain the "Push" vs "Pull" models in database streaming, the `ReactiveMongoClient` hierarchy, and Backpressure implications.
+2. **README.md**: Command Dissections for `@Tailable`, `watch()`, GridFS operations, and Backpressure handling.
 3. **Docker**: Provide `docker-compose.yml` for local MongoDB Replica Set (required for Change Streams).
 
 ## Phase 5: Constitution v0.2.7 Refinement
 1. **Instructional Path**:
-   - Add Traceable Implementation links to `README.md` scenarios.
+   - Refactor codebase into `config`, `controller`, `model`, `repository`, and `service` packages for cleaner modularity.
+   - Add Traceable Implementation links to `README.md` scenarios (reflecting the new packages).
    - Inject the missing "Self-Assessment" section with collapsible `<details>` blocks.
    - Update `CONCEPT.md` with Reactive MongoDB vs Virtual Threads (Modern Technology Assimilation).
-2. **Validation**: Verify that relative links point to valid Java source files and tests.
+2. **Validation**: Verify that relative links point to valid Java source files and tests. Ensure AssertJ uses `containsEntry` where applicable.
 
 ## Decisions
 - **Initialization**: We will use **Programmatic Initialization** via `ReactiveMongoTemplate` and `ApplicationRunner` to show explicit signal handling for Capped Collection creation. Mongock will be mentioned in `CONCEPT.md` as a production alternative.

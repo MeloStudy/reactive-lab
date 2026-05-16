@@ -8,24 +8,31 @@ This lab demonstrates how to implement advanced reactive patterns using MongoDB,
 We use a capped collection and the `@Tailable` annotation to create an infinite stream of logs.
 - **Endpoint**: `GET /api/mongo/logs/stream`
 - **Mechanism**: The cursor remains open, waiting for new documents.
-🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/mongodb/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
+🔗 **Traceable Implementation**: [MongoService.java](src/main/java/com/reactivelab/mongodb/service/MongoService.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
 
 ### 2. Change Streams (Product Notifications)
 We watch for changes in the `products` collection and broadcast them using a Reactive Sink.
 - **Endpoint**: `GET /api/mongo/products/watch`
 - **Mechanism**: MongoDB sends notifications on any write operation (Insert/Update/Delete).
-🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/mongodb/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
+🔗 **Traceable Implementation**: [MongoService.java](src/main/java/com/reactivelab/mongodb/service/MongoService.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
 
 ### 3. GridFS (Binary Data)
 Non-blocking storage and retrieval of large files.
-- **Service**: `MongoService.uploadFile`
+- **Upload**: `POST /api/mongo/files/upload`
+- **Download**: `GET /api/mongo/files/download/{filename}`
 - **Mechanism**: `ReactiveGridFsTemplate` splits files into chunks and streams them reactively.
-🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/mongodb/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
+🔗 **Traceable Implementation**: [MongoService.java](src/main/java/com/reactivelab/mongodb/service/MongoService.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
 
 ### 4. Aggregations (Sales Analytics)
 Running complex processing pipelines without blocking the event loop.
 - **Endpoint**: `GET /api/mongo/analytics/categories`
-🔗 **Traceable Implementation**: [PersistenceLogic.java](src/main/java/com/reactivelab/mongodb/PersistenceLogic.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
+🔗 **Traceable Implementation**: [MongoService.java](src/main/java/com/reactivelab/mongodb/service/MongoService.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
+
+### 5. Backpressure Simulation (Fast Producer vs Slow Consumer)
+Demonstrates dropping elements when the database pushes data faster than the client can process.
+- **Endpoint**: `GET /api/mongo/logs/stream-backpressure`
+- **Mechanism**: Employs `onBackpressureDrop()` to handle overflow gracefully without crashing.
+🔗 **Traceable Implementation**: [MongoService.java](src/main/java/com/reactivelab/mongodb/service/MongoService.java) | [Test Suite](src/test/java/com/reactivelab/mongodb/PersistenceIntegrationTest.java)
 
 ## 🧠 Self-Assessment
 <details>
@@ -41,6 +48,11 @@ Virtual Threads are designed for cheap blocking. To replicate a "push" notificat
 <details>
 <summary>3. What is a prerequisite for using Tailable Cursors in MongoDB?</summary>
 The collection must be configured as a <strong>Capped Collection</strong> (a fixed-size collection that overwrites oldest documents).
+</details>
+
+<details>
+<summary>4. Why is backpressure handling required when tailing a cursor or watching a change stream?</summary>
+Because MongoDB streams follow a true "Push" model. The database actively pushes byte streams to your application. If your application consumes slower than the database produces, the network buffers will overflow. Operators like <code>.onBackpressureDrop()</code> are necessary to shed load.
 </details>
 
 ## Running Locally

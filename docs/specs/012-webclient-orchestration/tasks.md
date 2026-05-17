@@ -39,3 +39,13 @@
 - [x] T021 Add Traceable Implementation relative links to all scenarios in `README.md`.
 - [x] T022 Execute `mvn test` to ensure stability post-refinement.
 
+## Phase 7: Constitution v0.2.8 Refinement (Retrospective Upgrade)
+- [x] T023 Expand `spec.md` and `plan.md` to target Constitution v0.2.8 upgrades.
+- [x] T024 Update `CONCEPT.md` with Netty Selector Event Loop Mermaid diagram and deep-dive Event Loop thread delegation vs Thread-per-Request.
+- [x] T025 Enhance `CONCEPT.md` with Netty Connection Pool metrics and Loom thread pinning analysis.
+- [x] T026 Refactor `ReactiveOrchestratorTest.java` to add deep inline educational comments for all StepVerifier assertions.
+- [x] T027 Standardize AssertJ check statements to follow fluent dedicated paradigms.
+- [x] T028 Run `mvn test` to verify full system stability post-upgrade.
+
+
+

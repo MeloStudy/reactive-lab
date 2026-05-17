@@ -16,7 +16,8 @@
   - LO-004: Orchestrate parallel calls using `zip` and sequential dependencies using `flatMap`.
   - LO-005: Implement robust error handling with `onStatus()` and `onErrorResume()`.
   - LO-006: Apply resilience patterns: `timeout()` and `retry()`.
-  - LO-007: Compare WebClient's Event Loop with Java 21+ Virtual Threads (Modern Technology Assimilation).
+  - LO-007: Contrast the WebClient Event Loop thread-delegation model with traditional Thread-per-Request models and Java 21+ Virtual Threads (Loom), diagnosing carrier thread pinning gotchas.
+
 
 ## Interactive Scenarios & Validation *(mandatory)*
 

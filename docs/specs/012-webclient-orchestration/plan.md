@@ -38,18 +38,23 @@ The learner will implement a reactive gateway service that orchestrates multiple
    - Validating thread safety.
 2. **Validation**: Tests that attempt to block (e.g., `Thread.sleep`) and verify that BlockHound throws an exception.
 
-## Phase 6: Constitution v0.2.7 Refinement
+## Phase 6: Constitution v0.2.8 Refinement
 1. **Instructional Path**:
    - Add Traceable Implementation links to `README.md`.
-   - Update `CONCEPT.md` with Virtual Threads vs. WebClient (Modern Technology Assimilation).
-2. **Validation**: Verify that relative links point to valid Java source files and tests.
+   - Update `CONCEPT.md` with a detailed comparison between traditional Thread-per-Request blocking, Netty's non-blocking Event Loop delegation model, and Java 21+ Virtual Threads (Loom), highlighting carrier thread pinning limitations.
+   - Refactor `ReactiveOrchestratorTest.java` to contain thorough educational comments explaining every test assertion and signal in the reactive stream context.
+   - Standardize AssertJ assertions in the test suite to use highly idiomatic fluent check methods.
+2. **Validation**:
+   - Ensure all 8 test cases compile and run successfully via `mvn test`.
+   - Verify that relative paths in `README.md` and spec artifacts resolve perfectly.
 
 
 ## Constitution Compliance Check
-- [ ] No `.sh` wrapper scripts.
-- [ ] Code comments explicitly describe what every test line validates.
-- [ ] Language used across all text is explicitly English.
-- [ ] **Dependency Governance**: Inherits from root parent POM, no local versions.
+- [x] No `.sh` wrapper scripts.
+- [x] Code comments explicitly describe what every test line validates.
+- [x] Language used across all text is explicitly English.
+- [x] **Dependency Governance**: Inherits from root parent POM, no local versions.
+
 
 ## Open Questions
 - **Decision on Mocks**: We will use `MockWebServer` (OkHttp) integrated into unit tests to ensure high speed and focus on `WebClient` orchestration logic.

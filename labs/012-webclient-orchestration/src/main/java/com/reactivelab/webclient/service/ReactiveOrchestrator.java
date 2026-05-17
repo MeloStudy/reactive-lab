@@ -1,7 +1,7 @@
-package com.reactivelab.webclient;
+package com.reactivelab.webclient.service;
 
+import com.reactivelab.webclient.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -37,15 +37,11 @@ public class ReactiveOrchestrator {
 
     /**
      * Scenario 2: Parallel Orchestration
+     * Orchestrates concurrent non-blocking calls to User and Orders services.
      */
     public Mono<UserDashboard> getUserDashboard(String userId) {
         Mono<User> userMono = getUserById(userId);
-        
-        Mono<List<Order>> ordersMono = webClient.get()
-                .uri("/users/{id}/orders", userId)
-                .retrieve()
-                .bodyToFlux(Order.class)
-                .collectList();
+        Mono<List<Order>> ordersMono = getOrdersByUserId(userId);
 
         return Mono.zip(userMono, ordersMono)
                 .map(tuple -> UserDashboard.builder()
@@ -56,20 +52,13 @@ public class ReactiveOrchestrator {
 
     /**
      * Scenario 3: Dependent Calls
+     * Sequentially retrieves User, then triggers parallel calls for Orders and Preferences.
      */
     public Mono<UserDashboard> getFullUserDashboard(String userId) {
         return getUserById(userId)
                 .flatMap(user -> {
-                    Mono<List<Order>> ordersMono = webClient.get()
-                            .uri("/users/{id}/orders", userId)
-                            .retrieve()
-                            .bodyToFlux(Order.class)
-                            .collectList();
-
-                    Mono<Preference> preferenceMono = webClient.get()
-                            .uri("/preferences/{id}", user.getPreferenceId())
-                            .retrieve()
-                            .bodyToMono(Preference.class);
+                    Mono<List<Order>> ordersMono = getOrdersByUserId(userId);
+                    Mono<Preference> preferenceMono = getPreferenceById(user.getPreferenceId());
 
                     return Mono.zip(ordersMono, preferenceMono)
                             .map(tuple -> UserDashboard.builder()
@@ -82,6 +71,7 @@ public class ReactiveOrchestrator {
 
     /**
      * Scenario 4: Failover & Resilience
+     * Product Inventory fetch with strict 2-second timeout and 3 backoff retries.
      */
     public Mono<String> getInventoryStatus(String productId) {
         return webClient.get()
@@ -96,6 +86,7 @@ public class ReactiveOrchestrator {
 
     /**
      * Scenario 5: Consuming the Stream
+     * Connects to a Server-Sent Events stream, filtering out internal HEARTBEAT logs.
      */
     public Flux<GlobalEvent> getEventsStream() {
         return webClient.get()
@@ -108,18 +99,44 @@ public class ReactiveOrchestrator {
 
     /**
      * Scenario 6: Advanced Body Control (Manual Consumption)
-     * Demonstrates using exchangeToMono to inspect headers and manually handle the body.
+     * Programmatically checks status and headers using exchangeToMono.
+     * Prevents connection pool starvation by explicitly releasing error or unauthorized request bodies.
      */
     public Mono<String> getSecureData(String id) {
         return webClient.get()
                 .uri("/secure-data/{id}", id)
                 .exchangeToMono(response -> {
+                    // Check for HTTP status errors first
+                    if (response.statusCode().isError()) {
+                        log.error("Server error returned for secure data ID: {}, status: {}", id, response.statusCode());
+                        return response.releaseBody()
+                                .then(Mono.error(new RuntimeException("Server error: " + response.statusCode())));
+                    }
+                    // Validate authorization token header
                     if (response.headers().header("X-Secure-Token").isEmpty()) {
-                        log.warn("Missing secure token for ID: {}, releasing body", id);
-                        return response.releaseBody().then(Mono.error(new RuntimeException("Unauthorized")));
+                        log.warn("Missing secure token header for ID: {}, releasing body", id);
+                        return response.releaseBody()
+                                .then(Mono.error(new RuntimeException("Unauthorized")));
                     }
                     return response.bodyToMono(String.class);
                 });
     }
-}
 
+    /**
+     * Reusable package-private endpoint helpers to decouple HTTP construction from Orchestration logic.
+     */
+    Mono<List<Order>> getOrdersByUserId(String userId) {
+        return webClient.get()
+                .uri("/users/{id}/orders", userId)
+                .retrieve()
+                .bodyToFlux(Order.class)
+                .collectList();
+    }
+
+    Mono<Preference> getPreferenceById(String preferenceId) {
+        return webClient.get()
+                .uri("/preferences/{id}", preferenceId)
+                .retrieve()
+                .bodyToMono(Preference.class);
+    }
+}

@@ -30,6 +30,7 @@
         <module>labs/015-reactive-persistence-mongodb</module>
         <module>labs/016-reactive-context-propagation</module>
         <module>labs/017-reactive-security-jwt</module>
+        <module>labs/018-resilience4j-patterns</module>
         <module>projects/001-github-insights</module>
         <module>projects/002-reactive-store/order-service</module>
     </modules>
@@ -46,6 +47,7 @@
         <blockhound.version>1.0.9.RELEASE</blockhound.version>
         <spring-boot.version>3.5.14</spring-boot.version>
         <log4j2.version>2.25.4</log4j2.version>
+        <resilience4j.version>2.2.0</resilience4j.version>
     </properties>
 
     <dependencyManagement>
@@ -109,6 +111,18 @@
                 <groupId>io.projectreactor.tools</groupId>
                 <artifactId>blockhound</artifactId>
                 <version>${blockhound.version}</version>
+            </dependency>
+
+            <!-- Resilience4j -->
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-reactor</artifactId>
+                <version>${resilience4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-spring-boot3</artifactId>
+                <version>${resilience4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,7 +1,10 @@
 package com.reactivelab.webclient.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reactivelab.webclient.model.*;
+import com.reactivelab.webclient.model.GlobalEvent;
+import com.reactivelab.webclient.model.Order;
+import com.reactivelab.webclient.model.Preference;
+import com.reactivelab.webclient.model.User;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +20,7 @@ import reactor.test.StepVerifier;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +29,7 @@ class ReactiveOrchestratorTest {
     private MockWebServer mockWebServer;
     private ReactiveOrchestrator orchestrator;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final java.util.concurrent.atomic.AtomicInteger inventoryRetryCount = new java.util.concurrent.atomic.AtomicInteger(0);
+    private final AtomicInteger inventoryRetryCount = new AtomicInteger(0);
 
     @BeforeAll
     static void initAll() {
@@ -37,7 +41,7 @@ class ReactiveOrchestratorTest {
     @BeforeEach
     void setUp() throws IOException {
         mockWebServer = new MockWebServer();
-        
+
         // Dispatcher maps incoming request paths to specific mock responses simulating external APIs
         mockWebServer.setDispatcher(new okhttp3.mockwebserver.Dispatcher() {
             @Override
@@ -96,7 +100,7 @@ class ReactiveOrchestratorTest {
 
         mockWebServer.start();
         String baseUrl = mockWebServer.url("/").toString();
-        
+
         // Pass a default WebClient builder to the orchestrator service, configuring it with the mock base URL
         orchestrator = new ReactiveOrchestrator(WebClient.builder(), baseUrl);
     }
@@ -116,7 +120,7 @@ class ReactiveOrchestratorTest {
     @Test
     void testGetUserById_Success() {
         User expectedUser = User.builder().id("1").username("melo").preferenceId("pref_123").build();
-        
+
         // StepVerifier: Verifies basic WebClient GET operation and serialization mappings.
         StepVerifier.create(orchestrator.getUserById("1"))
                 // Asserts that the first emitted item matches our expected User profile mapped from JSON
@@ -128,7 +132,7 @@ class ReactiveOrchestratorTest {
     @Test
     void testGetUserDashboard_Parallel() {
         long start = System.currentTimeMillis();
-        
+
         // StepVerifier: Triggers the parallel execution pipeline using Mono.zip()
         StepVerifier.create(orchestrator.getUserDashboard("1"))
                 .assertNext(dashboard -> {
@@ -136,7 +140,7 @@ class ReactiveOrchestratorTest {
                     assertThat(dashboard.getUser())
                             .extracting(User::getUsername, User::getPreferenceId)
                             .containsExactly("melo", "pref_123");
-                    
+
                     // AssertJ Fluent style: Dedicated collection verification
                     assertThat(dashboard.getOrders())
                             .hasSize(2)
@@ -145,7 +149,7 @@ class ReactiveOrchestratorTest {
                 })
                 // Triggers stream execution and blocks until complete signal propagates
                 .verifyComplete();
-        
+
         long end = System.currentTimeMillis();
 
         // Parallel Invariant Verification: Both the user service and orders service mock requests
@@ -166,12 +170,12 @@ class ReactiveOrchestratorTest {
                     assertThat(dashboard.getUser())
                             .extracting(User::getUsername)
                             .isEqualTo("melo");
-                    
+
                     // AssertJ Fluent style: Verify preferences values mapped from downstream services
                     assertThat(dashboard.getPreference())
                             .extracting(Preference::getTheme, Preference::isNotificationsEnabled)
                             .containsExactly("DARK", true);
-                    
+
                     // AssertJ Fluent style: Verify size and entries in mapped orders list
                     assertThat(dashboard.getOrders())
                             .hasSize(2)
@@ -190,7 +194,7 @@ class ReactiveOrchestratorTest {
                 .expectNext("IN_STOCK")
                 // Asserts successful termination post-recovery
                 .verifyComplete();
-        
+
         // Verify that the underlying loop attempted retries exactly 4 times (3 failures + 1 final success)
         assertThat(inventoryRetryCount.get())
                 .as("The pipeline should execute a total of 4 downstream calls to achieve recovery")
@@ -233,7 +237,7 @@ class ReactiveOrchestratorTest {
         // This is a crucial security and resource-leak validation scenario.
         StepVerifier.create(orchestrator.getSecureData("invalid"))
                 // Expect that lack of token causes WebClient response pipeline to fail with a RuntimeException having message 'Unauthorized'
-                .expectErrorMatches(throwable -> throwable instanceof RuntimeException && 
+                .expectErrorMatches(throwable -> throwable instanceof RuntimeException &&
                         "Unauthorized".equals(throwable.getMessage()))
                 // Verifies that error termination propagates successfully
                 .verify();
@@ -253,12 +257,12 @@ class ReactiveOrchestratorTest {
         // StepVerifier: Verifies that BlockHound successfully intercepts blocking thread parking
         // when executed inside Reactor's non-blocking Schedulers parallel workers.
         StepVerifier.create(Mono.fromCallable(() -> {
-            // Force a thread block inside the stream to trigger BlockHound intercept
-            Thread.sleep(10);
-            return "done";
-        }).subscribeOn(Schedulers.parallel()))
-        // Expect that BlockHound throws a BlockingOperationError to prevent thread starvation
-        .expectErrorMatches(throwable -> throwable instanceof BlockingOperationError)
-        .verify();
+                    // Force a thread block inside the stream to trigger BlockHound intercept
+                    Thread.sleep(10);
+                    return "done";
+                }).subscribeOn(Schedulers.parallel()))
+                // Expect that BlockHound throws a BlockingOperationError to prevent thread starvation
+                .expectErrorMatches(throwable -> throwable instanceof BlockingOperationError)
+                .verify();
     }
 }

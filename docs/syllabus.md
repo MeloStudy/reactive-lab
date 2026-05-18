@@ -59,7 +59,7 @@ Focus: Building non-blocking, high-performance REST APIs and microservices.
 ## Level 4: Resilient & Event-Driven Systems
 Focus: Production-grade patterns, observability, and integrating with streaming platforms.
 
-- [ ] **LAB-018: Advanced Resilience Patterns (Resilience4j)**
+- [ ] (READY) **LAB-018: Advanced Resilience Patterns (Resilience4j)**
   - Concepts: Circuit Breakers, Bulkheads, Rate Limiters, and Time Limiters integrated with Reactor.
 - [ ] **LAB-019: Modern Observability (Micrometer Observation)**
   - Concepts: `ObservationRegistry`, `ObservationHandler`, Automatic instrumentation (WebFlux/WebClient), and Tagging strategies (High/Low cardinality).

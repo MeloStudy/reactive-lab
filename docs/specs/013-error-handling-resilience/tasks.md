@@ -2,6 +2,7 @@
 
 **Input**: Design documents from `docs/specs/013-error-handling-resilience/`
 **Prerequisites**: plan.md, spec.md.
+**Constitution Version**: v0.2.8
 
 **Validation Goal**: Create a series of failing scenarios that are "tamed" by different reactive error handling strategies, validated via `WebTestClient`.
 
@@ -35,3 +36,9 @@
 - [x] T019 Add Traceable Implementation relative links to all scenarios in `README.md`.
 - [x] T020 Format the Self-Assessment block into collapsible `<details>` tags in `README.md`.
 - [x] T021 Execute `mvn test` to ensure stability post-refinement.
+
+## Phase 6: Constitution v0.2.8 Refinement (Audit & Modularization)
+- [x] T022 Refactor code into modular packages: `model`, `controller`, `service`, `router`, `filter`, `exception`.
+- [x] T023 Implement hybrid Correlation-ID resolution in `GlobalErrorWebExceptionHandler` to solve Reactor Context upstream propagation constraints.
+- [x] T024 Add extensive JUnit 5 comments to `ResilienceIntegrationTest.java` explaining precisely what each test step validates.
+- [x] T025 Execute global validation engine to certify compliance with Constitution v0.2.8.

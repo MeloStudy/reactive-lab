@@ -1,81 +1,102 @@
 # LAB-013: Error Handling & Resilience in WebFlux
 
 ## Overview
-In this laboratory, you will master the art of "taming" failures in a reactive ecosystem. You will build a system that gracefully handles localized errors, provides business-friendly error responses, and remains resilient under stress.
+In this laboratory, you will master the art of "taming" failures in a reactive ecosystem. You will build, refactor, and test a non-blocking Spring WebFlux system that handles errors at multiple levels (pipeline, controller, and global), provides standardized RFC 7807 Problem Detail structures, propagates Correlation IDs across thread boundaries, and applies server-side execution timeouts and exponential retry backoffs.
+
+---
 
 ## Learning Objectives
-- Implement graceful fallbacks with `onErrorReturn`.
-- Design standardized API errors using **RFC 7807 Problem Details**.
-- Propagate **Correlation IDs** through the Reactor Context to enrich error responses.
-- Apply **Exponential Backoff** and **Timeouts** to handle unstable dependencies.
+- Master the difference between pipeline-level fallbacks (`onErrorReturn`) and flow-switching (`onErrorResume`).
+- Design enterprise-standardized API error contracts using **RFC 7807 Problem Details**.
+- Propagate trace metadata safely across Event-Loop boundaries using the **Reactor Context**.
+- Implement self-healing consumer integrations using **Exponential Backoff and Jitter**.
+- Mitigate event-loop starvation using reactive server-side timeouts.
 
-## Instructions
+---
 
-1.  **Scenario 1: Local Fallbacks**
-    Examine `ResilienceController.getItem`. Observe how `onErrorReturn` is used to provide a default item when the service fails.
-    🔗 **Traceable Implementation**: [ResilienceImplementation.java](src/main/java/com/reactivelab/resilience/ResilienceImplementation.java) | [Test Suite](src/test/java/com/reactivelab/resilience/ResilienceIntegrationTest.java)
-    
-2.  **Scenario 2: Business Exceptions**
-    Check `@ExceptionHandler(ProductNotFoundException.class)`. This handles errors specific to the controller layer.
-    🔗 **Traceable Implementation**: [ResilienceImplementation.java](src/main/java/com/reactivelab/resilience/ResilienceImplementation.java) | [Test Suite](src/test/java/com/reactivelab/resilience/ResilienceIntegrationTest.java)
+## Project Structure & Traceable Implementation
+All codebase components are organized in a clean, production-grade package structure. Navigate to the links below to study the implementation:
 
-3.  **Scenario 3 & 4: The Global Guard & Context Propagation**
-    Look at `GlobalErrorWebExceptionHandler.java`. It catches all unhandled exceptions and formats them using `ProblemDetail`, including a correlation ID extracted from the context.
-    🔗 **Traceable Implementation**: [ErrorHandlers.java](src/main/java/com/reactivelab/resilience/ErrorHandlers.java) | [Test Suite](src/test/java/com/reactivelab/resilience/ResilienceIntegrationTest.java)
+- 🔗 **Business Service**: [ResilienceService.java](src/main/java/com/reactivelab/resilience/service/ResilienceService.java) (Manages reactive retrieval, timeouts, and retry chains).
+- 🔗 **Rest Controller**: [ResilienceController.java](src/main/java/com/reactivelab/resilience/controller/ResilienceController.java) (Defines HTTP mappings and `@ExceptionHandler` business mappings).
+- 🔗 **Functional Router**: [FunctionalRouter.java](src/main/java/com/reactivelab/resilience/router/FunctionalRouter.java) (Configures functional security filter-level check endpoints).
+- 🔗 **Telemetry Web Filter**: [CorrelationIdFilter.java](src/main/java/com/reactivelab/resilience/filter/CorrelationIdFilter.java) (Injects `X-Correlation-ID` into request attributes and Reactor Context).
+- 🔗 **Global Exception Guard**: [GlobalErrorWebExceptionHandler.java](src/main/java/com/reactivelab/resilience/exception/GlobalErrorWebExceptionHandler.java) (Renders standardized RFC 7807 JSON with dynamic Correlation ID resolution).
+- 🔗 **Verification Test Suite**: [ResilienceIntegrationTest.java](src/test/java/com/reactivelab/resilience/ResilienceIntegrationTest.java) (Comprehensive JUnit 5 WebTestClient scenarios).
 
-4.  **Scenario 5: Execution Limits**
-    See how `.timeout(Duration.ofSeconds(1))` is applied to a slow endpoint to prevent resource exhaustion.
-    🔗 **Traceable Implementation**: [ResilienceImplementation.java](src/main/java/com/reactivelab/resilience/ResilienceImplementation.java) | [Test Suite](src/test/java/com/reactivelab/resilience/ResilienceIntegrationTest.java)
-
-5.  **Scenario 6: Intelligent Retries**
-    Review `ResilienceService.callUnstableService`. It uses `retryWhen` with exponential backoff to handle transient failures.
-    🔗 **Traceable Implementation**: [ResilienceImplementation.java](src/main/java/com/reactivelab/resilience/ResilienceImplementation.java) | [Test Suite](src/test/java/com/reactivelab/resilience/ResilienceIntegrationTest.java)
-
-6.  **Scenario 7: Filter-Level Errors**
-    Review how the `GlobalErrorWebExceptionHandler` catches errors thrown before reaching the controller.
-    🔗 **Traceable Implementation**: [ErrorHandlers.java](src/main/java/com/reactivelab/resilience/ErrorHandlers.java) | [Test Suite](src/test/java/com/reactivelab/resilience/ResilienceIntegrationTest.java)
+---
 
 ## Command Dissections
 
-### 1. `onErrorReturn`
+### 1. Local Fallback Operator: `onErrorReturn`
 ```java
-pipeline.onErrorReturn(defaultValue)
+pipeline.onErrorReturn(fallbackValue)
 ```
-- **What**: Replaces an error signal with a value.
-- **Why**: Used for simple fallbacks where a "Safe Default" is better than a failure.
+- **What**: Intercepts an `onError` signal and emits a pre-constructed static fallback value instead, completing the stream successfully.
+- **Why**: Used for non-critical lookups where a safe default (e.g. empty user dashboard, zero recommendations) is highly preferred over throwing a HTTP 500 error.
+- **Visual Signal Flow**: `---(x)---> [onErrorReturn(Default)] --->(Default)---|--->`
 
-### 2. `ProblemDetail`
+### 2. Standardized API Errors: `ProblemDetail`
 ```java
-ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, message);
+ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "Product not found");
+problem.setProperty("custom_key", value);
 ```
-- **What**: A Spring/RFC 7807 class for standardizing error JSON.
-- **Why**: Decouples error logic from the response format.
+- **What**: A standard carrier structure introduced in Spring 6/Boot 3 complying with RFC 7807.
+- **Why**: Eliminates custom, ad-hoc Map-based JSON representations by establishing a uniform schema format across modern APIs.
 
-### 3. `retryWhen`
+### 3. Non-Blocking Event-Loop Telemetry: `Mono.deferContextual`
 ```java
-.retryWhen(Retry.backoff(3, Duration.ofMillis(100)))
+Mono.deferContextual(context -> {
+    String trace = context.getOrDefault("X-Correlation-ID", "N/A");
+    return ServerResponse.ok().bodyValue(trace);
+})
 ```
-- **What**: Sophisticated retry mechanism.
-- **Why**: "Backoff" prevents overwhelming a service that is already struggling.
+- **What**: Lazily accesses the immutable `ContextView` propagated upstream from the subscriber boundary.
+- **Why**: Traditional ThreadLocals corrupt and leak memory in Event-Loop workers because thread pools are shared concurrently. `deferContextual` extracts metadata from the active **Subscription** state.
 
-## 🧠 Self-Assessment
+### 4. Self-Healing Pipelines: `retryWhen`
+```java
+.retryWhen(Retry.backoff(3, Duration.ofMillis(100)).jitter(0.75))
+```
+- **What**: Retries a failed pipeline using exponential delays (e.g., 100ms, 200ms, 400ms) randomized with a noise factor (jitter).
+- **Why**: Prevents "thundering herd" conditions that crash recovering downstream services by spacing request attempts.
+
+---
+
+## 🧠 Self-Assessment & Knowledge Check
+
 <details>
-<summary>1. What is the difference between <code>onErrorResume</code> and <code>onErrorReturn</code>?</summary>
-<code>onErrorReturn</code> provides a static fallback value, while <code>onErrorResume</code> provides a fallback Publisher (stream), allowing you to execute alternative reactive flows (like calling a backup service).
+<summary>1. Why can we NOT use traditional ThreadLocal and MDC in a standard reactive WebFlux application?</summary>
+<p>
+ThreadLocals assume a strict "Thread-per-Request" model. In WebFlux, a Netty event loop thread handles hundreds of requests concurrently, jumping from one callback to another during non-blocking execution. Storing request-specific context in a ThreadLocal will lead to severe data corruption and metadata leaking between concurrent requests. Telemetry must be stored inside the <b>Reactor Context</b>.
+</p>
 </details>
 
 <details>
-<summary>2. Why is <code>ProblemDetail</code> preferred over custom Map-based error responses?</summary>
-<code>ProblemDetail</code> is part of Spring 3 and implements RFC 7807, providing a standardized, industry-wide JSON schema for HTTP API errors, making it easier for clients to parse.
+<summary>2. What is the fundamental direction of propagation for the Reactor Context?</summary>
+<p>
+The Reactor Context propagates <b>UPSTREAM</b> (from the subscriber at the end of the chain up towards the publisher source). This means operators located <i>above</i> the `.contextWrite()` line will see the metadata, while operators placed <i>below</i> it in the subscription flow will not.
+</p>
 </details>
 
 <details>
-<summary>3. How does <code>timeout()</code> improve system stability?</summary>
-It prevents slow external dependencies from indefinitely tying up the reactive Event Loop, ensuring the application remains responsive even when upstream services degrade.
+<summary>3. Why can a global WebExceptionHandler not read keys directly from the Reactor Context written in a WebFilter?</summary>
+<p>
+Spring WebFlux wraps the entire WebFilter chain in a <code>FilteringWebHandler</code>. This handler is executed by <code>HttpWebHandlerAdapter</code>, which catches exceptions downstream using an <code>onErrorResume</code> handler mapping to the Exception Handler. Since <code>WebExceptionHandler</code> is downstream of the WebFilter execution, any context written inside the filter chain is invisible at the global exception handling boundary. A hybrid lookup falling back to Exchange Attributes is the standard industry design solution.
+</p>
 </details>
+
+<details>
+<summary>4. How does Project Reactor Context compare with Java 21+ Scoped Values (Project Loom)?</summary>
+<p>
+Java 21 Scoped Values (<code>ScopedValue<T></code>) are designed for downstream propagation across imperative Call Stacks (typically on Virtual Threads). Reactor Context is designed for upstream propagation across multi-threaded asynchronous Stream Subscriptions. In non-blocking WebFlux architectures, Reactor Context remains the primary and only safe telemetry propagation mechanism.
+</p>
+</details>
+
+---
 
 ## Verification
-Run the comprehensive test suite:
+Validate the entire resilient architecture by running the test suite:
 ```bash
-mvn test -pl labs/013-error-handling-resilience
+mvn clean test -pl labs/013-error-handling-resilience
 ```

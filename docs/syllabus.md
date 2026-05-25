@@ -61,7 +61,7 @@ Focus: Production-grade patterns, observability, and integrating with streaming 
 
 - [x] (AUDITED) **LAB-018: Advanced Resilience Patterns (Resilience4j)**
   - Concepts: Circuit Breakers, Bulkheads, Rate Limiters, and Time Limiters integrated with Reactor.
-- [ ] **LAB-019: Modern Observability (Micrometer Observation)**
+- [x] (AUDITED) **LAB-019: Modern Observability (Micrometer Observation)**
   - Concepts: `ObservationRegistry`, `ObservationHandler`, Automatic instrumentation (WebFlux/WebClient), and Tagging strategies (High/Low cardinality).
 - [ ] **LAB-020: Reactive Messaging with Apache Kafka**
   - Concepts: Reactor Kafka, non-blocking Producer/Consumer, backpressure-aware message processing.

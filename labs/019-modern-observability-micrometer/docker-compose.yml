@@ -1,0 +1,14 @@
+services:
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: reactive_lab_019_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  zipkin:
+    image: openzipkin/zipkin:2.24
+    container_name: reactive_lab_019_zipkin
+    ports:
+      - "9411:9411"

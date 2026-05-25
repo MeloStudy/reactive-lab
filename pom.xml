@@ -32,6 +32,7 @@
         <module>labs/017-reactive-security-jwt</module>
         <module>labs/018-resilience4j-patterns</module>
         <module>labs/019-modern-observability-micrometer</module>
+        <module>labs/020-reactor-kafka</module>
         <module>projects/001-github-insights</module>
         <module>projects/002-reactive-store/order-service</module>
     </modules>

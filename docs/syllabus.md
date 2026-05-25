@@ -63,7 +63,7 @@ Focus: Production-grade patterns, observability, and integrating with streaming 
   - Concepts: Circuit Breakers, Bulkheads, Rate Limiters, and Time Limiters integrated with Reactor.
 - [x] (AUDITED) **LAB-019: Modern Observability (Micrometer Observation)**
   - Concepts: `ObservationRegistry`, `ObservationHandler`, Automatic instrumentation (WebFlux/WebClient), and Tagging strategies (High/Low cardinality).
-- [ ] **LAB-020: Reactive Messaging with Apache Kafka**
+- [x] (AUDITED) **LAB-020: Reactive Messaging with Apache Kafka**
   - Concepts: Reactor Kafka, non-blocking Producer/Consumer, backpressure-aware message processing.
 - [ ] **LAB-021: Reactive Messaging with RabbitMQ**
   - Concepts: Reactor RabbitMQ, AMQP vs Kafka in reactive flows.

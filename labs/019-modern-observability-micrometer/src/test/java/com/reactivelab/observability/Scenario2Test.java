@@ -33,6 +33,7 @@ class Scenario2Test {
         TestObservationRegistryAssert.assertThat(registry)
                 .hasObservationWithNameEqualTo("custom.process")
                 .that()
-                .hasLowCardinalityKeyValue("process.type", "user-process");
+                .hasLowCardinalityKeyValue("process.type", "user-process")
+                .hasHighCardinalityKeyValue("user.id", "user-123");
     }
 }

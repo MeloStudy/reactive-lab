@@ -26,3 +26,9 @@
 - [x] T011 Verify `README.md` Atomic Cleanup command runs natively without errors (`docker-compose down -v --remove-orphans`).
 - [x] T012 Verify `Makefile` shortcut targets operate purely as optional proxies.
 - [x] T013 Perform end-to-end "Learner Journey" Walkthrough.
+
+## Phase 5: Lab Refiner
+- [x] R001 Update `docker-compose.yml` to use secure, latest recommended image tags for Prometheus and Zipkin.
+- [x] R002 Refactor `ObservabilityService.java` to use explicit `Observation` API and add high cardinality tags.
+- [x] R003 Update `Scenario2Test.java` to validate the new high cardinality tag.
+- [x] R004 Update `README.md` to include relative links to source code, `podman` alternatives, and Command Dissections for Maven.
